@@ -228,56 +228,56 @@ request
 - 仓库：`vllm-project/vllm`
 - 分支：`main`
 - 本文对齐 commit：`48e376a007173910330a8c83f53474b21e4279c0`
-- commit 链接：<https://github.com/vllm-project/vllm/commit/48e376a007173910330a8c83f53474b21e4279c0>
+- commit 链接：[48e376a](https://github.com/vllm-project/vllm/commit/48e376a007173910330a8c83f53474b21e4279c0)
 
 ### 源码文件
 
 [1] `scheduler.py` 展示 vLLM 将 KV 管理放入调度热路径：相对路径 `vllm/v1/core/sched/scheduler.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/sched/scheduler.py>  
+GitHub：[scheduler.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/sched/scheduler.py)  
 重点关注 `Scheduler.__init__` 与 `schedule()`，其中 waiting request 在进入 running 前会先查询 computed blocks，并调用 `allocate_slots(...)` 判断当前步是否可调度。
 
 [2] `kv_cache_manager.py` 定义调度器视角的 KV 资源接口：相对路径 `vllm/v1/core/kv_cache_manager.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/kv_cache_manager.py>  
+GitHub：[kv_cache_manager.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/kv_cache_manager.py)  
 重点关注 `KVCacheBlocks`、`get_computed_blocks()`、`allocate_slots()`、`free()` 与 `get_num_common_prefix_blocks()`。其中 `allocate_slots()` 的注释已明确给出 prefix tokens / new tokens / lookahead / external computed tokens 的处理布局。
 
 [3] `block_pool.py` 统一管理 free blocks、cached blocks 与共享 block 生命周期：相对路径 `vllm/v1/core/block_pool.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/block_pool.py>  
+GitHub：[block_pool.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/block_pool.py)  
 重点关注 `get_new_blocks()`、`cache_full_blocks()`、`touch()`、`free_blocks()` 与 `reset_prefix_cache()`。该文件是理解 prefix cache 与 block 生命周期统一管理的关键。
 
 [4] `kv_cache_coordinator.py` 展示多 KV cache group 的统一协调层：相对路径 `vllm/v1/core/kv_cache_coordinator.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/kv_cache_coordinator.py>  
+GitHub：[kv_cache_coordinator.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/kv_cache_coordinator.py)  
 重点关注 `KVCacheCoordinator` 的初始化和聚合接口，包括 `get_num_blocks_to_allocate()`、`allocate_new_blocks()`、`cache_blocks()`、`free()` 等。
 
 [5] `single_type_kv_cache_manager.py` 展示不同 attention spec 下的差异化 KV 管理：相对路径 `vllm/v1/core/single_type_kv_cache_manager.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/single_type_kv_cache_manager.py>  
+GitHub：[single_type_kv_cache_manager.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/core/single_type_kv_cache_manager.py)  
 重点关注 `SingleTypeKVCacheManager` 抽象基类，以及 `FullAttentionManager`、`SlidingWindowManager` 对 `find_longest_cache_hit()`、`get_num_common_prefix_blocks()`、`remove_skipped_blocks()` 的不同实现。
 
 [6] `block_table.py` 展示 worker 如何将 request blocks 转换为执行 metadata：相对路径 `vllm/v1/worker/gpu/block_table.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/worker/gpu/block_table.py>  
+GitHub：[block_table.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/worker/gpu/block_table.py)  
 重点关注 `append_block_ids()`、`gather_block_tables()` 与 `compute_slot_mappings()`。这是理解逻辑 block 到物理 slot 映射的关键。
 
 [7] `attention/backend.py` 定义 attention backend 消费的 batch 级公共 metadata：相对路径 `vllm/v1/attention/backend.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/attention/backend.py>  
+GitHub：[attention/backend.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/attention/backend.py)  
 重点关注 `CommonAttentionMetadata`，其中显式包含 `block_table_tensor` 与 `slot_mapping`。
 
 [8] `flash_attn.py` 展示公共前缀信息已进入部分 backend 优化路径：相对路径 `vllm/v1/attention/backends/flash_attn.py`  
-GitHub：<https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/attention/backends/flash_attn.py>  
+GitHub：[flash_attn.py](https://github.com/vllm-project/vllm/blob/48e376a007173910330a8c83f53474b21e4279c0/vllm/v1/attention/backends/flash_attn.py)  
 重点关注 `common_prefix_len`、`prefix_kv_lens`、`prefix_scheduler_metadata` 和 `use_cascade = common_prefix_len > 0` 等逻辑。
 
 ### 相关 PR
 
 [9] `Use block table apis for capture inputs`：PR `#35671`  
-链接：<https://github.com/vllm-project/vllm/pull/35671>  
+链接：[PR #35671](https://github.com/vllm-project/vllm/pull/35671)  
 说明 block table API 仍是当前执行主链的一部分，并在演进中。
 
 [10] `Avoid prefix cache hit in the same schedule step for mamba layers`：PR `#29387`  
-链接：<https://github.com/vllm-project/vllm/pull/29387>  
+链接：[PR #29387](https://github.com/vllm-project/vllm/pull/29387)  
 说明 prefix caching 与 schedule step 的交互语义并非静态设计点，仍在持续修正。
 
 [11] `Fix CPU memory leak from Request reference cycle in prefix caching`：PR `#34183`  
-链接：<https://github.com/vllm-project/vllm/pull/34183>  
+链接：[PR #34183](https://github.com/vllm-project/vllm/pull/34183)  
 说明 prefix caching 不只是性能特性，也涉及 request 生命周期与引用管理复杂度。
 
 [12] `Support multiple KV cache groups in Hybrid KV Coordinator`：PR `#31707`  
-链接：<https://github.com/vllm-project/vllm/pull/31707>  
+链接：[PR #31707](https://github.com/vllm-project/vllm/pull/31707)  
 可用来支撑“当前主线已是多组 KV 协调架构”的判断。
