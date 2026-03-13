@@ -1,33 +1,102 @@
 ---
 layout: default
 ---
-<article class="post-article">
-  <header class="post-header">
-    <div class="post-header-topline">
-      <a class="post-back-link" href="{{ '/' | relative_url }}#journal">← 返回文章列表</a>
-      <p class="eyebrow">{{ page.category | default: 'Field Note' }}</p>
+<article class="post-article post-article-with-toc">
+  <aside class="post-toc" aria-label="文章目录">
+    <div class="post-toc-card">
+      <p class="post-toc-label">On this page</p>
+      <nav id="post-toc-nav" class="post-toc-nav"></nav>
     </div>
-    <h1>{{ page.title }}</h1>
-    <div class="post-meta-wrap">
-      <div class="post-meta">
-        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
-        <span>{{ page.author | default: site.author.name }}</span>
+  </aside>
+
+  <div class="post-content-column">
+    <header class="post-header">
+      <div class="post-header-topline">
+        <a class="post-back-link" href="{{ '/' | relative_url }}#journal">← 返回文章列表</a>
+        <p class="eyebrow">{{ page.category | default: 'Field Note' }}</p>
       </div>
-      <p class="post-reading-note">Long-form note · Structured for slow reading</p>
+      <h1>{{ page.title }}</h1>
+      <div class="post-meta-wrap">
+        <div class="post-meta">
+          <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
+          <span>{{ page.author | default: site.author.name }}</span>
+        </div>
+        <p class="post-reading-note">Long-form note · Structured for slow reading</p>
+      </div>
+      {% if page.intro %}
+      <p class="post-intro">{{ page.intro }}</p>
+      {% endif %}
+    </header>
+
+    <div class="post-divider"></div>
+
+    <div class="post-body" id="post-body-content">
+      {{ content }}
     </div>
-    {% if page.intro %}
-    <p class="post-intro">{{ page.intro }}</p>
-    {% endif %}
-  </header>
 
-  <div class="post-divider"></div>
-
-  <div class="post-body">
-    {{ content }}
+    <footer class="post-endcap">
+      <p>Thanks for reading this field note from MiracleFarms.</p>
+      <a class="text-link" href="{{ '/' | relative_url }}#journal">继续浏览更多文章 →</a>
+    </footer>
   </div>
-
-  <footer class="post-endcap">
-    <p>Thanks for reading this field note from MiracleFarms.</p>
-    <a class="text-link" href="{{ '/' | relative_url }}#journal">继续浏览更多文章 →</a>
-  </footer>
 </article>
+
+<script>
+(function () {
+  const body = document.getElementById('post-body-content');
+  const nav = document.getElementById('post-toc-nav');
+  if (!body || !nav) return;
+
+  const headings = Array.from(body.querySelectorAll('h2, h3'));
+  if (!headings.length) {
+    const toc = document.querySelector('.post-toc');
+    if (toc) toc.style.display = 'none';
+    return;
+  }
+
+  const slugify = (text) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[\s\u3000]+/g, '-')
+      .replace(/[^\w\-\u4e00-\u9fa5]/g, '')
+      .replace(/-+/g, '-');
+
+  headings.forEach((heading, index) => {
+    if (!heading.id) {
+      heading.id = slugify(heading.textContent) || `section-${index + 1}`;
+    }
+
+    const link = document.createElement('a');
+    link.href = `#${heading.id}`;
+    link.textContent = heading.textContent;
+    link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+    nav.appendChild(link);
+  });
+
+  const links = Array.from(nav.querySelectorAll('a'));
+  const map = new Map(links.map((link) => [link.getAttribute('href').slice(1), link]));
+
+  const setActive = (id) => {
+    links.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${id}`));
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) setActive(visible[0].target.id);
+    },
+    {
+      rootMargin: '-20% 0px -65% 0px',
+      threshold: [0, 1]
+    }
+  );
+
+  headings.forEach((heading) => observer.observe(heading));
+
+  const first = headings[0];
+  if (first && map.has(first.id)) setActive(first.id);
+})();
+</script>
