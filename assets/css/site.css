@@ -417,15 +417,15 @@ code {
   font-size: 1.02rem;
 }
 
-.post-article {
-  padding: 48px 40px;
+.post-layout-with-toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 32px;
+  align-items: start;
 }
 
-.post-article-with-toc {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 36px;
-  align-items: start;
+.post-article {
+  padding: 48px 40px;
 }
 
 .post-toc {
@@ -593,12 +593,18 @@ code {
 }
 
 .post-body strong {
-  font-weight: 700;
-  color: #13201d;
+  font-weight: 600;
+  color: inherit;
+  background: rgba(38, 75, 66, 0.08);
+  padding: 0 0.18em;
+  border-radius: 4px;
 }
 
 .post-body em {
   color: #3d4845;
+  background: rgba(149, 98, 60, 0.08);
+  padding: 0 0.18em;
+  border-radius: 4px;
 }
 
 .post-body :not(pre) > code {
@@ -636,11 +642,33 @@ code {
 }
 
 .post-body blockquote {
-  margin: 28px 0;
-  padding: 4px 0 4px 18px;
-  border-left: 3px solid var(--accent);
+  position: relative;
+  margin: 30px 0;
+  padding: 20px 18px 14px 18px;
+  border: 1px solid rgba(38, 75, 66, 0.18);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
   color: var(--muted);
-  background: linear-gradient(90deg, rgba(38, 75, 66, 0.05) 0%, transparent 80%);
+  background: linear-gradient(180deg, rgba(38, 75, 66, 0.08) 0%, rgba(38, 75, 66, 0.04) 100%);
+}
+
+.post-body blockquote::before {
+  content: "“";
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 2rem;
+  line-height: 1;
+  color: rgba(38, 75, 66, 0.42);
+  font-family: "Times New Roman", serif;
+}
+
+.post-body blockquote::after {
+  content: none;
+}
+
+.post-body blockquote p {
+  margin-bottom: 0.9em;
 }
 
 .post-body blockquote p:last-child {
@@ -688,8 +716,8 @@ code {
   font-size: 0.92rem;
 }
 
-@media (max-width: 980px) {
-  .post-article-with-toc {
+@media (max-width: 1180px) {
+  .post-layout-with-toc {
     grid-template-columns: 1fr;
   }
 

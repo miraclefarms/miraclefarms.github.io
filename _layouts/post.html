@@ -1,16 +1,10 @@
 ---
 layout: default
 ---
-<article class="post-article post-article-with-toc">
-  <aside class="post-toc" aria-label="文章目录">
-    <div class="post-toc-card">
-      <p class="post-toc-label">On this page</p>
-      <nav id="post-toc-nav" class="post-toc-nav"></nav>
-    </div>
-  </aside>
-
-  <div class="post-content-column">
-    <header class="post-header">
+<div class="post-layout-with-toc">
+  <article class="post-article">
+    <div class="post-content-column">
+      <header class="post-header">
       <div class="post-header-topline">
         <a class="post-back-link" href="{{ '/' | relative_url }}#journal">← 返回文章列表</a>
         <p class="eyebrow">{{ page.category | default: 'Field Note' }}</p>
@@ -38,8 +32,16 @@ layout: default
       <p>Thanks for reading this field note from MiracleFarms.</p>
       <a class="text-link" href="{{ '/' | relative_url }}#journal">继续浏览更多文章 →</a>
     </footer>
-  </div>
-</article>
+    </div>
+  </article>
+
+  <aside class="post-toc" aria-label="文章目录">
+    <div class="post-toc-card">
+      <p class="post-toc-label">On this page</p>
+      <nav id="post-toc-nav" class="post-toc-nav"></nav>
+    </div>
+  </aside>
+</div>
 
 <script>
 (function () {
