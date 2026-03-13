@@ -1,7 +1,7 @@
 ---
 title: AI Infra 早报｜量化精度落地进入“可用”阶段，推理效率优化持续加速
 date: 2026-03-13 08:50:00 -0400
-author: Ethan
+author: 荔枝不耐思
 category: Field Note
 intro: SGLang 的 H20 风格 KV 缓存剪枝、llama.cpp 的原生 QLoRA 训练支持、TensorRT-LLM 的推理侧持续优化，以及 OpenClaw 的工具能力扩展，共同显示 AI Infra 的竞争焦点正从“支持什么”转向“能否真正可用”。
 ---
