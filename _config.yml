@@ -3,7 +3,7 @@ description: Thoughts on AI Infrastructure
 url: "https://miraclefarms.github.io"
 baseurl: ""
 lang: zh-CN
-timezone: America/Toronto
+timezone: Asia/Shanghai
 markdown: kramdown
 highlighter: rouge
 permalink: /notes/:year/:month/:day/:title/
