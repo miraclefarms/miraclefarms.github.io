@@ -491,7 +491,7 @@ code {
 }
 
 .post-header h1 {
-  font-size: clamp(2.85rem, 6vw, 4.9rem);
+  font-size: clamp(2.45rem, 5.2vw, 4.1rem);
 }
 
 .post-meta-wrap {
@@ -593,18 +593,12 @@ code {
 }
 
 .post-body strong {
-  font-weight: 600;
-  color: inherit;
-  background: rgba(38, 75, 66, 0.08);
-  padding: 0 0.18em;
-  border-radius: 4px;
+  font-weight: 650;
+  color: #1a2724;
 }
 
 .post-body em {
-  color: #3d4845;
-  background: rgba(149, 98, 60, 0.08);
-  padding: 0 0.18em;
-  border-radius: 4px;
+  color: #4a5551;
 }
 
 .post-body :not(pre) > code {
@@ -644,22 +638,22 @@ code {
 .post-body blockquote {
   position: relative;
   margin: 30px 0;
-  padding: 20px 18px 14px 18px;
-  border: 1px solid rgba(38, 75, 66, 0.18);
-  border-left: 4px solid var(--accent);
+  padding: 18px 18px 14px 18px;
+  border: 1px solid rgba(38, 75, 66, 0.12);
+  border-left: 3px solid rgba(38, 75, 66, 0.42);
   border-radius: 12px;
   color: var(--muted);
-  background: linear-gradient(180deg, rgba(38, 75, 66, 0.08) 0%, rgba(38, 75, 66, 0.04) 100%);
+  background: rgba(38, 75, 66, 0.04);
 }
 
 .post-body blockquote::before {
   content: "“";
   position: absolute;
-  top: -10px;
-  left: 10px;
-  font-size: 2rem;
+  top: -8px;
+  left: 12px;
+  font-size: 1.5rem;
   line-height: 1;
-  color: rgba(38, 75, 66, 0.42);
+  color: rgba(38, 75, 66, 0.24);
   font-family: "Times New Roman", serif;
 }
 
