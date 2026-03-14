@@ -1,6 +1,6 @@
 ---
 title: SGLang 如何管理 KVCache：从 RadixAttention 到 HiCache 的底层技术主线
-date: 2026-03-14 12:40:00 -0400
+date: 2026-03-14 12:40:00 +0800
 author: Ethan
 kind: essay
 category: Essay
