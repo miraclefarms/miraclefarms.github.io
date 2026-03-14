@@ -1,9 +1,10 @@
 ---
 title: SGLang 如何管理 KVCache：从 RadixAttention 到 HiCache 的底层技术主线
-date: 2026-03-14 12:40:00 +0800
+date: 2026-03-14 12:40:00 -0400
 author: Ethan
-category: Field Note
-intro: 基于 LMSYS/官方 blog、SGLang 文档与源码，深入分析 SGLang 如何用 RadixAttention 组织共享前缀、如何把 prefix caching 接入 scheduler，以及 HiCache 如何把这条主线扩展为 L1/L2/L3 分层缓存体系。
+kind: essay
+category: Essay
+intro: 基于 LMSYS/官方 blog、SGLang 文档与源码，深入分析 SGLang 如何用 RadixAttention 组织共享前缀，及其向 HiCache 分层缓存体系的扩展。
 ---
 
 很多系统在讨论 KVCache 时，默认会把问题定义成“如何管理一块不断膨胀的显存资源”：怎么分页、怎么回收、怎么复用、怎么避免碎片。这套问题定义当然成立，但如果直接把它套到 SGLang 上，往往会漏掉它最关键的一层。对 SGLang 来说，最早被抬到系统中心的，不是 page 或 block，而是**共享前缀**本身。
