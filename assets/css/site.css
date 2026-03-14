@@ -322,13 +322,23 @@ code {
 .topic-grid,
 .post-list,
 .about-grid,
-.about-points {
+.about-points,
+.start-grid,
+.workflow-grid {
   display: grid;
   gap: 16px;
 }
 
 .refined-topic-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.start-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.workflow-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .topic-card,
@@ -339,6 +349,23 @@ code {
   border-radius: 18px;
   padding: 22px;
   background: rgba(255, 255, 255, 0.58);
+}
+
+.start-card-foundation {
+  background: linear-gradient(180deg, rgba(252, 250, 244, 0.96) 0%, rgba(244, 237, 226, 0.9) 100%);
+}
+
+.start-card-brief {
+  background: linear-gradient(180deg, rgba(255, 251, 246, 0.96) 0%, rgba(249, 242, 233, 0.9) 100%);
+}
+
+.start-card-essay {
+  background: linear-gradient(180deg, rgba(248, 252, 249, 0.96) 0%, rgba(240, 246, 242, 0.9) 100%);
+}
+
+.topic-card-action,
+.workflow-card {
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .topic-card h3,
@@ -963,7 +990,9 @@ code {
   .lane-post-list,
   .about-grid,
   .about-points,
-  .post-meta-wrap {
+  .post-meta-wrap,
+  .start-grid,
+  .workflow-grid {
     grid-template-columns: 1fr;
   }
 
