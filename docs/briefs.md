@@ -2,6 +2,7 @@
 layout: default
 title: Briefs - MiracleFarms
 description: AI Infrastructure 简报栏目
+permalink: /briefs/
 ---
 
 <section class="section">

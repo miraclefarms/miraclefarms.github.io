@@ -2,6 +2,7 @@
 layout: default
 title: Essays - MiracleFarms
 description: AI Infrastructure 深度长文
+permalink: /essays/
 ---
 
 <section class="section">
