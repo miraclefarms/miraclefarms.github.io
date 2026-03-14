@@ -292,6 +292,23 @@ code {
   margin-bottom: 24px;
 }
 
+.journal-subsection + .journal-subsection {
+  margin-top: 28px;
+}
+
+.journal-subsection-head {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.journal-subsection-head h3 {
+  margin: 0;
+  font-size: 1.22rem;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
 .section h2 {
   font-size: clamp(2rem, 4vw, 2.85rem);
 }
@@ -394,6 +411,43 @@ code {
 
 .refined-post-list {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.content-lane-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.content-lane {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.content-lane-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.content-lane-head h3 {
+  margin: 0;
+  font-size: 1.28rem;
+  line-height: 1.35;
+}
+
+.content-lane-head p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+.lane-post-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.content-lane-foundation {
+  background: linear-gradient(180deg, rgba(252, 250, 244, 0.96) 0%, rgba(244, 237, 226, 0.88) 100%);
 }
 
 .post-card-meta {
@@ -741,6 +795,7 @@ code {
   .hero,
   .refined-topic-grid,
   .refined-post-list,
+  .lane-post-list,
   .about-grid,
   .about-points,
   .post-meta-wrap {
