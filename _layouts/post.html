@@ -1,13 +1,18 @@
 ---
 layout: default
 ---
-<div class="post-layout-with-toc">
+<div class="post-layout-with-toc post-kind-{{ page.kind | default: 'field-note' }}">
   <article class="post-article">
     <div class="post-content-column">
-      <header class="post-header">
+      <header class="post-header post-header-kind-{{ page.kind | default: 'field-note' }}">
       <div class="post-header-topline">
         <a class="post-back-link" href="{{ '/' | relative_url }}#journal">← 返回文章列表</a>
-        <p class="eyebrow">{{ page.category | default: 'Field Note' }}</p>
+        <div class="post-type-row">
+          <p class="eyebrow">{{ page.category | default: 'Field Note' }}</p>
+          {% if page.series %}
+          <span class="post-series-chip">{{ page.series }}</span>
+          {% endif %}
+        </div>
       </div>
       <h1>{{ page.title }}</h1>
       <div class="post-meta-wrap">
@@ -29,7 +34,7 @@ layout: default
         </p>
       </div>
       {% if page.intro %}
-      <p class="post-intro">{{ page.intro }}</p>
+      <p class="post-intro post-intro-kind-{{ page.kind | default: 'field-note' }}">{{ page.intro }}</p>
       {% endif %}
     </header>
 
