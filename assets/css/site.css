@@ -750,6 +750,14 @@ code {
 }
 
 @media (max-width: 640px) {
+  .site-shell,
+  .post-layout-with-toc,
+  .post-article,
+  .post-content-column,
+  .post-body {
+    min-width: 0;
+  }
+
   .site-shell {
     width: min(100vw - 18px, 1160px);
     padding-top: 14px;
