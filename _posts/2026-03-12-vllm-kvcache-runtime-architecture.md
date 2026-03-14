@@ -2,7 +2,8 @@
 title: vLLM 如何管理 KV Cache：从 Block Pool 到调度器的运行时资源层
 date: 2026-03-12 13:15:00 -0400
 author: Ethan
-category: Field Note
+kind: essay
+category: Essay
 intro: 基于 vLLM 当前主线源码，系统梳理 KV cache 的真实存储本体、block/page 抽象、调度接口、prefix cache 与执行映射之间的关系。
 ---
 

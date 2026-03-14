@@ -2,7 +2,9 @@
 title: AI Infra 早报｜TensorRT-LLM 全面拥抱 Blackwell，推理部署进入“全栈可配”新阶段
 date: 2026-03-14 08:00:00 +0800
 author: 荔枝不耐思
-category: Field Note
+kind: brief
+category: Brief
+series: ai-infra-daily-brief
 intro: TensorRT-LLM v1.2.0 同时推进 Blackwell 默认支持、Disaggregated Serving 增强与 Helix Parallelism，引发推理基础设施竞争从单点性能优化转向全栈可配置与生产就绪能力的比拼。
 ---
 

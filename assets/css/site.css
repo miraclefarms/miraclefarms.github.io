@@ -353,6 +353,23 @@ code {
   background: linear-gradient(180deg, rgba(255, 253, 248, 0.95) 0%, rgba(246, 240, 229, 0.92) 100%);
 }
 
+.featured-kind-brief,
+.post-kind-brief {
+  border-color: rgba(149, 98, 60, 0.22);
+}
+
+.featured-kind-essay,
+.post-kind-essay {
+  border-color: rgba(38, 75, 66, 0.24);
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.featured-kind-founding-note,
+.post-kind-founding-note {
+  border-color: rgba(95, 107, 102, 0.24);
+  background: linear-gradient(180deg, rgba(252, 250, 244, 0.96) 0%, rgba(244, 237, 226, 0.9) 100%);
+}
+
 .featured-post-card h3 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin-bottom: 12px;

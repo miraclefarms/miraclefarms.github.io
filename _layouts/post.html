@@ -15,7 +15,18 @@ layout: default
           <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
           <span>{{ page.author | default: site.author.name }}</span>
         </div>
-        <p class="post-reading-note">Long-form note · Structured for slow reading</p>
+        <p class="post-reading-note">
+          {% case page.kind %}
+            {% when 'brief' %}
+              Briefing note · Fast scan, high signal
+            {% when 'essay' %}
+              Long-form essay · Structured for deep reading
+            {% when 'founding-note' %}
+              Founding note · Site origin and intent
+            {% else %}
+              Field note · Structured for careful reading
+          {% endcase %}
+        </p>
       </div>
       {% if page.intro %}
       <p class="post-intro">{{ page.intro }}</p>
@@ -49,8 +60,9 @@ layout: default
   const nav = document.getElementById('post-toc-nav');
   if (!body || !nav) return;
 
+  const forceHideToc = {% if page.kind == 'brief' or page.kind == 'founding-note' %}true{% else %}false{% endif %};
   const headings = Array.from(body.querySelectorAll('h2, h3'));
-  if (!headings.length) {
+  if (forceHideToc || !headings.length) {
     const toc = document.querySelector('.post-toc');
     if (toc) toc.style.display = 'none';
     return;

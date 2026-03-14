@@ -55,27 +55,29 @@ description: MiracleFarms 是一个公开记录 AI Infrastructure 演进、实�
 
   {% assign featured = site.posts.first %}
   {% if featured %}
-  <article class="featured-post-card">
+  <article class="featured-post-card featured-kind-{{ featured.kind | default: 'field-note' }}">
     <div class="featured-post-meta">
       <span class="post-category">{{ featured.category | default: 'Field Note' }}</span>
       <span>{{ featured.date | date: "%Y.%m.%d" }}</span>
+      {% if featured.series %}<span>{{ featured.series }}</span>{% endif %}
     </div>
     <h3><a href="{{ featured.url | relative_url }}">{{ featured.title }}</a></h3>
     <p>{{ featured.intro | default: featured.excerpt | strip_html | truncate: 220 }}</p>
-    <a class="text-link" href="{{ featured.url | relative_url }}">阅读全文 →</a>
+    <a class="text-link" href="{{ featured.url | relative_url }}">{% case featured.kind %}{% when 'brief' %}查看简报 →{% when 'essay' %}进入深读 →{% when 'founding-note' %}了解起点 →{% else %}阅读全文 →{% endcase %}</a>
   </article>
   {% endif %}
 
   <div class="post-list refined-post-list">
     {% for post in site.posts offset:1 limit:4 %}
-    <article class="post-card refined-post-card">
+    <article class="post-card refined-post-card post-kind-{{ post.kind | default: 'field-note' }}">
       <div class="post-card-topline">
         <span class="post-category">{{ post.category | default: 'Field Note' }}</span>
         <span class="post-card-meta">{{ post.date | date: "%Y.%m.%d" }}</span>
+        {% if post.series %}<span class="post-card-meta">{{ post.series }}</span>{% endif %}
       </div>
       <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
       <p>{{ post.intro | default: post.excerpt | strip_html | truncate: 110 }}</p>
-      <a class="text-link" href="{{ post.url | relative_url }}">Read note →</a>
+      <a class="text-link" href="{{ post.url | relative_url }}">{% case post.kind %}{% when 'brief' %}查看简报 →{% when 'essay' %}进入深读 →{% when 'founding-note' %}了解起点 →{% else %}阅读全文 →{% endcase %}</a>
     </article>
     {% endfor %}
   </div>
