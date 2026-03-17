@@ -1,10 +1,10 @@
 ---
-layout: post
 title: "强化学习异步训练方案深度解析：三派路线与技术选型"
-date: 2026-03-17
+date: 2026-03-17 20:00:00 +0800
 author: Ethan
-categories: [AI Infra, 强化学习]
-tags: [异步训练, RL, AReaL, verl, slime, StreamRL, AsyncFlow, LlamaRL]
+kind: essay
+category: Essay
+intro: 系统梳理 AReaL、verl、slime、StreamRL、AsyncFlow、LlamaRL、TRL AsyncGRPO 等七大异步 RL 训练方案，以激进派、保守派、工程派三条路线为框架，分析各方案的架构设计、staleness 处理策略与选型边界。
 ---
 
 # 强化学习异步训练方案深度解析：三派路线与技术选型
