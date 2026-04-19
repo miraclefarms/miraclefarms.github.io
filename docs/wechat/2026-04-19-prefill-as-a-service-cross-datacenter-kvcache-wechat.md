@@ -6,9 +6,7 @@ intro: 这篇论文真正重要的地方，不是又发明了一套调度器，�
 
 **📅 2026-04-19**
 
-> 中文：两座相距甚远的现代 AI 数据中心由高速链路连接，左侧是高算力 GPU 预填充集群，右侧是高带宽解码集群，半透明的数据流和 KV cache 块在两地之间传输，工程师站在控制台前观察吞吐与延迟，科技编辑部风格，无文字，16:9
->
-> English: Two modern AI datacenters connected by a high-speed link, with a high-compute GPU prefill cluster on the left and a high-bandwidth decode cluster on the right, translucent KV cache blocks and data streams moving across sites, engineers monitoring throughput and latency from a control console, editorial technology style, no text, 16:9
+![题图](assets/2026-04-19/prefill-as-a-service-cross-datacenter-kvcache-cover.png)
 
 > 这篇论文最值得记住的判断是：下一代模型先把 KVCache 变小，系统才第一次有机会认真讨论“跨数据中心做 prefill”。
 
