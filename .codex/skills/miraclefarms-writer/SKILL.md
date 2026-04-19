@@ -15,6 +15,12 @@ description: >
 如果参考资料里出现论文 figure、官方博客架构图、GitHub README / PR 截图等可帮助理解正文的图片，额外读取 `references/image-handling.md`，按其中的原图优先与回退策略处理。
 如果用户要求微信公众号版本，额外读取 `references/wechat-format.md`，按其中的渠道改写与参考资料链接保留规则处理。
 
+**重要分叉：**
+- `brief -> 微信公众号` 与 `essay -> 微信公众号技术长文` 可以复用大部分调研与素材整理路径，但**不是同一条格式与发布路径**。
+- `essay -> 微信公众号技术长文` 与 brief 可以复用大部分路径，但**配图和配色必须单独处理**，不能沿用日报默认值。
+- `essay 改写成微信公众号技术长文` 时，必须显式走长文路径：保留与 GitHub.io essay 同一组正文配图、写入 `wechat_variant: essay-longform`、并使用技术长文的经典蓝主题。
+- 不要把 essay 的微信公众号版本退化成只有题图、无正文配图的日报模板；这会让写作规范和发布脚本产生不一致。
+
 ---
 
 ## 第一步：判断文章类型
@@ -130,6 +136,7 @@ description: >
 - **Essay** -> 读 `references/essay-format.md`（frontmatter 模板、引用格式、完整结构模板）
 - **如果参考资料含有可用图片** -> 再读 `references/image-handling.md`（候选图筛选、原图抓取、失败回退、落盘命名）
 - **如果用户要求微信公众号版本** -> 再读 `references/wechat-format.md`（公众号改写规则、参考资料链接保留、输出路径）
+- **如果用户要求的是 essay 的微信公众号技术长文** -> 把它当成独立长文路径处理，不要沿用 brief 的默认配图与配色假设
 
 这两个文件包含所有格式细节，包括完整模板。**写作前必须先读对应文件。**
 
@@ -161,6 +168,7 @@ description: >
   - 例：`2026-04-15-vllm-paged-attention-design.md`
   - 例：`2026-04-15-ai-infra-daily-brief-speculative-decoding.md`
 - 如果用户要求微信公众号版本，保存到：`/Users/lychee/mycode/miraclefarms.github.io/docs/wechat/YYYY-MM-DD-slug-wechat.md`
+- `essay -> 微信公众号技术长文` 时，文件 front matter 里额外写入 `wechat_variant: essay-longform`，让发布链路明确选择技术长文主题与图片处理策略
 - 如果用户同时要求两个渠道，先完成 GitHub.io 版本，再基于同一判断改写出微信公众号版本
 - **不要主动 commit 或 push**，除非用户明确要求
 
@@ -184,3 +192,6 @@ description: >
 - [ ] 图片路径是否位于 `/assets/{post-slug}/`，图注是否说明“这张图说明了什么”？
 - [ ] 如果输出微信公众号版本，正文主体里是否没有 Markdown 链接或 HTML 链接，并且 URL 只出现在参考资料括号中？
 - [ ] 如果输出微信公众号版本，是否已经按 `references/wechat-format.md` 改写成适合公众号阅读的版本？
+- [ ] 如果输出的是 essay 的微信公众号技术长文，是否已经写入 `wechat_variant: essay-longform`？
+- [ ] 如果输出的是 essay 的微信公众号技术长文，是否保留了与 GitHub.io essay 相同的正文配图，而不光是题图？
+- [ ] 如果输出的是 essay 的微信公众号技术长文，是否明确走经典蓝主题，而不是 brief 的默认绿色主题？

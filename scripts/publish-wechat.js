@@ -6,18 +6,21 @@ const crypto = require('crypto');
 const { execFileSync } = require('child_process');
 const axios = require('axios');
 const FormData = require('form-data');
-const juice = require('juice');
-const { marked } = require('marked');
 const dotenv = require('dotenv');
+const {
+  renderWechatHtml,
+  resolveMarkdownImagePath,
+  resolveWechatRenderProfile,
+  rewriteMarkdownImageUrls,
+} = require('./lib/wechat-render');
+const {
+  loadWechatConfig,
+} = require('./lib/wechat-config');
 
 const PROJECT_ROOT = path.join(__dirname, '..');
-const WECHAT_API_BASE = 'https://api.weixin.qq.com/cgi-bin';
-const OPENROUTER_API_BASE = 'https://openrouter.ai/api/v1';
+const CONFIG = loadWechatConfig(PROJECT_ROOT);
 const LOG_FILE = path.join(PROJECT_ROOT, 'docs', 'wechat-publish.log');
-const DEFAULT_THUMB_IMAGE = path.join(PROJECT_ROOT, 'assets', 'icons', 'favicon.png');
 const TRACKED_RECORD_FILE = path.join(__dirname, 'wechat-publish-record.json');
-const DEFAULT_OPENROUTER_IMAGE_MODEL = 'google/gemini-2.5-flash-image';
-const DEFAULT_OPENROUTER_IMAGE_SIZE = '1K';
 
 function resolveGitDir() {
   let gitDir = process.env.GIT_DIR;
@@ -245,18 +248,6 @@ function toMarkdownRelativePath(fromFilePath, targetPath) {
   return path.relative(path.dirname(fromFilePath), targetPath).split(path.sep).join('/');
 }
 
-function resolveMarkdownImagePath(articleFilePath, imageSrc) {
-  if (!imageSrc || /^https?:\/\//i.test(imageSrc) || /^data:/i.test(imageSrc)) {
-    return null;
-  }
-
-  if (imageSrc.startsWith('/')) {
-    return path.join(PROJECT_ROOT, imageSrc.replace(/^\/+/, ''));
-  }
-
-  return path.resolve(path.dirname(articleFilePath), imageSrc);
-}
-
 function buildOpenRouterImagePrompt({ title, digest, prompts }) {
   const parts = [
     'Create a polished editorial cover image for a WeChat AI infrastructure newsletter article.',
@@ -286,8 +277,8 @@ async function generateImageWithOpenRouter({ title, digest, prompts }) {
     throw new Error('OPENROUTER_API_KEY not found in .env');
   }
 
-  const model = process.env.OPENROUTER_IMAGE_MODEL || DEFAULT_OPENROUTER_IMAGE_MODEL;
-  const imageSize = process.env.OPENROUTER_IMAGE_SIZE || DEFAULT_OPENROUTER_IMAGE_SIZE;
+  const model = CONFIG.openrouterImageModel;
+  const imageSize = CONFIG.openrouterImageSize;
   const payload = {
     model,
     messages: [
@@ -306,13 +297,13 @@ async function generateImageWithOpenRouter({ title, digest, prompts }) {
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
-    'HTTP-Referer': process.env.OPENROUTER_HTTP_REFERER || 'https://miraclefarms.github.io',
-    'X-Title': process.env.OPENROUTER_X_TITLE || 'MiracleFarms WeChat Publisher',
+    'HTTP-Referer': CONFIG.openrouterHttpReferer,
+    'X-Title': CONFIG.openrouterXTitle,
   };
 
-  const response = await axios.post(`${OPENROUTER_API_BASE}/chat/completions`, payload, {
+  const response = await axios.post(`${CONFIG.openrouterApiBaseUrl}/chat/completions`, payload, {
     headers,
-    timeout: 180000,
+    timeout: CONFIG.openrouterImageTimeoutMs,
   });
   const message = response.data && Array.isArray(response.data.choices)
     ? response.data.choices[0] && response.data.choices[0].message
@@ -506,53 +497,12 @@ function recordPublished(record, filePath, contentHash, title, response) {
 }
 
 async function getAccessToken(appid, appsecret) {
-  const url = `${WECHAT_API_BASE}/token?grant_type=client_credential&appid=${appid}&secret=${appsecret}`;
+  const url = `${CONFIG.wechatApiBaseUrl}/token?grant_type=client_credential&appid=${appid}&secret=${appsecret}`;
   const response = await axios.get(url);
   if (response.data.errcode) {
     throw new Error(`access_token failed: ${response.data.errcode} - ${response.data.errmsg}`);
   }
   return response.data.access_token;
-}
-
-const DOOCS_CSS = `
-section {
-  font-family: -apple-system-font, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.75;
-  color: #24292f;
-  max-width: 100%;
-  word-break: break-word;
-}
-h1 { display: table; margin: 2em auto 1em; padding: 0 1em; border-bottom: 2px solid #009B77; font-size: 1.3em; text-align: center; color: #009B77; }
-h2 { display: table; margin: 1.5em auto 1em; padding: 0.3em 0.8em; background: #009B77; color: #fff; font-size: 1.2em; text-align: center; border-radius: 4px; }
-h3 { padding-left: 8px; border-left: 3px solid #009B77; margin: 1.5em 8px 0.75em 0; font-size: 1.1em; color: #009B77; }
-h4, h5, h6 { margin: 1.5em 8px 0.5em; color: #009B77; font-size: 1em; }
-p { margin: 1em 0; letter-spacing: 0.05em; }
-blockquote { font-style: normal; padding: 0.8em 1em; border-left: 4px solid #009B77; border-radius: 4px; background: #f6f8fa; margin: 1em 0; color: #576b95; }
-blockquote p { margin: 0.5em 0; }
-code { font-size: 90%; color: #d14; background: rgba(27, 31, 35, 0.05); padding: 2px 6px; border-radius: 4px; font-family: Consolas, Monaco, Andale Mono, monospace; }
-pre { background: #f6f8fa; border-radius: 8px; overflow-x: auto; margin: 1em 0; padding: 0; border: 1px solid rgba(0,0,0,0.1); }
-pre code { background: none; padding: 1em; color: inherit; border-radius: 0; display: block; }
-a { color: #576b95; text-decoration: none; }
-strong { color: #009B77; font-weight: bold; }
-ul { list-style: circle; padding-left: 1.5em; margin: 1em 0; }
-ol { padding-left: 1.5em; margin: 1em 0; list-style: decimal; }
-li { margin: 0.3em 0; }
-table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 90%; }
-th, td { border: 1px solid #dfdfdf; padding: 0.5em 0.75em; text-align: left; }
-th { background: rgba(0,0,0,0.03); font-weight: 600; }
-img { display: block; max-width: 100%; margin: 1em auto; border-radius: 4px; }
-hr { border-style: solid; border-width: 2px 0 0; border-color: rgba(0,0,0,0.1); height: 0.4em; margin: 2em 0; }
-`;
-
-function markdownToHtml(markdown) {
-  marked.setOptions({
-    gfm: true,
-    breaks: true,
-  });
-  const bodyHtml = marked.parse(markdown);
-  const htmlWithStyleTag = '<style>' + DOOCS_CSS + '</style><section>' + bodyHtml + '</section>';
-  return juice(htmlWithStyleTag);
 }
 
 async function uploadImage(accessToken, imagePath) {
@@ -562,7 +512,7 @@ async function uploadImage(accessToken, imagePath) {
     contentType: getImageContentType(imagePath),
   });
 
-  const url = `${WECHAT_API_BASE}/material/add_material?access_token=${accessToken}&type=image`;
+  const url = `${CONFIG.wechatApiBaseUrl}/material/add_material?access_token=${accessToken}&type=image`;
   const response = await axios.post(url, formData, {
     headers: formData.getHeaders(),
   });
@@ -579,7 +529,7 @@ async function uploadContentImage(accessToken, imagePath) {
     contentType: getImageContentType(imagePath),
   });
 
-  const url = `${WECHAT_API_BASE}/media/uploadimg?access_token=${accessToken}`;
+  const url = `${CONFIG.wechatApiBaseUrl}/media/uploadimg?access_token=${accessToken}`;
   const response = await axios.post(url, formData, {
     headers: formData.getHeaders(),
   });
@@ -593,7 +543,7 @@ async function uploadContentImage(accessToken, imagePath) {
 }
 
 async function addDraft(accessToken, article) {
-  const url = `${WECHAT_API_BASE}/draft/add?access_token=${accessToken}`;
+  const url = `${CONFIG.wechatApiBaseUrl}/draft/add?access_token=${accessToken}`;
   const payload = {
     articles: [
       {
@@ -621,7 +571,7 @@ function getTargetDate() {
   }
 
   return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Shanghai',
+    timeZone: CONFIG.wechatTargetTimezone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -787,7 +737,7 @@ async function main() {
     }
 
     try {
-      effectiveThumbMediaId = await uploadImage(accessToken, DEFAULT_THUMB_IMAGE);
+      effectiveThumbMediaId = await uploadImage(accessToken, CONFIG.defaultThumbImagePath);
       console.error(`📤 Uploaded default thumb image, media_id: ${effectiveThumbMediaId}`);
       return effectiveThumbMediaId;
     } catch (err) {
@@ -806,6 +756,7 @@ async function main() {
     const fileName = path.basename(filePath);
     try {
       const { frontMatter, body } = parseFrontMatter(content);
+      const renderProfile = resolveWechatRenderProfile(frontMatter);
       const title = resolveArticleTitle(frontMatter, body);
       const author = frontMatter.author || '';
       const digest = frontMatter.intro || '';
@@ -833,7 +784,7 @@ async function main() {
 
       const titleImage = extractTitleImageMarkdown(articleBody);
       if (titleImage) {
-        const localImagePath = resolveMarkdownImagePath(filePath, titleImage.src);
+        const localImagePath = resolveMarkdownImagePath(filePath, titleImage.src, PROJECT_ROOT);
         if (!localImagePath || !fs.existsSync(localImagePath)) {
           throw new Error(`Title image path could not be resolved: ${titleImage.src}`);
         }
@@ -846,7 +797,17 @@ async function main() {
         articleThumbMediaId = await ensureDefaultThumbMediaId();
       }
 
-      const htmlContent = markdownToHtml(articleBody);
+      if (renderProfile.keepInlineImages) {
+        const rewrittenImages = await rewriteMarkdownImageUrls({
+          markdown: articleBody,
+          articleFilePath: filePath,
+          projectRoot: PROJECT_ROOT,
+          uploadImage: imagePath => uploadContentImage(accessToken, imagePath),
+        });
+        articleBody = rewrittenImages.markdown;
+      }
+
+      const htmlContent = renderWechatHtml(articleBody, { themeName: renderProfile.themeName });
 
       const response = await addDraft(accessToken, { title, author, digest, content: htmlContent, thumb_media_id: articleThumbMediaId });
       recordPublished(publishRecord, filePath, persistedContentHash, title, response);

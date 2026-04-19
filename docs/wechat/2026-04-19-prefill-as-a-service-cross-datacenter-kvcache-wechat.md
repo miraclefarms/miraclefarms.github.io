@@ -1,6 +1,7 @@
 ---
 author: Ethan
 intro: 这篇论文真正重要的地方，不是又发明了一套调度器，而是指出 hybrid attention 已经把 KVCache 的网络成本压到一个新拐点，让跨数据中心的 prefill 开始成为可计算的工程问题。
+wechat_variant: essay-longform
 ---
 # Prefill-as-a-Service：LLM 推理的部署边界，为什么开始越过数据中心
 
@@ -28,7 +29,7 @@ intro: 这篇论文真正重要的地方，不是又发明了一套调度器，�
 
 在 dense attention 模型上，这个数字高得很吓人。论文拿 MiniMax-M2.5 做例子，32K 输入长度时，单实例的 KV throughput 大约已经接近 60 Gbps；到 64K 时还在 61 Gbps 左右[1]。这意味着什么？意味着一台机器只要把自己刚算出来的 KVCache 往外送，就几乎能把常见跨数据中心链路吃满。
 
-![Dense attention 模型的 KV throughput 墙](https://miraclefarms.github.io/assets/prefill-as-a-service-cross-datacenter-kvcache/fig-1-kv-throughput-wall.png)
+![Dense attention 模型的 KV throughput 墙](../../assets/prefill-as-a-service-cross-datacenter-kvcache/fig-1-kv-throughput-wall.png)
 
 *图 1：dense attention 模型的 KV throughput 会随着输入长度迅速上升。问题不在于系统愿不愿意跨数据中心，而在于很多模型在网络账上根本算不过去。*
 
@@ -56,13 +57,17 @@ intro: 这篇论文真正重要的地方，不是又发明了一套调度器，�
 
 作者设计的架构很清楚：短请求留在本地 PD cluster，长请求里那些未命中足够 prefix cache 的部分，才被送到独立的 PrfaaS cluster 做 prefill。前者更依赖高带宽 decode 硬件，后者更依赖高算力加速器。换句话说，它不是强迫异构芯片共处一室，而是让不同集群在合适的地方承担各自最擅长的工作。
 
-![PrfaaS-PD 的拓扑结构](https://miraclefarms.github.io/assets/prefill-as-a-service-cross-datacenter-kvcache/fig-2-prfaas-topology.png)
+![PrfaaS-PD 的拓扑结构](../../assets/prefill-as-a-service-cross-datacenter-kvcache/fig-2-prfaas-topology.png)
 
 *图 2：PrfaaS 不是简单“远端算、本地接”，而是先做请求分流，再把长请求的 prefill 变成一条可选择的远程路径。*
 
 这套设计背后还有一个容易被忽略、但其实很有工程含量的点：hybrid model 的状态并不统一。线性 attention 的 recurrent state 更像 request-level state，需要精确匹配；full attention 的 KVCache 则更像 block-level state，可以做部分 prefix 复用[1]。因此，缓存池也不能再像过去那样把所有东西当成一种 KV block 来管理。
 
 论文在这里给出了一套 hybrid prefix cache pool：一边管理 prefix-cache blocks，一边管理只为跨集群传输存在、传完就丢的 transfer-cache blocks[1]。这听上去像实现细节，其实非常关键。因为到了跨数据中心这一步，缓存不再只是“能不能复用”，还要回答“哪些块应该保留，哪些块只负责过路”。
+
+![Hybrid prefix cache pool 设计](../../assets/prefill-as-a-service-cross-datacenter-kvcache/fig-3-hybrid-prefix-cache-pool.png)
+
+*图 3：到了 hybrid attention 模型里，缓存不再是一种统一对象。prefix-cache block 和 transfer-cache block 的生命周期不同，这正是跨集群 KV 管理开始变复杂的地方。*
 
 ---
 
