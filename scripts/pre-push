@@ -1,19 +1,12 @@
 #!/bin/bash
 
 # pre-push hook for WeChat draft publishing
-# Best-effort: failures are logged but do not block git push
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
 
-# Check if .env exists
-if [ ! -f ".env" ]; then
-  echo "⚠️ .env not found, skipping WeChat publish"
-  exit 0
-fi
-
-# Run publish script
-node "$SCRIPT_DIR/publish-wechat.js"
-exit 0
+# Run publish script in hook mode and propagate the exit code.
+node "$SCRIPT_DIR/publish-wechat.js" --hook
+exit $?
