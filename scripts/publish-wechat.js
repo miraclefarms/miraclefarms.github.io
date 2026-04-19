@@ -41,7 +41,7 @@ function resolveGitDir() {
 }
 
 const LOCAL_RECORD_FILE = path.join(resolveGitDir(), 'wechat-publish-record.local.json');
-const GENERATED_IMAGE_DIR = path.join(resolveGitDir(), 'wechat-generated-images');
+const WECHAT_ASSET_ROOT = path.join(PROJECT_ROOT, 'docs', 'wechat', 'assets');
 
 function log(message) {
   const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
@@ -102,6 +102,55 @@ function parseDataUrlImage(dataUrl) {
     mimeType: match[1],
     buffer: Buffer.from(match[2], 'base64'),
   };
+}
+
+function slugifyEnglishText(input) {
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-');
+}
+
+function parseWechatArticleIdentity(filePath) {
+  const basename = path.basename(filePath, path.extname(filePath));
+  const match = basename.match(/^(\d{4}-\d{2}-\d{2})-(.+?)(?:-wechat)?$/);
+
+  if (!match) {
+    return {
+      date: getTargetDate(),
+      slug: slugifyEnglishText(basename) || 'wechat-article',
+    };
+  }
+
+  const normalizedSlug = match[2].replace(/^ai-infra-daily-brief-/, '');
+
+  return {
+    date: match[1],
+    slug: slugifyEnglishText(normalizedSlug) || 'wechat-article',
+  };
+}
+
+function getGeneratedImageBasePath(filePath) {
+  const identity = parseWechatArticleIdentity(filePath);
+  return path.join(WECHAT_ASSET_ROOT, identity.date, `${identity.slug}-cover`);
+}
+
+function findGeneratedImageVariant(basePath) {
+  const candidates = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+  return candidates
+    .map(ext => `${basePath}.${ext}`)
+    .find(candidate => fs.existsSync(candidate)) || null;
+}
+
+function clearGeneratedImageVariants(basePath) {
+  const candidates = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+  candidates.forEach(ext => {
+    const candidate = `${basePath}.${ext}`;
+    if (fs.existsSync(candidate)) {
+      fs.unlinkSync(candidate);
+    }
+  });
 }
 
 function extractTitleImagePrompts(markdown) {
@@ -220,17 +269,24 @@ async function generateImageWithOpenRouter({ title, digest, prompts }) {
 }
 
 async function ensureGeneratedTitleImage({ filePath, contentHash, title, digest, prompts }) {
-  fs.mkdirSync(GENERATED_IMAGE_DIR, { recursive: true });
+  const articleStat = fs.statSync(filePath);
+  const basePath = getGeneratedImageBasePath(filePath);
+  const targetDir = path.dirname(basePath);
+  const existingFile = findGeneratedImageVariant(basePath);
 
-  const cachePrefix = `${path.basename(filePath, path.extname(filePath))}-${contentHash.slice(0, 12)}`;
-  const existingFile = fs.readdirSync(GENERATED_IMAGE_DIR).find(file => file.startsWith(`${cachePrefix}.`));
+  fs.mkdirSync(targetDir, { recursive: true });
+
   if (existingFile) {
-    return path.join(GENERATED_IMAGE_DIR, existingFile);
+    const imageStat = fs.statSync(existingFile);
+    if (imageStat.mtimeMs >= articleStat.mtimeMs) {
+      return existingFile;
+    }
   }
 
   const generated = await generateImageWithOpenRouter({ title, digest, prompts });
   const ext = getImageExtensionForMimeType(generated.mimeType);
-  const targetPath = path.join(GENERATED_IMAGE_DIR, `${cachePrefix}.${ext}`);
+  const targetPath = `${basePath}.${ext}`;
+  clearGeneratedImageVariants(basePath);
   fs.writeFileSync(targetPath, generated.buffer);
   return targetPath;
 }
