@@ -9,6 +9,15 @@
 
 不要把技术长文误写成只有题图的 brief 模板。写作路径不分叉，后面的发布脚本就很容易走偏。
 
+## 题图模板
+
+- 微信公众号题图提示词不再直接内嵌在文章正文里，默认改由版本化模板文件统一管理：
+  - `scripts/config/wechat-cover-prompt-templates.json`
+- 当前默认锁定这一套模板：`hand-drawn-infographic-card-v1`
+- 模板文件除了 prompt 文案，也负责声明生成参数（例如 `aspectRatio`）；发布脚本会直接读取它，避免“模板写竖图、接口还在发横图”的上下游错位
+- 后续可以扩展成“按文章手动选择”或“由程序自动选择”模板，但**当前先锁定这一个模板**，不要在文章里重新发明一套 prompt block
+- 如果未来确实需要按文章覆盖模板，再额外引入 front matter 字段；在那之前，写作者默认依赖模板文件即可
+
 ## 目标
 
 - 保留 GitHub.io 版本的核心判断
@@ -29,10 +38,6 @@
 # 今日焦点：{核心主题描述}
 
 **📅 YYYY-MM-DD**
-
-> 中文：{封面图提示词，中文，描述与主题相关的科技场景，无文字，16:9}
->
-> English: {封面图提示词，英文版}
 
 > {引导语：一句话点明当天核心趋势，不超过 80 字}
 
@@ -91,10 +96,6 @@ wechat_variant: essay-longform
 
 **📅 YYYY-MM-DD**
 
-> 中文：{封面图提示词，中文，描述与主题相关的科技场景，无文字，16:9}
->
-> English: {封面图提示词，英文版}
-
 > {引导语：一句话点明文章的核心判断，不超过 80 字}
 
 ---
@@ -136,6 +137,8 @@ wechat_variant: essay-longform
 
 - front matter 必须写 `wechat_variant: essay-longform`
 - front matter 建议写 `author` 与 `intro`，让草稿箱摘要可直接复用
+- 题图提示词默认从 `scripts/config/wechat-cover-prompt-templates.json` 读取，当前锁定模板 `hand-drawn-infographic-card-v1`
+- 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`
 - 不要把 GitHub.io 站点的公开 URL 当成默认做法；技术长文路径应优先交给发布脚本处理本地图片上传
@@ -150,6 +153,7 @@ wechat_variant: essay-longform
 - 引用号直接跟在相关内容后即可，不要求放进粗体标题内
 - 图可以保留；图注写法与 GitHub.io 版一致
 - `brief -> 微信公众号` 与 `essay -> 微信公众号技术长文` 都允许题图，但 essay 长文不能停在题图层面
+- 如果文章正文里没有显式题图 Markdown，发布脚本会根据模板文件自动生成并插入题图；这就是当前的默认路径
 
 ### Brief 条目写法
 

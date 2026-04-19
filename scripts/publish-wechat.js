@@ -14,11 +14,17 @@ const {
   rewriteMarkdownImageUrls,
 } = require('./lib/wechat-render');
 const {
+  buildWechatCoverImageRequest,
+  insertGeneratedTitleImageMarkdown,
+  loadWechatCoverPromptTemplates,
+} = require('./lib/wechat-cover-prompts');
+const {
   loadWechatConfig,
 } = require('./lib/wechat-config');
 
 const PROJECT_ROOT = path.join(__dirname, '..');
 const CONFIG = loadWechatConfig(PROJECT_ROOT);
+const COVER_PROMPT_REGISTRY = loadWechatCoverPromptTemplates(PROJECT_ROOT);
 const LOG_FILE = path.join(PROJECT_ROOT, 'docs', 'wechat-publish.log');
 const TRACKED_RECORD_FILE = path.join(__dirname, 'wechat-publish-record.json');
 
@@ -156,51 +162,6 @@ function clearGeneratedImageVariants(basePath) {
   });
 }
 
-function extractTitleImagePrompts(markdown) {
-  const lines = markdown.split('\n');
-
-  for (let i = 0; i < lines.length; i++) {
-    const chineseMatch = lines[i].match(/^>\s*中文[:：]\s*(.+?)\s*$/);
-    if (!chineseMatch) {
-      continue;
-    }
-
-    let cursor = i + 1;
-    while (cursor < lines.length && /^>\s*$/.test(lines[cursor])) {
-      cursor++;
-    }
-
-    if (cursor >= lines.length) {
-      return null;
-    }
-
-    const englishMatch = lines[cursor].match(/^>\s*English[:：]\s*(.+?)\s*$/i);
-    if (!englishMatch) {
-      return null;
-    }
-
-    return {
-      chinese: chineseMatch[1].trim(),
-      english: englishMatch[1].trim(),
-      startLine: i,
-      endLine: cursor,
-    };
-  }
-
-  return null;
-}
-
-function injectTitleImageIntoMarkdown(markdown, imageUrl) {
-  const prompts = extractTitleImagePrompts(markdown);
-  if (!prompts) {
-    return markdown;
-  }
-
-  const lines = markdown.split('\n');
-  lines.splice(prompts.startLine, prompts.endLine - prompts.startLine + 1, `![题图](${imageUrl})`);
-  return lines.join('\n');
-}
-
 function extractTitleImageMarkdown(markdown) {
   const lines = markdown.split('\n');
   const separatorIndex = lines.findIndex(line => line.trim() === '---');
@@ -248,30 +209,7 @@ function toMarkdownRelativePath(fromFilePath, targetPath) {
   return path.relative(path.dirname(fromFilePath), targetPath).split(path.sep).join('/');
 }
 
-function buildOpenRouterImagePrompt({ title, digest, prompts }) {
-  const parts = [
-    'Create a polished editorial cover image for a WeChat AI infrastructure newsletter article.',
-    `Article title: ${title}`,
-  ];
-
-  if (digest) {
-    parts.push(`Article summary: ${digest}`);
-  }
-
-  if (prompts.english) {
-    parts.push(`Primary visual brief: ${prompts.english}`);
-  }
-
-  if (prompts.chinese) {
-    parts.push(`Chinese visual brief for reference: ${prompts.chinese}`);
-  }
-
-  parts.push('Requirements: landscape 16:9 cover image, no text, no letters, no logos, no watermark, no UI chrome, cinematic but credible technology editorial style, strong focal subject, clean composition, suitable for both article hero image and thumbnail.');
-
-  return parts.join('\n');
-}
-
-async function generateImageWithOpenRouter({ title, digest, prompts }) {
+async function generateImageWithOpenRouter({ frontMatter, title, digest, bodyMarkdown }) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     throw new Error('OPENROUTER_API_KEY not found in .env');
@@ -279,21 +217,15 @@ async function generateImageWithOpenRouter({ title, digest, prompts }) {
 
   const model = CONFIG.openrouterImageModel;
   const imageSize = CONFIG.openrouterImageSize;
-  const payload = {
+  const payload = buildWechatCoverImageRequest({
+    frontMatter,
+    title,
+    digest,
+    bodyMarkdown,
+    registry: COVER_PROMPT_REGISTRY,
     model,
-    messages: [
-      {
-        role: 'user',
-        content: buildOpenRouterImagePrompt({ title, digest, prompts }),
-      },
-    ],
-    modalities: ['image', 'text'],
-    stream: false,
-    image_config: {
-      aspect_ratio: '16:9',
-      image_size: imageSize,
-    },
-  };
+    imageSize,
+  });
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
@@ -318,7 +250,7 @@ async function generateImageWithOpenRouter({ title, digest, prompts }) {
   return parseDataUrlImage(imageUrl);
 }
 
-async function ensureGeneratedTitleImage({ filePath, contentHash, title, digest, prompts }) {
+async function ensureGeneratedTitleImage({ filePath, frontMatter, title, digest, bodyMarkdown }) {
   const articleStat = fs.statSync(filePath);
   const basePath = getGeneratedImageBasePath(filePath);
   const targetDir = path.dirname(basePath);
@@ -333,7 +265,7 @@ async function ensureGeneratedTitleImage({ filePath, contentHash, title, digest,
     }
   }
 
-  const generated = await generateImageWithOpenRouter({ title, digest, prompts });
+  const generated = await generateImageWithOpenRouter({ frontMatter, title, digest, bodyMarkdown });
   const ext = getImageExtensionForMimeType(generated.mimeType);
   const targetPath = `${basePath}.${ext}`;
   clearGeneratedImageVariants(basePath);
@@ -610,18 +542,18 @@ function resolveExpectedWechatFiles(changedFiles, targetDate) {
   const expectedFiles = new Set();
 
   changedFiles.forEach(file => {
-    if (file.startsWith(`docs/wechat/${targetDate}-`) && file.endsWith('-wechat.md')) {
+    if (file.startsWith('docs/wechat/') && file.endsWith('-wechat.md')) {
       expectedFiles.add(path.join(PROJECT_ROOT, file));
       return;
     }
 
-    if (!file.startsWith(`_posts/${targetDate}-ai-infra-daily-brief-`) || !file.endsWith('.md')) {
+    const briefPostMatch = file.match(/^_posts\/(\d{4}-\d{2}-\d{2})-(ai-infra-daily-brief-.+)\.md$/);
+    if (!briefPostMatch) {
       return;
     }
 
-    const basename = path.basename(file, '.md');
-    const slug = basename.slice(`${targetDate}-`.length);
-    expectedFiles.add(path.join(PROJECT_ROOT, 'docs', 'wechat', `${targetDate}-${slug}-wechat.md`));
+    const [, fileDate, slug] = briefPostMatch;
+    expectedFiles.add(path.join(PROJECT_ROOT, 'docs', 'wechat', `${fileDate}-${slug}-wechat.md`));
   });
 
   return Array.from(expectedFiles).sort();
@@ -764,25 +696,25 @@ async function main() {
       let persistedContent = content;
       let persistedContentHash = contentHash;
       let articleThumbMediaId = effectiveThumbMediaId;
-      const titleImagePrompts = extractTitleImagePrompts(body);
+      let titleImage = extractTitleImageMarkdown(articleBody);
 
-      if (titleImagePrompts) {
+      if (!titleImage) {
         const generatedImagePath = await ensureGeneratedTitleImage({
           filePath,
-          contentHash,
+          frontMatter,
           title,
           digest,
-          prompts: titleImagePrompts,
+          bodyMarkdown: body,
         });
         const markdownImagePath = toMarkdownRelativePath(filePath, generatedImagePath);
-        articleBody = injectTitleImageIntoMarkdown(body, markdownImagePath);
+        articleBody = insertGeneratedTitleImageMarkdown(body, markdownImagePath);
         persistedContent = replaceMarkdownBody(content, articleBody);
         fs.writeFileSync(filePath, persistedContent);
         persistedContentHash = computeContentHash(persistedContent);
         console.error(`🖼️ Generated and persisted title image for ${fileName}`);
+        titleImage = extractTitleImageMarkdown(articleBody);
       }
 
-      const titleImage = extractTitleImageMarkdown(articleBody);
       if (titleImage) {
         const localImagePath = resolveMarkdownImagePath(filePath, titleImage.src, PROJECT_ROOT);
         if (!localImagePath || !fs.existsSync(localImagePath)) {
@@ -823,27 +755,40 @@ async function main() {
   return results;
 }
 
-main().then(results => {
-  if (results.fatal) {
-    console.error(`❌ ${results.fatal}`);
-  }
+function runCli() {
+  main().then(results => {
+    if (results.fatal) {
+      console.error(`❌ ${results.fatal}`);
+    }
 
-  if (results.success > 0 || results.failed > 0) {
-    const msg = results.failed === 0 && !results.fatal
-      ? `✅ Published ${results.success} article(s) to WeChat draft`
-      : results.success === 0
-        ? `❌ All ${results.failed} article(s) failed (see docs/wechat-publish.log)`
-        : `⚠️ ${results.success} succeeded, ${results.failed} failed (see docs/wechat-publish.log)`;
-    console.error(msg);
-  }
+    if (results.success > 0 || results.failed > 0) {
+      const msg = results.failed === 0 && !results.fatal
+        ? `✅ Published ${results.success} article(s) to WeChat draft`
+        : results.success === 0
+          ? `❌ All ${results.failed} article(s) failed (see docs/wechat-publish.log)`
+          : `⚠️ ${results.success} succeeded, ${results.failed} failed (see docs/wechat-publish.log)`;
+      console.error(msg);
+    }
 
-  const shouldFail =
-    Boolean(results.fatal) ||
-    results.failed > 0;
+    const shouldFail =
+      Boolean(results.fatal) ||
+      results.failed > 0;
 
-  process.exit(shouldFail ? 1 : 0);
-}).catch(err => {
-  log(`Unexpected error: ${err.message}`);
-  console.error(`❌ Unexpected error: ${err.message}`);
-  process.exit(1);
-});
+    process.exit(shouldFail ? 1 : 0);
+  }).catch(err => {
+    log(`Unexpected error: ${err.message}`);
+    console.error(`❌ Unexpected error: ${err.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  getTargetDate,
+  main,
+  resolveExpectedWechatFiles,
+  runCli,
+};
+
+if (require.main === module) {
+  runCli();
+}

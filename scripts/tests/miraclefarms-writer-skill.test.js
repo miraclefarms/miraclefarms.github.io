@@ -47,3 +47,11 @@ test('wechat-format requires essay WeChat versions to keep the same inline figur
     /与 GitHub\.io 版 essay 使用同一组配图|保留与 essay 相同的正文配图|不光是题图/u,
   );
 });
+
+test('wechat-format references the versioned cover prompt template file and the current locked default template', () => {
+  const wechatFormat = read(wechatFormatPath);
+
+  assert.match(wechatFormat, /scripts\/config\/wechat-cover-prompt-templates\.json/u);
+  assert.match(wechatFormat, /hand-drawn-infographic-card-v1/u);
+  assert.match(wechatFormat, /当前默认锁定这一套模板|当前先锁定这一个模板/u);
+});

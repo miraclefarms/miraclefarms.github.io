@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "defaultTemplateId": "hand-drawn-infographic-card-v1",
+  "templates": {
+    "hand-drawn-infographic-card-v1": {
+      "id": "hand-drawn-infographic-card-v1",
+      "label": "Hand-drawn infographic card",
+      "imageConfig": {
+        "aspectRatio": "9:16"
+      },
+      "prompt": "Create a hand-drawn style infographic card with a 9:16 vertical ratio. The card has a distinct theme, with a background featuring paper texture in beige or off-white, overall design reflecting rustic, warm hand-drawn aesthetics. At the top, use contrasting red and black large brush calligraphy fonts to highlight the title, attracting visual focus. Text content uses English cursive script, overall layout divided into 2-4 clear sections, each expressing core points with concise English phrases. Font maintains the flowing rhythm of cursive script, both clearly readable and artistically rich. The card is dotted with simple, interesting hand-drawn illustrations or icons, such as characters or symbolic symbols, to enhance visual appeal and provoke reader reflection and resonance. Overall layout emphasizes visual balance, preserving sufficient white space to ensure the image is clean, clear, and easy to read and understand. Summarize the content based on the main body of the article."
+    }
+  }
+}
