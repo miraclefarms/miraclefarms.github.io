@@ -2,9 +2,7 @@
 
 **📅 2026-04-19**
 
-> 中文：清晨的数据中心机房里，GPU 服务器、NVMe 阵列与高速网卡组成分层推理集群，屏幕上显示缓存命中、数据回放与跨机传输路径，冷色工业风，无文字，16:9
->
-> English: A dawn AI inference datacenter with GPU servers, NVMe storage arrays, and high-speed NICs forming a layered serving cluster, dashboards showing cache replay, isolation boundaries, and cross-node data paths, industrial cool tone, no text, 16:9
+![题图](assets/2026-04-19/cache-lifecycle-data-contracts-cover.png)
 
 > 这几天更关键的变化，不是功能表又多了一项，而是缓存与拆分式 serving 的数据路径，开始被写成正式 contract。
 

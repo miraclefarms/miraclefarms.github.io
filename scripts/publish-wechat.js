@@ -198,6 +198,65 @@ function injectTitleImageIntoMarkdown(markdown, imageUrl) {
   return lines.join('\n');
 }
 
+function extractTitleImageMarkdown(markdown) {
+  const lines = markdown.split('\n');
+  const separatorIndex = lines.findIndex(line => line.trim() === '---');
+  const searchEnd = separatorIndex === -1 ? Math.min(lines.length, 20) : separatorIndex;
+
+  for (let i = 0; i < searchEnd; i++) {
+    const match = lines[i].match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/);
+    if (!match) {
+      continue;
+    }
+
+    return {
+      alt: match[1].trim(),
+      src: match[2].trim(),
+      startLine: i,
+      endLine: i,
+    };
+  }
+
+  return null;
+}
+
+function replaceTitleImageMarkdown(markdown, nextSrc, altText = '题图') {
+  const currentImage = extractTitleImageMarkdown(markdown);
+  if (!currentImage) {
+    return markdown;
+  }
+
+  const lines = markdown.split('\n');
+  const alt = currentImage.alt || altText;
+  lines.splice(currentImage.startLine, currentImage.endLine - currentImage.startLine + 1, `![${alt}](${nextSrc})`);
+  return lines.join('\n');
+}
+
+function replaceMarkdownBody(content, newBody) {
+  const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!match) {
+    return newBody;
+  }
+
+  return `---\n${match[1]}\n---\n${newBody}`;
+}
+
+function toMarkdownRelativePath(fromFilePath, targetPath) {
+  return path.relative(path.dirname(fromFilePath), targetPath).split(path.sep).join('/');
+}
+
+function resolveMarkdownImagePath(articleFilePath, imageSrc) {
+  if (!imageSrc || /^https?:\/\//i.test(imageSrc) || /^data:/i.test(imageSrc)) {
+    return null;
+  }
+
+  if (imageSrc.startsWith('/')) {
+    return path.join(PROJECT_ROOT, imageSrc.replace(/^\/+/, ''));
+  }
+
+  return path.resolve(path.dirname(articleFilePath), imageSrc);
+}
+
 function buildOpenRouterImagePrompt({ title, digest, prompts }) {
   const parts = [
     'Create a polished editorial cover image for a WeChat AI infrastructure newsletter article.',
@@ -751,6 +810,8 @@ async function main() {
       const author = frontMatter.author || '';
       const digest = frontMatter.intro || '';
       let articleBody = body;
+      let persistedContent = content;
+      let persistedContentHash = contentHash;
       let articleThumbMediaId = effectiveThumbMediaId;
       const titleImagePrompts = extractTitleImagePrompts(body);
 
@@ -762,10 +823,25 @@ async function main() {
           digest,
           prompts: titleImagePrompts,
         });
-        const contentImageUrl = await uploadContentImage(accessToken, generatedImagePath);
-        articleThumbMediaId = await uploadImage(accessToken, generatedImagePath);
-        articleBody = injectTitleImageIntoMarkdown(body, contentImageUrl);
-        console.error(`🖼️ Generated and attached title image for ${fileName}`);
+        const markdownImagePath = toMarkdownRelativePath(filePath, generatedImagePath);
+        articleBody = injectTitleImageIntoMarkdown(body, markdownImagePath);
+        persistedContent = replaceMarkdownBody(content, articleBody);
+        fs.writeFileSync(filePath, persistedContent);
+        persistedContentHash = computeContentHash(persistedContent);
+        console.error(`🖼️ Generated and persisted title image for ${fileName}`);
+      }
+
+      const titleImage = extractTitleImageMarkdown(articleBody);
+      if (titleImage) {
+        const localImagePath = resolveMarkdownImagePath(filePath, titleImage.src);
+        if (!localImagePath || !fs.existsSync(localImagePath)) {
+          throw new Error(`Title image path could not be resolved: ${titleImage.src}`);
+        }
+
+        const contentImageUrl = await uploadContentImage(accessToken, localImagePath);
+        articleThumbMediaId = await uploadImage(accessToken, localImagePath);
+        articleBody = replaceTitleImageMarkdown(articleBody, contentImageUrl, titleImage.alt || '题图');
+        console.error(`🖼️ Attached title image for ${fileName}`);
       } else {
         articleThumbMediaId = await ensureDefaultThumbMediaId();
       }
@@ -773,7 +849,7 @@ async function main() {
       const htmlContent = markdownToHtml(articleBody);
 
       const response = await addDraft(accessToken, { title, author, digest, content: htmlContent, thumb_media_id: articleThumbMediaId });
-      recordPublished(publishRecord, filePath, contentHash, title, response);
+      recordPublished(publishRecord, filePath, persistedContentHash, title, response);
 
       console.error(`✅ Published: ${fileName}`);
       results.success++;
