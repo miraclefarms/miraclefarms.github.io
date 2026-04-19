@@ -2,9 +2,7 @@
 
 **📅 2026-04-19**
 
-> 中文：极简终端界面，绿色光标闪烁，代码与自然语言交织，科技感，无文字，16:9
->
-> English: Minimal terminal interface with green cursor, code and natural language intertwined, tech aesthetic, no text, 16:9
+![题图](assets/2026-04-19/dive-into-claude-code-cover.png)
 
 > VILA Lab 对 Claude Code 的系统级逆向分析揭示了一个出人意料的结论：这套 agentic 编程系统的 JS 运行时基础设施只占 1.6%，其余 98.4% 是 prompt、markdown 和配置文本——而这个比例本身，就是其核心哲学"minimal footprint + trust in Claude's judgment"的最直接体现。
 
