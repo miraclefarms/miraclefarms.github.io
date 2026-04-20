@@ -147,6 +147,10 @@ Big Bird 在此基础上增加 **random attention**（随机连通），并从�
 
 **创新点**：将 d_model 分成 H 个 d_k 维子空间，各自独立执行 attention 后 concatenate 再线性映射。这种设计让每个 head 能专注于捕捉不同类型的依赖（如句法、语义、位置相关）。
 
+![Multi-Head Attention 架构图](/assets/attention-algorithms-overview/fig2-multi-head-attention.png)
+
+*图 2：Multi-Head Attention 的核心结构。多个 attention head 并行独立计算各自子空间内的注意力，最后 concatenate 输出再经线性映射整合。<a href="https://arxiv.org/abs/1706.03762">[1]</a>*
+
 **适用场景**：通用序列建模；是所有现代 LLM 的基础组件。
 
 **落地模型**：原生 Transformer（BERT、T5）、GPT 系列、LLaMA 等。
@@ -218,6 +222,10 @@ $$k^{LC}_i = W^{DK}k_i, \quad v^{LC}_i = W^{DV}v_i$$
 **解决的问题**：标准 MHA 中 H 个 head 产生 H 个独立 attention 矩阵，head 之间无信息交换，导致多步推理时无法有效聚合来自多个位置的证据。
 
 **创新点**：通过 pseudo-heads 实现 cross-head mixing。具体地，将 P 个 pseudo-head（每 head 由所有 H 个原始 heads 的 Q/K/V 线性组合构成）引入 attention 过程。pseudo-head 之间交互可产生最多 P² 种 attention pattern，显著增加了表达多样性，同时参数量仅 O(H²P)。
+
+![IHA pseudo-head 架构图](/assets/attention-algorithms-overview/fig8-iha-architecture.png)
+
+*图 5：IHA 架构。Pseudo-head 通过原始 heads 的线性组合构建，head 之间交互产生更多 attention pattern，提升多步推理能力。<a href="https://arxiv.org/abs/2602.21371">[9]</a>*
 
 **实现效果**：
 - RULER 多键检索任务（4K-16K）：比全量 attention 提升 **10-20%**
