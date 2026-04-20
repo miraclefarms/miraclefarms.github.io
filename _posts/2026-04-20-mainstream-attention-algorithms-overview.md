@@ -43,6 +43,10 @@ Transformer 论文把 self-attention 定义为：
 
 它真正的创新点，不是“加权求和”本身，而是把这种全局可达的交互做成了标准层结构。Transformer 论文里给出的一个关键比较是：self-attention 单层的最大路径长度是 `O(1)`，而 recurrence 是 `O(n)`<a href="https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">[1]</a>。这也是为什么 BERT、ViT、GPT 这一整条路线都以 self-attention 为骨架。适用场景很清楚：只要任务主要是同一序列内部的关系建模，self-attention 依然是默认起点。
 
+![Transformer 论文里的 self-attention 长距离依赖可视化](/assets/mainstream-attention-algorithms-overview/fig-1-self-attention.png)
+
+*图 1：Transformer 用这张图展示 encoder self-attention 如何直接跨越长距离依赖，把 “making ... more difficult” 这样的远距关系连起来。它说明 self-attention 最核心的收益不是局部加权，而是全局可达。来源：Attention Is All You Need Figure 3。*
+
 ### 3.2 Cross-Attention
 
 Transformer 对 encoder-decoder attention 的描述是：
@@ -52,6 +56,10 @@ Transformer 对 encoder-decoder attention 的描述是：
 它解决的问题，不是序列内部依赖，而是**两套表示之间如何对齐**。最经典的例子当然是机器翻译：decoder 在生成目标词时，应该去输入句子的哪些位置取信息。后来这条路径扩展到了摘要、ASR、多模态生成乃至扩散模型里的文本条件注入，本质都一样：查询来自当前生成端，键和值来自另一份上下文记忆。
 
 Cross-attention 的创新点，在于把“读外部记忆”做成了标准化接口。它没有改变 attention 的基本算式，但把单塔 Transformer 扩展成了双塔或多塔系统。实践里，T5、BART 这类 encoder-decoder 模型都依赖它完成条件生成；多模态模型也广泛用它把图像、语音或检索结果接到语言层里。它不一定更便宜，但在需要信息融合的任务里，几乎没有别的机制能如此直接地替代。
+
+![Transformer 架构中的 encoder-decoder attention](/assets/mainstream-attention-algorithms-overview/fig-2-transformer-architecture.png)
+
+*图 2：Transformer 架构右侧 decoder 中部的 multi-head attention 负责读取 encoder 输出，这就是后来所谓 cross-attention 的标准形态。它把“外部上下文读取”变成了一层明确的结构接口。来源：Attention Is All You Need Figure 1。*
 
 ### 3.3 Causal Attention
 
@@ -63,6 +71,10 @@ Causal attention 要解决的问题很简单，但决定性极强：做自回归
 
 这类机制的实现效果不该用“提速多少”来衡量，而该用“是否保持生成因果性”来衡量。今天几乎所有 decoder-only 大模型，包括 GPT、Llama、Qwen、DeepSeek 这类路线，骨子里都建立在 causal self-attention 之上。它最适合的场景当然是 next-token prediction，也就是今天主流聊天、代码和 agent 模型的基本范式。
 
+![Transformer decoder 中的 masked multi-head attention](/assets/mainstream-attention-algorithms-overview/fig-2-transformer-architecture.png)
+
+*图 3：同一张 Transformer 架构图里，decoder 底部的 masked multi-head attention 给出了 causal attention 最标准的实现方式。关键不是换了一个 attention 公式，而是先用 mask 把未来 token 从可见图里删掉。来源：Attention Is All You Need Figure 1。*
+
 ## 四、dense baseline：Scaled Dot-Product 与 Multi-Head Attention
 
 如果说上面三种机制决定的是依赖图，那么真正定义现代 Transformer baseline 的，是 `Scaled Dot-Product Attention` 与 `Multi-Head Attention`。
@@ -72,6 +84,10 @@ Scaled dot-product attention 要解决的问题，是 dot-product attention 在�
 Multi-head attention 解决的则是单个 attention map 容易把不同关系平均在一起的问题。Transformer 的做法是把 `Q/K/V` 投影到多个子空间，各自独立算 attention，再把结果拼回去。这样同一层里可以同时学习语法对齐、指代关系、局部搭配和更高层语义模式。它的创新点并不在复杂度，因为总计算量与单头全维度 attention 同阶；它真正换来的是表示多样性。这也是为什么直到今天，大部分模型即使在做 MQA、GQA 或 MLA 优化时，也仍然保留了“多查询头”的基本框架。
 
 在选型上，`Scaled Dot-Product + MHA` 依然是默认基线。只要上下文长度和 KV 成本还在可接受区间，这套 exact dense attention 仍是表达力、兼容性和工程成熟度最均衡的方案。后面的几乎所有创新，本质上都是围绕它的三个痛点展开：`O(n^2)` 复杂度、显存/IO 压力，以及 decode 阶段的 KV cache。
+
+![Scaled Dot-Product Attention 与 Multi-Head Attention 结构图](/assets/mainstream-attention-algorithms-overview/fig-3-scaled-dot-mha.png)
+
+*图 4：Transformer 论文把 scaled dot-product attention 和 multi-head attention 画成同一张核心结构图。左边解释单头 attention 的缩放与归一化，右边解释多头并行后再 concat 的表示增益。来源：Attention Is All You Need Figure 2。*
 
 ## 五、稀疏长上下文类：先裁注意力图，再保留关键全局边
 
@@ -87,6 +103,10 @@ Sliding Window Attention 要解决的问题，是 full attention 在长文档上
 
 适用场景也很明确：文档、代码、对话这类局部连续性很强的序列，通常都能从 sliding window 中受益。它的边界则同样明显。如果任务需要频繁做远距离、跨段的精确跳转，只靠局部窗口往往不够。
 
+![Longformer 的 sliding window attention 模式图](/assets/mainstream-attention-algorithms-overview/fig-4-sliding-window.png)
+
+*图 5：Longformer 用固定宽度的对角带来表示局部窗口，每个 token 只和附近一段上下文建边。这张图把 sliding window 的成本来源讲得很直接：先限制可见域，再让感受野靠堆层扩散。来源：Longformer Figure 1。*
+
 ### 5.2 Global Sparse Attention
 
 Longformer 的后半句话是：
@@ -98,6 +118,10 @@ Longformer 的后半句话是：
 > “reduce this quadratic dependency to linear”<a href="https://arxiv.org/abs/2007.14062">[4]</a>
 
 这类算法解决的问题，是如何在不恢复 full attention 成本的前提下，尽量保住全局信息流。它们的创新点是注意力图设计，而不是 kernel 本身。效果上，Longformer 更偏任务化长文档建模，BigBird 则进一步补上了理论可表达性与更通用的 sparse 图设计。适用场景是长文档理解、长输入摘要、检索增强编码等。它们已经在一批长上下文 encoder 和 hybrid decoder 中落地，但从公开主流 LLM 看，真正大规模进入基础模型主路径的，更多是 sliding window 这类更简单、工程上更稳定的 sparse 设计。
+
+![BigBird 的 block sparse attention 模式图](/assets/mainstream-attention-algorithms-overview/fig-5-global-sparse.png)
+
+*图 6：BigBird 把注意力图拆成局部块、全局块和随机块三类边。和纯 sliding window 相比，它的重点不是更窄，而是用少量额外的全局/随机连接把长程信息流重新接回去。来源：BigBird 论文配图。*
 
 ## 六、线性近似类：Performer 到 Kimi Linear
 
@@ -113,6 +137,10 @@ Performer 的创新点，在于它既给了近似方法，也给了理论保证�
 
 但它的落地边界同样值得讲清。纯 Performer 并没有像 GQA 或 FlashAttention 那样迅速进入今天的大多数主流基础模型。我的判断是，原因不在于它不够聪明，而在于基础模型已经围绕 dense attention 形成了一整套训练、并行和 kernel 生态，任何近似路线都必须证明自己在质量、稳定性和工程迁移上同时划算。
 
+![Performer 在长序列任务中的结果图](/assets/mainstream-attention-algorithms-overview/fig-6-performer-results.png)
+
+*图 7：Performer 论文给出的代表性结果之一，是在线性复杂度约束下把性能拉到与标准 Transformer 相近甚至更优。对这条路线而言，关键不是图像本身，而是它证明“近似 attention”可以不只是理论上的省复杂度。来源：Rethinking Attention with Performers 实验图。*
+
 ### 6.2 Kimi Linear
 
 Kimi Linear 的论文把这个长期悬而未决的问题直接挑明了：
@@ -122,6 +150,10 @@ Kimi Linear 的论文把这个长期悬而未决的问题直接挑明了：
 它要解决的，正是早期线性 attention 最难跨过去的那道坎：**长上下文更省，但短上下文和常规训练任务并不一定更强**。Kimi Linear 采用 hybrid 结构，在 full attention 之外引入更有表达力的 KDA 模块，并把线性注意力从“便宜的替代品”推向“在若干任务上可能更优的主路径”。论文声称，在 short-context、long-context 和 RL scaling 三类场景下，它都能在公平对比下超过 full attention<a href="https://arxiv.org/abs/2510.26692">[10]</a>。
 
 这类工作的意义，不只是给线性 attention 争回了性能面子，更重要的是改变了部署判断。如果线性模块真的能够在不明显掉点的前提下承担更多层，那么长上下文模型的 KV cache 和 decode 带宽压力就会系统性下降。这也是为什么近一年 attention 讨论重新回到 hybrid 路线：不是要把 dense attention 一刀切掉，而是开始认真讨论“哪些层必须 dense，哪些层可以线性化”。
+
+![Kimi Linear 论文首页给出的性能与加速结果](/assets/mainstream-attention-algorithms-overview/fig-7-kimi-linear.png)
+
+*图 8：Kimi Linear 把“性能-加速”与“长上下文 TPOT”放在第一页对照，主张它不是单纯牺牲质量换线性复杂度，而是在公平训练下同时拿到更高性能和更低长序列开销。来源：Kimi Linear Figure 1。*
 
 ## 七、系统优化类：今天最实际的战场在 IO 和 KV cache
 
@@ -135,6 +167,10 @@ FlashAttention 的关键词不是 sparse 或 linear，而是：
 
 它最重要的意义，是**在不改变 attention 语义的前提下把 exact attention 做快**。这让很多团队不必为了效率立刻换掉模型架构，只需要更换 kernel，就能在训练和推理中拿到显著的速度与显存收益<a href="https://arxiv.org/abs/2205.14135">[6]</a>。适用场景几乎覆盖所有还在使用 dense attention 的 GPU 路线。也正因为如此，它的落地单位往往不是某个具体模型，而是整个训练/推理栈。
 
+![FlashAttention 在 A100 上的加速结果](/assets/mainstream-attention-algorithms-overview/fig-8-flashattention-speedup.jpg)
+
+*图 9：FlashAttention 最有说服力的并不是一个新结构图，而是这种随序列长度上升仍能持续拉开差距的 speedup 曲线。它说明 IO-aware 重排命中的正是 dense attention 在 GPU 上最贵的那部分成本。来源：FlashAttention 实验图。*
+
 ### 7.2 Multi-Query Attention（MQA）
 
 MQA 论文的标题已经把意图说透了：
@@ -145,6 +181,10 @@ MQA 论文的标题已经把意图说透了：
 
 MQA 的创新点是把优化焦点从 `Q` 转向 `K/V`。论文报告，它能显著加快解码，同时只带来较小的质量退化<a href="https://arxiv.org/abs/1911.02150">[7]</a>。它非常适合对吞吐和延迟高度敏感的 decoder-only 推理服务。边界也同样清楚：如果所有 query heads 都共享一份 `K/V`，表达分辨率会下降，因此它更像一条极致压缩路线，而不是通用最优点。
 
+![MQA 的共享 K/V 思路示意图](/assets/mainstream-attention-algorithms-overview/fig-9-mqa-uptraining.png)
+
+*图 10：这张图展示了把多头 `K/V` 合并成单组共享 `K/V` 的直觉来源。虽然图出自后续 GQA 论文，但它把 MQA 最关键的结构收缩过程画得非常清楚：查询头仍然保留多路，写入端的 `K/V` 则被压到单组。来源：GQA 论文中对 MQA 的结构示意。*
+
 ### 7.3 Grouped-Query Attention（GQA）
 
 GQA 的论文给出的是一个折中判断：
@@ -154,6 +194,10 @@ GQA 的论文给出的是一个折中判断：
 它解决的问题，正是 MQA 那个过于极端的共享策略。既然单一 `K/V` 头会损失质量，那就让若干个 query heads 组成一组，共享一组 `K/V`，在 MHA 与 MQA 之间找一个中间点。论文把它描述为 MQA 的一般化形式，并强调其推理速度接近 MQA，而效果更接近 MHA<a href="https://arxiv.org/abs/2305.13245">[8]</a>。
 
 这条路线为什么会成为主流，原因很现实：它给出的不是“理论上更优”，而是“工程上更稳的速度-质量折中”。Mistral 7B 直接把 GQA 写进架构摘要，Llama 2 之后的大量开源模型、Qwen 系列等也沿用了这一路线。对于今天的大多数长上下文 decoder-only 模型来说，GQA 基本已经从“可选优化”变成了默认配置。
+
+![MHA、GQA 与 MQA 的结构对比图](/assets/mainstream-attention-algorithms-overview/fig-10-gqa-architecture.png)
+
+*图 11：GQA 的价值恰好体现在这张并排对比图里。它既不像 MHA 那样为每个查询头保留独立 `K/V`，也不像 MQA 那样把所有 `K/V` 压成一组，而是在两者之间找到一个可控折中。来源：GQA Figure 2。*
 
 ### 7.4 Multi-Head Latent Attention（MLA）
 
@@ -166,6 +210,10 @@ MLA 要解决的问题，比 GQA 更进一步。GQA 仍然在“减少 KV 头数
 它的创新点，是从“共享几份 KV”迈向“把 KV 本身重新参数化”。DeepSeek-V2 论文给出的效果也非常激进：相较 DeepSeek 67B，MLA 让模型在更强性能的同时，把 KV cache 降低 93.3%，并把最大生成吞吐提升到 5.76 倍<a href="https://arxiv.org/abs/2405.04434">[12]</a>。这使 MLA 成为近年来 attention 设计里最有产业冲击力的一条路线之一。适用场景尤其明确：超长上下文、超大批量服务，以及任何 decode 带宽比算力更先撞墙的推理系统。
 
 如果说 FlashAttention 主要是在**不改模型**的前提下优化 IO，GQA 是在**少改模型**的前提下压 KV，那么 MLA 则是在**重写模型状态表示**。这也是它和前两者真正的分水岭。
+
+![MHA、GQA、MQA 与 MLA 的 KV cache 对比图](/assets/mainstream-attention-algorithms-overview/fig-11-mla-kv-compression.png)
+
+*图 12：DeepSeek-V2 论文把 MHA、GQA、MQA 和 MLA 放到同一张图里比较，最直观地展示了 MLA 的核心贡献并不是减少头数，而是把 KV cache 先压进 latent space，再按需投影回注意力计算。来源：DeepSeek-V2 Figure 3。*
 
 ## 八、怎么理解这条演化主线
 
