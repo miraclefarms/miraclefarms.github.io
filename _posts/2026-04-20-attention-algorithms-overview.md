@@ -31,6 +31,10 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 
 其中 $\sqrt{d_k}$ 为缩放因子，防止点积过大导致 softmax 梯度消失。
 
+![Transformer 整体架构图](/assets/attention-algorithms-overview/fig1-transformer-architecture.png)
+
+*图 1：Transformer 整体架构。Encoder-Decoder 结构完全基于 attention 堆叠，消除了 RNN 和卷积，奠定了现代 LLM 的基础框架。<a href="https://arxiv.org/abs/1706.03762">[1]</a>*
+
 **实现效果**：在 WMT 2014 En→De 翻译任务上达到 28.4 BLEU（超过此前最佳 2 BLEU），En→Fr 翻译达到 41.8 BLEU。训练周期仅 3.5 天 8 GPU。
 
 **适用场景**：几乎所有序列到序列任务；是所有后续变体的基础baseline。
@@ -175,6 +179,14 @@ Big Bird 在此基础上增加 **random attention**（随机连通），并从�
 
 **落地模型**：LLaMA 2/3、Mistral、DeepSeek 系列、Qwen 2、Command R+ 等主流模型均采用 GQA。
 
+![GQA checkpoint 转换流程](/assets/attention-algorithms-overview/fig3-gqa-recycling.png)
+
+*图 2：GQA 中将 MHA checkpoint 转换为 MQA/GQA 的流程。Key 和 Value 投影矩阵从所有 head 做 mean pooling 合入单一 head，实现低成本的架构迁移。<a href="https://arxiv.org/abs/2305.13245">[4]</a>*
+
+![MHA / MQA / GQA 架构对比](/assets/attention-algorithms-overview/fig4-gqa-architecture.png)
+
+*图 3：MHA、MQA 与 GQA 的架构对比。GQA 通过 KV heads 分组，在 MHA 的表达能力和 MQA 的推理速度之间取得平衡。<a href="https://arxiv.org/abs/2305.13245">[4]</a>*
+
 ### 3.5 Multi-Head Latent Attention（MLA）
 
 **论文**：[DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model](https://arxiv.org/abs/2405.04434)（DeepSeek-AI, 2024）
@@ -194,6 +206,10 @@ $$k^{LC}_i = W^{DK}k_i, \quad v^{LC}_i = W^{DV}v_i$$
 **适用场景**：超长上下文 LLM（128K）、MoE 架构的高效推理。
 
 **落地模型**：DeepSeek-V2、DeepSeek-V2.5。
+
+![DeepSeek-V2 整体架构图](/assets/attention-algorithms-overview/fig6-deepseekv2-arch.png)
+
+*图 4：DeepSeek-V2 整体架构。MLA 通过低秩 Key-Value 联合压缩大幅减少 KV cache 显存占用，DeepSeekMoE 以稀疏计算降低训练成本。<a href="https://arxiv.org/abs/2405.04434">[5]</a>*
 
 ### 3.6 Interleaved Head Attention（IHA）
 
