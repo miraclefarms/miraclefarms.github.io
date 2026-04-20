@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">适合缓存的 agent prompt 排布</title>
+  <desc id="desc">展示系统指令、工具定义、检索上下文、对话历史的推荐顺序，以及哪些层应该尽量稳定。</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .label { font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .text { font: 500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .small { font: 600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .line { stroke: #0f172a; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="720"/>
+  <text x="80" y="82" class="title">想吃到缓存红利，prompt 顺序本身就是架构设计</text>
+  <text x="80" y="116" class="subtitle">原创示意图：把原文建议重绘成更直接的 agent prompt 层次图</text>
+
+  <rect x="180" y="170" width="840" height="92" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" rx="22" ry="22"/>
+  <text x="220" y="224" class="label">1. System instructions / 行为规则</text>
+  <text x="745" y="224" class="small">最该保持稳定</text>
+
+  <rect x="200" y="282" width="800" height="92" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="22" ry="22"/>
+  <text x="240" y="336" class="label">2. Tool definitions / schema</text>
+  <text x="756" y="336" class="small">不要中途改参数</text>
+
+  <rect x="220" y="394" width="760" height="92" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="22" ry="22"/>
+  <text x="260" y="448" class="label">3. Retrieved context / 项目文档 / 参考材料</text>
+  <text x="745" y="448" class="small">可阶段性刷新</text>
+
+  <rect x="240" y="506" width="720" height="92" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" rx="22" ry="22"/>
+  <text x="280" y="560" class="label">4. Conversation history / tool outputs</text>
+  <text x="739" y="560" class="small">持续增长的后缀</text>
+
+  <path class="line" d="M1040 216 C1090 216 1090 560 1040 560"/>
+  <text x="1060" y="390" class="small" transform="rotate(90 1060 390)">从上到下：稳定性递减，变化频率递增</text>
+
+  <rect x="90" y="620" width="1020" height="48" fill="#fff7ed" stroke="#c2410c" stroke-width="2" rx="18" ry="18"/>
+  <text x="123" y="651" class="text">如果必须更新状态，优先把增量写进更靠下的消息层，而不是回头改写系统前缀或工具定义。</text>
+</svg>

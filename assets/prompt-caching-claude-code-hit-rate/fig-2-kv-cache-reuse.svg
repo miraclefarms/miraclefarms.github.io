@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Prompt caching 的 KV cache 复用路径</title>
+  <desc id="desc">展示首轮请求先做 prefill 并写入 KV cache，后续请求命中哈希后直接复用缓存状态。</desc>
+  <defs>
+    <style>
+      .bg { fill: #f3f6fb; }
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475569; }
+      .card { fill: #ffffff; stroke: #0f172a; stroke-width: 2; rx: 24; ry: 24; }
+      .step { font: 700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .text { font: 500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .mini { font: 600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .line { stroke: #0f172a; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="720"/>
+
+  <text x="80" y="82" class="title">缓存省下来的，是最贵的 prefill 计算</text>
+  <text x="80" y="116" class="subtitle">原创示意图：把“首轮写缓存”和“后续读缓存”拆成两条路径</text>
+
+  <rect x="70" y="155" width="470" height="470" class="card"/>
+  <text x="110" y="205" class="step">首轮请求：写入缓存</text>
+
+  <rect x="110" y="245" width="160" height="72" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" rx="16" ry="16"/>
+  <text x="150" y="289" class="mini">静态前缀</text>
+
+  <rect x="330" y="245" width="160" height="72" fill="#fde68a" stroke="#d97706" stroke-width="2" rx="16" ry="16"/>
+  <text x="383" y="289" class="mini">Prefill</text>
+
+  <path class="line" d="M270 281 L330 281"/>
+
+  <rect x="110" y="360" width="160" height="72" fill="#dcfce7" stroke="#15803d" stroke-width="2" rx="16" ry="16"/>
+  <text x="141" y="404" class="mini">Key / Value</text>
+
+  <rect x="330" y="360" width="160" height="72" fill="#ecfeff" stroke="#0891b2" stroke-width="2" rx="16" ry="16"/>
+  <text x="367" y="404" class="mini">KV cache</text>
+
+  <path class="line" d="M410 317 L410 360"/>
+  <path class="line" d="M270 396 L330 396"/>
+
+  <text x="112" y="490" class="text">首轮最贵，因为静态前缀要完整跑一遍注意力计算。</text>
+  <text x="112" y="520" class="text">系统把这段前缀对应的 KV 状态按哈希写入缓存池。</text>
+
+  <rect x="660" y="155" width="470" height="470" class="card"/>
+  <text x="700" y="205" class="step">后续请求：读取缓存</text>
+
+  <rect x="700" y="245" width="160" height="72" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" rx="16" ry="16"/>
+  <text x="740" y="289" class="mini">同样前缀</text>
+
+  <rect x="920" y="245" width="160" height="72" fill="#f5d0fe" stroke="#a21caf" stroke-width="2" rx="16" ry="16"/>
+  <text x="969" y="289" class="mini">Hash 命中</text>
+
+  <path class="line" d="M860 281 L920 281"/>
+
+  <rect x="700" y="360" width="160" height="72" fill="#ecfeff" stroke="#0891b2" stroke-width="2" rx="16" ry="16"/>
+  <text x="737" y="404" class="mini">读 KV cache</text>
+
+  <rect x="920" y="360" width="160" height="72" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" rx="16" ry="16"/>
+  <text x="974" y="404" class="mini">Decode</text>
+
+  <path class="line" d="M1000 317 L1000 360"/>
+  <path class="line" d="M860 396 L920 396"/>
+
+  <text x="702" y="490" class="text">命中后直接复用前缀的 KV 状态，跳过整段 prefill。</text>
+  <text x="702" y="520" class="text">真正新增的只是动态后缀和后续生成步骤。</text>
+
+  <rect x="360" y="645" width="480" height="40" fill="#fff7ed" stroke="#c2410c" stroke-width="2" rx="18" ry="18"/>
+  <text x="390" y="671" class="mini">缓存复用的前提不是“语义相似”，而是 token 级前缀完全一致</text>
+</svg>
