@@ -1,9 +1,8 @@
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
-const { loadWechatConfig } = require('../../scripts/lib/wechat-config');
-
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+const { loadWechatConfig } = require(path.join(PROJECT_ROOT, 'scripts/lib/wechat-config'));
 
 async function getAccessToken(appid, appsecret) {
   const config = loadWechatConfig(PROJECT_ROOT);

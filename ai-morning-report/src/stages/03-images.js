@@ -1,14 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const { loadWechatConfig } = require('../../scripts/lib/wechat-config');
+const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+const { loadWechatConfig } = require(path.join(PROJECT_ROOT, 'scripts/lib/wechat-config'));
 const {
   buildWechatCoverImageRequest,
   insertGeneratedTitleImageMarkdown,
   loadWechatCoverPromptTemplates,
-} = require('../../scripts/lib/wechat-cover-prompts');
-
-const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+} = require(path.join(PROJECT_ROOT, 'scripts/lib/wechat-cover-prompts'));
 
 function parseFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
