@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# AI Morning Report - Daily Run Script
+# Called by systemd timer at 5:00 AM Asia/Shanghai
+
+set -e
+
+DATE=$(date +%Y-%m-%d)
+TIMEZONE="Asia/Shanghai"
+WORK_DIR="/tmp/morning-report/${DATE}"
+ASSETS_DIR="${WORK_DIR}/assets"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+SCRIPT_DIR="${PROJECT_ROOT}/ai-morning-report"
+SRC_DIR="${SCRIPT_DIR}/src"
+STAGES_DIR="${SRC_DIR}/stages"
+
+mkdir -p "${WORK_DIR}" "${ASSETS_DIR}"
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting AI Morning Report for ${DATE}"
+
+# Stage 1: Research (调用 ai-morning-report skill)
+echo "[Stage 1] Running research..."
+node "${STAGES_DIR}/01-research.js" "${DATE}" "${WORK_DIR}/research-output.md"
+if [ $? -ne 0 ]; then
+  echo "[Error] Research stage failed"
+  exit 1
+fi
+
+# Stage 2: Write (调用 miraclefarms-writer skill)
+echo "[Stage 2] Running write..."
+node "${STAGES_DIR}/02-write.js" "${DATE}" "${WORK_DIR}/research-output.md" "brief"
+if [ $? -ne 0 ]; then
+  echo "[Error] Write stage failed"
+  exit 1
+fi
+
+# Stage 3: Images (封面生成 + 正文配图抓取)
+echo "[Stage 3] Processing images..."
+POST_PATH="${PROJECT_ROOT}/_posts/${DATE}-ai-infra-daily-brief.md"
+WECHAT_POST_PATH="${PROJECT_ROOT}/docs/wechat/${DATE}-ai-infra-daily-brief-wechat.md"
+
+node "${STAGES_DIR}/03-images.js" "${DATE}" "${WECHAT_POST_PATH}" "${ASSETS_DIR}"
+if [ $? -ne 0 ]; then
+  echo "[Error] Image processing stage failed"
+  exit 1
+fi
+
+# Stage 4: Publish to GitHub
+echo "[Stage 4] Publishing to GitHub..."
+node "${STAGES_DIR}/04-publish.js" "${DATE}" "${POST_PATH}" "${WECHAT_POST_PATH}"
+if [ $? -ne 0 ]; then
+  echo "[Error] GitHub publish stage failed"
+  exit 1
+fi
+
+# Stage 5: Push WeChat draft
+echo "[Stage 5] Pushing WeChat draft..."
+node "${STAGES_DIR}/05-wechat.js" "${WECHAT_POST_PATH}" "${ASSETS_DIR}"
+if [ $? -ne 0 ]; then
+  echo "[Error] WeChat draft push stage failed"
+  exit 1
+fi
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] AI Morning Report completed for ${DATE}"
