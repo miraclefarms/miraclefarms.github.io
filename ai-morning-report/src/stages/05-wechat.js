@@ -91,7 +91,7 @@ function parseFrontMatter(content) {
   return { frontMatter, body: match[2] };
 }
 
-async function pushWechatDraft({ wechatPostPath, assetsDir }) {
+async function pushWechatDraft({ wechatPostPath, assetsDir, coverExt = 'png' }) {
   const appid = process.env.WECHAT_APPID;
   const appsecret = process.env.WECHAT_APPSECRET;
   const thumbMediaId = process.env.WECHAT_THUMB_MEDIA_ID;
@@ -109,7 +109,7 @@ async function pushWechatDraft({ wechatPostPath, assetsDir }) {
   const digest = frontMatter.intro || '';
 
   let effectiveThumbMediaId = thumbMediaId || null;
-  const coverPath = path.join(assetsDir, 'cover.png');
+  const coverPath = path.join(assetsDir, `cover.${coverExt}`);
 
   if (fs.existsSync(coverPath)) {
     effectiveThumbMediaId = await uploadImage(accessToken, coverPath);
@@ -131,13 +131,14 @@ async function pushWechatDraft({ wechatPostPath, assetsDir }) {
 if (require.main === module) {
   const wechatPostPath = process.argv[2];
   const assetsDir = process.argv[3] || '/tmp/morning-report/assets';
+  const coverExt = process.argv[4] || 'png';
 
   if (!wechatPostPath) {
     console.error('Usage: node 05-wechat.js <wechat-post-path> [assets-dir]');
     process.exit(1);
   }
 
-  pushWechatDraft({ wechatPostPath, assetsDir })
+  pushWechatDraft({ wechatPostPath, assetsDir, coverExt })
     .then((result) => console.log('WeChat draft pushed:', JSON.stringify(result)))
     .catch((err) => {
       console.error('WeChat draft push failed:', err.message);

@@ -88,7 +88,7 @@ async function generateCoverImage({ markdown, outputDir }) {
 
   const relativePath = `/assets/morning-report/${path.basename(outputDir)}/cover.${ext}`;
   const updatedMarkdown = insertGeneratedTitleImageMarkdown(markdown, relativePath);
-  return { coverPath, updatedMarkdown };
+  return { coverPath, coverExt: ext, updatedMarkdown };
 }
 
 async function processWechatArticle({ date, wechatPostPath, assetsDir }) {

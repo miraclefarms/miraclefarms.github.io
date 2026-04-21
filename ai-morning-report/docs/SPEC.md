@@ -89,17 +89,23 @@ Stage 5: WeChat draft API（使用已生成的本地封面图作为 thumb_media_
 - 临时工作目录：`/tmp/morning-report/YYYY-MM-DD/`
 - 封面图：`/tmp/morning-report/YYYY-MM-DD/assets/cover.png`
 
-## systemd timer 安装
+## systemd timer 安装（Linux）
 
 ```bash
-# 复制 service 和 timer 文件
-cp ai-morning-report/docs/ai-morning-report.timer /Users/lychee/Library/LaunchAgents/
-cp ai-morning-report/docs/ai-morning-report.service /Users/lychee/Library/LaunchAgents/
-
-# 加载并启动
-launchctl load /Users/lychee/Library/LaunchAgents/ai-morning-report.timer
-launchctl start ai-morning-report.timer
+cp ai-morning-report/docs/ai-morning-report.timer /etc/systemd/system/
+cp ai-morning-report/docs/ai-morning-report.service /etc/systemd/system/
+systemctl enable ai-morning-report.timer
+systemctl start ai-morning-report.timer
 ```
+
+## macOS launchd 安装
+
+```bash
+cp ai-morning-report/docs/ai-morning-report.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/ai-morning-report.plist
+```
+
+**注意：** `ai-morning-report.timer` 和 `ai-morning-report.service` 是 systemd 格式（Linux），macOS 使用 `ai-morning-report.plist`（launchd 格式）。
 
 ## 手动测试
 
