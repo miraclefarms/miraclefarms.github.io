@@ -1,0 +1,39 @@
+{
+  "repos": [
+    "vllm-project/vllm",
+    "sgl-project/sglang",
+    "NVIDIA/TensorRT-LLM",
+    "NVIDIA/Megatron-LM",
+    "ggml-org/llama.cpp",
+    "kvcache-ai/Mooncake",
+    "LMCache/LMCache",
+    "huggingface/trl",
+    "microsoft/DeepSpeed",
+    "ray-project/ray",
+    "openclaw/openclaw"
+  ],
+  "timeWindow": {
+    "days": 3,
+    "timezone": "Asia/Shanghai"
+  },
+  "priorities": {
+    "high": [
+      "release",
+      "merged PR",
+      "runtime",
+      "serving",
+      "kernel",
+      "scheduler",
+      "KV cache",
+      "MoE",
+      "EP",
+      "quantization",
+      "deployment"
+    ],
+    "low": [
+      "docs-only",
+      "CI-only",
+      "tests-only"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "default": "minimax-2.7",
+  "available": [
+    "minimax-2.7",
+    "gpt-4o",
+    "claude-sonnet-4"
+  ],
+  "description": "AI model configuration for opencode CLI. Override with AI_MODEL env var."
+}
