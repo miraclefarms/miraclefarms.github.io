@@ -1,7 +1,11 @@
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
+const dotenv = require('dotenv');
+
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+dotenv.config({ path: path.join(PROJECT_ROOT, '.env') });
+
 const { loadWechatConfig } = require(path.join(PROJECT_ROOT, 'scripts/lib/wechat-config'));
 
 async function getAccessToken(appid, appsecret) {

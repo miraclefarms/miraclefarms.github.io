@@ -24,25 +24,22 @@ function getSkillPath(skillName) {
 
 function runOpencode({ prompt, skill, workdir, model }) {
   return new Promise((resolve, reject) => {
-    const selectedModel = model || getModel();
-    const args = ['run', '--model', selectedModel];
+    const args = ['run'];
 
-    if (skill) {
-      const skillPath = getSkillPath(skill);
-      if (skillPath) {
-        args.push('--skill', skillPath);
-      }
+    if (model) {
+      args.push('--model', model);
     }
 
     if (workdir) {
-      args.push('--workdir', workdir);
+      args.push('--dir', workdir);
     }
 
-    args.push('--prompt', prompt);
+    args.push(prompt);
 
     const child = spawn('opencode', args, {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: { ...process.env },
+      cwd: workdir || undefined,
     });
 
     let stdout = '';
