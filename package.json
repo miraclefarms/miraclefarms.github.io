@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "WeChat draft publishing for MiracleFarms",
   "scripts": {
-    "publish:wechat": "node scripts/publish-wechat.js"
+    "publish:wechat": "node scripts/publish-wechat.js",
+    "test": "node --test scripts/tests/*.test.js",
+    "test:ai-morning-report": "node --test scripts/tests/date-window.test.js scripts/tests/article-schema.test.js"
   },
   "dependencies": {
     "axios": "^1.7.0",
