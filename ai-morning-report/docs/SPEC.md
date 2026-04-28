@@ -1,5 +1,8 @@
 # AI Morning Report Scaffold - SPEC
 
+> Superseded by [docs/superpowers/specs/2026-04-27-ai-morning-report-llm-pipeline-design.md](/Users/lychee/mycode/miraclefarms.github.io/docs/superpowers/specs/2026-04-27-ai-morning-report-llm-pipeline-design.md).
+> This scaffold document describes the retired `01-research -> 05-wechat` pipeline and is kept only for historical reference.
+
 ## 概述
 
 在 `miraclefarms.github.io/ai-morning-report/` 下搭建脚手架程序，每天 5 AM 自动生成 AI Infra 早报，通过 opencode CLI 调用 AI 执行 skill 来完成调研和写作。

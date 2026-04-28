@@ -7,6 +7,11 @@ const assert = require('node:assert/strict');
 const { buildPipelinePaths } = require('../../ai-morning-report/src/lib/pipeline-paths');
 const { runRankStage } = require('../../ai-morning-report/src/stages/02-rank');
 const { runComposeStage } = require('../../ai-morning-report/src/stages/03-compose');
+const {
+  createPublishRecord,
+  markGithubPublished,
+  markWechatRetryPending,
+} = require('../../ai-morning-report/src/lib/publish-record');
 
 function createResearchDocument() {
   return {
@@ -201,4 +206,31 @@ test('research -> selection -> article-source smoke test writes validated artifa
   assert.equal(composeResult.articleSource.category, 'Brief');
   assert.equal(composeResult.articleSource.series, 'ai-infra-daily-brief');
   assert.match(fs.readFileSync(paths.articleSourceJsonPath, 'utf8'), /默认路径开始吸收复杂场景/);
+});
+
+test('pipeline downgrade policy preserves github success when wechat publish fails', () => {
+  const initial = createPublishRecord({ targetDate: '2026-04-27' });
+  const afterGithub = markGithubPublished(initial, { commit: 'abc1234' });
+  const finalRecord = markWechatRetryPending(afterGithub, new Error('upload timeout'));
+
+  assert.equal(finalRecord.github.status, 'published');
+  assert.equal(finalRecord.github.commit, 'abc1234');
+  assert.equal(finalRecord.wechat.status, 'pending_retry');
+  assert.equal(finalRecord.wechat.last_error, 'upload timeout');
+});
+
+test('new scheduler references collect/rank/compose/image/render/publish stages only', () => {
+  const script = fs.readFileSync(path.join(process.cwd(), 'ai-morning-report', 'bin', 'run-daily.sh'), 'utf8');
+  assert.match(script, /01-collect\.js/);
+  assert.match(script, /02-rank\.js/);
+  assert.match(script, /03-compose\.js/);
+  assert.match(script, /04-image\.js/);
+  assert.match(script, /05-render\.js/);
+  assert.match(script, /06-publish-github\.js/);
+  assert.match(script, /07-publish-wechat\.js/);
+  assert.doesNotMatch(script, /01-research\.js/);
+  assert.doesNotMatch(script, /02-write\.js/);
+  assert.doesNotMatch(script, /03-images\.js/);
+  assert.doesNotMatch(script, /04-publish\.js/);
+  assert.doesNotMatch(script, /05-wechat\.js/);
 });

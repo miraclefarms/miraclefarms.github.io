@@ -595,15 +595,18 @@ function scanWechatDir(record, files) {
   return unpublished;
 }
 
-async function main() {
+async function main(options = {}) {
   dotenv.config();
-  const hookMode = process.argv.includes('--hook');
-  const targetDate = getTargetDate();
+  const hookMode = options.hookMode ?? process.argv.includes('--hook');
+  const targetDate = options.targetDate || getTargetDate();
+  const explicitFiles = Array.isArray(options.filePaths) ? options.filePaths : null;
   const changedFiles = hookMode ? listFilesInPush() : [];
-  const expectedWechatFiles = hookMode ? resolveExpectedWechatFiles(changedFiles, targetDate) : [];
-  const publishExpected = hookMode && expectedWechatFiles.length > 0;
+  const expectedWechatFiles = explicitFiles || (hookMode ? resolveExpectedWechatFiles(changedFiles, targetDate) : []);
+  const publishExpected = explicitFiles ? expectedWechatFiles.length > 0 : hookMode && expectedWechatFiles.length > 0;
   const publishRecord = loadPublishRecord();
-  const targetWechatFiles = publishExpected ? expectedWechatFiles : listWechatFilesForDate(targetDate);
+  const targetWechatFiles = explicitFiles
+    ? expectedWechatFiles
+    : (publishExpected ? expectedWechatFiles : listWechatFilesForDate(targetDate));
   const missingExpectedFiles = expectedWechatFiles.filter(filePath => !fs.existsSync(filePath));
   const unpublished = scanWechatDir(publishRecord, targetWechatFiles.filter(filePath => fs.existsSync(filePath)));
 
@@ -680,6 +683,7 @@ async function main() {
   const results = {
     success: 0,
     failed: 0,
+    published: [],
     publishExpected,
     targetDate,
   };
@@ -743,6 +747,11 @@ async function main() {
 
       const response = await addDraft(accessToken, { title, author, digest, content: htmlContent, thumb_media_id: articleThumbMediaId });
       recordPublished(publishRecord, filePath, persistedContentHash, title, response);
+      results.published.push({
+        filePath,
+        title,
+        media_id: response.media_id || null,
+      });
 
       console.error(`✅ Published: ${fileName}`);
       results.success++;
@@ -785,6 +794,7 @@ function runCli() {
 module.exports = {
   getTargetDate,
   main,
+  publishWechatDrafts: main,
   resolveExpectedWechatFiles,
   runCli,
 };

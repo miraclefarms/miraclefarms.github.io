@@ -27,17 +27,73 @@ async function defaultInvokeModel({ role, prompt, workdir }) {
   return invokeJsonModel({ role, prompt, workdir });
 }
 
+function createReference(item, fallbackIndex) {
+  const evidence = Array.isArray(item.evidence) ? item.evidence[0] : null;
+  return {
+    index: fallbackIndex,
+    title: item.title,
+    url: evidence && evidence.url ? evidence.url : item.url,
+  };
+}
+
+function buildDryRunArticleDraft(selectionDocument) {
+  const selected = selectionDocument.selected || [];
+  const midpoint = Math.max(1, Math.ceil(selected.length / 2));
+  const firstGroup = selected.slice(0, midpoint);
+  const secondGroup = selected.slice(midpoint);
+  let refIndex = 1;
+
+  const sections = [
+    {
+      heading: '一、默认路径开始吸收复杂能力',
+      items: firstGroup.map((item) => ({
+        title: item.title,
+        what_changed: item.why_selected || '这条更新正在把更复杂的系统能力纳入默认路径。',
+        why_it_matters: `${item.repo} 的这次变化说明，工程主线正在从“可选优化”转向“默认能力”。`,
+        references: [createReference(item, refIndex++)],
+      })),
+    },
+  ];
+
+  if (secondGroup.length > 0) {
+    sections.push({
+      heading: '二、性能、稳定性与可观测性继续向主链路收敛',
+      items: secondGroup.map((item) => ({
+        title: item.title,
+        what_changed: item.why_selected || '这条更新继续强化了生产路径上的性能或稳定性。',
+        why_it_matters: `${item.repo} 不再把这些能力留给旁路方案，而是直接推向主链路。`,
+        references: [createReference(item, refIndex++)],
+      })),
+    });
+  }
+
+  return {
+    title: 'AI Infra 早报｜默认路径开始吸收复杂场景',
+    intro: '今天最值得记住的变化，不是某个单点 feature，而是默认执行路径正在承接过去只能靠特例处理的复杂能力。',
+    thesis: '真正的信号是：AI Infra 的默认路径正在变得更完整，复杂场景开始从旁路回流到主链路。',
+    cover_prompt: 'An editorial illustration showing the default execution path of an AI infrastructure system absorbing advanced runtime, cache, and stability capabilities into the main flow.',
+    sections,
+    wechat: {
+      title: 'AI Infra 早报｜默认路径开始吸收复杂场景',
+      digest: '复杂能力开始从特例回流到默认执行路径。',
+    },
+  };
+}
+
 async function composeArticleSource({
   selection,
   invokeModel = defaultInvokeModel,
   workdir,
+  dryRun = process.env.AI_MORNING_REPORT_DRY_RUN === '1',
 } = {}) {
   const selectionDocument = validateSelectionDocument(selection);
-  const articleDraft = await invokeModel({
-    role: 'writing',
-    workdir,
-    prompt: buildComposePrompt(selectionDocument),
-  });
+  const articleDraft = dryRun
+    ? buildDryRunArticleDraft(selectionDocument)
+    : await invokeModel({
+      role: 'writing',
+      workdir,
+      prompt: buildComposePrompt(selectionDocument),
+    });
 
   const articleSource = validateArticleSource({
     ...articleDraft,
@@ -99,6 +155,7 @@ if (require.main === module) {
 
 module.exports = {
   buildComposePrompt,
+  buildDryRunArticleDraft,
   composeArticleSource,
   runComposeStage,
 };

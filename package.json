@@ -5,7 +5,7 @@
   "scripts": {
     "publish:wechat": "node scripts/publish-wechat.js",
     "test": "node --test scripts/tests/*.test.js",
-    "test:ai-morning-report": "node --test scripts/tests/date-window.test.js scripts/tests/article-schema.test.js"
+    "test:ai-morning-report": "node --test scripts/tests/date-window.test.js scripts/tests/article-schema.test.js scripts/tests/github-research.test.js scripts/tests/ai-morning-report-pipeline.test.js scripts/tests/ai-morning-report-render.test.js scripts/tests/publish-record.test.js"
   },
   "dependencies": {
     "axios": "^1.7.0",

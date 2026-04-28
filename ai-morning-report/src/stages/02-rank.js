@@ -93,6 +93,37 @@ async function defaultInvokeModel({ role, prompt, workdir }) {
   return invokeJsonModel({ role, prompt, workdir });
 }
 
+function buildDryRunSelection(candidates, { minItems, maxItems, perRepoSoftCap }) {
+  const selected = [];
+  const perRepoCounts = new Map();
+
+  for (const candidate of [...candidates].sort((left, right) => (right.priority_score || 0) - (left.priority_score || 0))) {
+    const repoCount = perRepoCounts.get(candidate.repo) || 0;
+    if (repoCount >= perRepoSoftCap && selected.length >= minItems) {
+      continue;
+    }
+
+    selected.push({
+      rank: selected.length + 1,
+      candidate_id: candidate.candidate_id,
+      why_selected: candidate.signals?.default_path
+        ? '默认路径正在吸收更复杂的运行时能力'
+        : '这条 PR 能直接改变生产中的性能、稳定性或可观测性',
+      category: candidate.signals?.performance ? 'performance' : 'runtime',
+      importance_score: candidate.priority_score || selected.length + 1,
+      evidence_strength: 'high',
+      primary_angle: candidate.signals?.default_path ? '默认路径' : '工程主线',
+    });
+    perRepoCounts.set(candidate.repo, repoCount + 1);
+
+    if (selected.length >= maxItems) {
+      break;
+    }
+  }
+
+  return { selected };
+}
+
 async function selectCandidates({
   research,
   invokeModel = defaultInvokeModel,
@@ -100,6 +131,7 @@ async function selectCandidates({
   maxItems = 8,
   perRepoSoftCap = 2,
   workdir,
+  dryRun = process.env.AI_MORNING_REPORT_DRY_RUN === '1',
 } = {}) {
   const candidates = listPullRequestCandidates(research);
 
@@ -107,17 +139,19 @@ async function selectCandidates({
     throw new Error('research document has no pull request candidates');
   }
 
-  const response = await invokeModel({
-    role: 'ranking',
-    workdir,
-    prompt: buildRankingPrompt({
-      research,
-      candidates,
-      minItems,
-      maxItems,
-      perRepoSoftCap,
-    }),
-  });
+  const response = dryRun
+    ? buildDryRunSelection(candidates, { minItems, maxItems, perRepoSoftCap })
+    : await invokeModel({
+      role: 'ranking',
+      workdir,
+      prompt: buildRankingPrompt({
+        research,
+        candidates,
+        minItems,
+        maxItems,
+        perRepoSoftCap,
+      }),
+    });
 
   const selected = Array.isArray(response && response.selected) ? response.selected : [];
 

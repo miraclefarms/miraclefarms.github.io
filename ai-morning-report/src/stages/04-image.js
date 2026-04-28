@@ -8,6 +8,10 @@ const { buildPipelinePaths } = require('../lib/pipeline-paths');
 const { loadWechatConfig } = require('../../../scripts/lib/wechat-config');
 
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+const DRY_RUN_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4////fwAJ+wP9KobjigAAAABJRU5ErkJggg==',
+  'base64',
+);
 
 function parseDataUrlImage(dataUrl) {
   const match = String(dataUrl || '').match(/^data:([^;]+);base64,(.+)$/);
@@ -81,6 +85,13 @@ function normalizeGeneratedImage(result) {
 
 async function defaultGenerateImage(prompt, { projectRoot }) {
   requireField(prompt, 'cover_prompt');
+
+  if (process.env.AI_MORNING_REPORT_DRY_RUN === '1') {
+    return {
+      mimeType: 'image/png',
+      buffer: DRY_RUN_PNG,
+    };
+  }
 
   const config = loadWechatConfig(projectRoot);
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -200,6 +211,7 @@ if (require.main === module) {
 
 module.exports = {
   defaultGenerateImage,
+  DRY_RUN_PNG,
   generateCoverAsset,
   getImageExtensionForMimeType,
   normalizeGeneratedImage,

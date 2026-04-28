@@ -12,6 +12,84 @@ const { buildPipelinePaths } = require('../lib/pipeline-paths');
 
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 const DEFAULT_CONFIG_PATH = path.join(PROJECT_ROOT, 'ai-morning-report', 'config', 'repo-scope.json');
+const DRY_RUN_REPO_DATA = {
+  'sgl-project/sglang': [
+    {
+      number: 101,
+      title: 'Improve default runtime scheduler path',
+      url: 'https://github.com/sgl-project/sglang/pull/101',
+      mergedAt: '2026-04-27T01:00:00Z',
+      labels: [{ name: 'runtime' }, { name: 'performance' }],
+      author: { login: 'alice' },
+      body: 'Moves a critical runtime path onto the default execution path.',
+      additions: 10,
+      deletions: 2,
+      changedFiles: 3,
+    },
+    {
+      number: 102,
+      title: 'Add graph cache fallback controls',
+      url: 'https://github.com/sgl-project/sglang/pull/102',
+      mergedAt: '2026-04-27T03:00:00Z',
+      labels: [{ name: 'stability' }],
+      author: { login: 'bob' },
+      body: 'Adds a new fallback for graph cache misses.',
+      additions: 9,
+      deletions: 1,
+      changedFiles: 2,
+    },
+    {
+      number: 103,
+      title: 'Support FP8 serving path tuning',
+      url: 'https://github.com/sgl-project/sglang/pull/103',
+      mergedAt: '2026-04-26T22:00:00Z',
+      labels: [{ name: 'serving' }],
+      author: { login: 'carol' },
+      body: 'Extends the serving path with FP8-aware tuning.',
+      additions: 15,
+      deletions: 4,
+      changedFiles: 5,
+    },
+  ],
+  'vllm-project/vllm': [
+    {
+      number: 201,
+      title: 'Optimize kv cache eviction on the hot path',
+      url: 'https://github.com/vllm-project/vllm/pull/201',
+      mergedAt: '2026-04-27T05:00:00Z',
+      labels: [{ name: 'performance' }],
+      author: { login: 'dave' },
+      body: 'Improves kv cache eviction on the default hot path.',
+      additions: 12,
+      deletions: 3,
+      changedFiles: 4,
+    },
+    {
+      number: 202,
+      title: 'Add MoE routing diagnostics',
+      url: 'https://github.com/vllm-project/vllm/pull/202',
+      mergedAt: '2026-04-26T14:00:00Z',
+      labels: [{ name: 'feature' }],
+      author: { login: 'erin' },
+      body: 'Adds diagnostics for MoE routing decisions.',
+      additions: 7,
+      deletions: 1,
+      changedFiles: 2,
+    },
+    {
+      number: 203,
+      title: 'Fix scheduler fallback regression',
+      url: 'https://github.com/vllm-project/vllm/pull/203',
+      mergedAt: '2026-04-25T20:00:00Z',
+      labels: [{ name: 'stability' }],
+      author: { login: 'frank' },
+      body: 'Fixes a scheduler fallback regression in serving mode.',
+      additions: 5,
+      deletions: 2,
+      changedFiles: 2,
+    },
+  ],
+};
 
 function loadRepoScope(configPath = DEFAULT_CONFIG_PATH) {
   return JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -40,6 +118,20 @@ function buildCollectionLimits(repoScope = {}) {
   return (repoScope.collection && repoScope.collection.limits) || {};
 }
 
+function createDryRunGhClient() {
+  return {
+    async listMergedPullRequests(repo) {
+      return DRY_RUN_REPO_DATA[repo] || [];
+    },
+    async listReleases() {
+      return [];
+    },
+    async listCommits() {
+      return [];
+    },
+  };
+}
+
 function buildResearchDocument(targetDate, window, repoResults) {
   return validateResearchDocument({
     target_date: targetDate,
@@ -59,7 +151,9 @@ async function runCollectStage({
   targetDate,
   projectRoot = PROJECT_ROOT,
   repoScope = loadRepoScope(),
-  ghClient = createGhClient(),
+  ghClient = process.env.AI_MORNING_REPORT_DRY_RUN === '1'
+    ? createDryRunGhClient()
+    : createGhClient(),
 } = {}) {
   const resolvedTargetDate = targetDate || getTargetDateParts().date;
   const window = buildResearchWindow(resolvedTargetDate, {
@@ -109,6 +203,7 @@ if (require.main === module) {
 module.exports = {
   buildResearchDocument,
   buildWindowConfig,
+  createDryRunGhClient,
   loadRepoScope,
   runCollectStage,
 };

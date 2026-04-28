@@ -8,6 +8,8 @@
     <array>
         <string>/Users/lychee/mycode/miraclefarms.github.io/ai-morning-report/bin/run-daily.sh</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/lychee/mycode/miraclefarms.github.io</string>
     <key>StartCalendarInterval</key>
     <array>
         <dict>
