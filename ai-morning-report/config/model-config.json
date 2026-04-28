@@ -1,14 +1,15 @@
 {
-  "default": "z-ai/glm-5.1",
+  "default": "openrouter/openai/gpt-4.1-mini",
   "roles": {
-    "research": "z-ai/glm-5.1",
-    "ranking": "z-ai/glm-5.1",
-    "writing": "z-ai/glm-5.1",
-    "image": "openrouter/ministral-3"
+    "research": "openrouter/openai/gpt-4.1-mini",
+    "ranking": "openrouter/openai/gpt-4.1-mini",
+    "writing": "openrouter/openai/gpt-4.1-mini",
+    "image": "openrouter/black-forest-labs/flux.2-flex"
   },
   "available": [
-    "z-ai/glm-5.1",
-    "openrouter/ministral-3"
+    "openrouter/openai/gpt-4.1-mini",
+    "openrouter/black-forest-labs/flux.2-flex"
   ],
+  "timeout_ms": 120000,
   "description": "AI model configuration for opencode CLI. Override globally with AI_MODEL or per role with AI_MODEL_<ROLE>. Use provider/model format."
 }

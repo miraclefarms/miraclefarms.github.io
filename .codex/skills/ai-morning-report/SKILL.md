@@ -53,7 +53,9 @@ description: >
     "maximum_items": 8,
     "per_repo_soft_cap": 2,
     "prefer_today_first": true,
-    "backfill_from_previous_days": 3
+    "backfill_from_previous_days": 3,
+    "max_candidates_for_model": 16,
+    "body_excerpt_chars": 240
   },
   "candidate_priority": {
     "weights": {

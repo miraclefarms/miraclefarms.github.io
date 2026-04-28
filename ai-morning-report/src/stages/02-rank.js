@@ -72,19 +72,94 @@ function normalizeSelectedEntry(selectedEntry, candidate, fallbackRank) {
   };
 }
 
-function buildRankingPrompt({ research, candidates, minItems, maxItems, perRepoSoftCap }) {
+function truncateText(text, maxChars = 600) {
+  const value = String(text || '').trim();
+  if (!value) {
+    return '';
+  }
+
+  if (value.length <= maxChars) {
+    return value;
+  }
+
+  return `${value.slice(0, maxChars).trim()}…`;
+}
+
+function sortCandidatesForModel(candidates) {
+  return [...candidates].sort((left, right) => {
+    const scoreDelta = (right.priority_score || 0) - (left.priority_score || 0);
+    if (scoreDelta !== 0) {
+      return scoreDelta;
+    }
+
+    return String(right.merged_at || '').localeCompare(String(left.merged_at || ''));
+  });
+}
+
+function limitCandidatesForModel(candidates, maxCandidatesForModel = 24, perRepoSoftCap = Infinity) {
+  const sorted = sortCandidatesForModel(candidates);
+
+  if (!Number.isFinite(maxCandidatesForModel) || maxCandidatesForModel <= 0) {
+    return sorted;
+  }
+
+  const limited = [];
+  const perRepoCounts = new Map();
+
+  for (const candidate of sorted) {
+    const repoCount = perRepoCounts.get(candidate.repo) || 0;
+
+    if (Number.isFinite(perRepoSoftCap) && perRepoSoftCap > 0 && repoCount >= perRepoSoftCap) {
+      continue;
+    }
+
+    limited.push(candidate);
+    perRepoCounts.set(candidate.repo, repoCount + 1);
+
+    if (limited.length >= maxCandidatesForModel) {
+      break;
+    }
+  }
+
+  return limited;
+}
+
+function buildModelCandidateContext(candidate, bodyExcerptChars = 600) {
+  return {
+    candidate_id: candidate.candidate_id,
+    repo: candidate.repo,
+    pr_number: candidate.number,
+    title: candidate.title,
+    merged_at: candidate.merged_at || null,
+    priority_score: candidate.priority_score ?? null,
+    signals: candidate.signals || {},
+    why_candidate_matters: truncateText(candidate.body, bodyExcerptChars),
+  };
+}
+
+function buildRankingPrompt({
+  research,
+  candidates,
+  totalCandidateCount = candidates.length,
+  minItems,
+  maxItems,
+  perRepoSoftCap,
+  bodyExcerptChars = 600,
+}) {
   return [
     '你是 AI Infra 日报的选题编辑。',
     `请基于 research.json 中的 pull_requests 选择 ${minItems} 到 ${maxItems} 条最值得写入今日早报的候选。`,
     '优先判断默认路径、runtime、serving、scheduler、KV cache、性能和稳定性变化。',
     '尽量以 pull request 为主，不要把 release 或 commit 当作主条目。',
     `同一 repo 最好不要超过 ${perRepoSoftCap} 条，除非当天确实没有更强信号。`,
+    '你拿到的是已经过本地预筛选的高优先级候选，不需要重新处理全部原始 PR。',
     '返回 JSON 对象，包含 selected 数组。每个 selected 项必须包含 rank、candidate_id、why_selected、category、importance_score、evidence_strength、primary_angle。',
     '',
     JSON.stringify({
       target_date: research.target_date,
-      candidate_count: candidates.length,
-      candidates,
+      total_candidate_count: totalCandidateCount,
+      candidate_count_for_model: candidates.length,
+      candidates: candidates.map((candidate) => buildModelCandidateContext(candidate, bodyExcerptChars)),
     }, null, 2),
   ].join('\n');
 }
@@ -130,6 +205,8 @@ async function selectCandidates({
   minItems = 5,
   maxItems = 8,
   perRepoSoftCap = 2,
+  maxCandidatesForModel = 24,
+  bodyExcerptChars = 600,
   workdir,
   dryRun = process.env.AI_MORNING_REPORT_DRY_RUN === '1',
 } = {}) {
@@ -139,17 +216,25 @@ async function selectCandidates({
     throw new Error('research document has no pull request candidates');
   }
 
+  const promptCandidates = limitCandidatesForModel(
+    candidates,
+    maxCandidatesForModel,
+    perRepoSoftCap,
+  );
+
   const response = dryRun
-    ? buildDryRunSelection(candidates, { minItems, maxItems, perRepoSoftCap })
+    ? buildDryRunSelection(promptCandidates, { minItems, maxItems, perRepoSoftCap })
     : await invokeModel({
       role: 'ranking',
       workdir,
       prompt: buildRankingPrompt({
         research,
-        candidates,
+        candidates: promptCandidates,
+        totalCandidateCount: candidates.length,
         minItems,
         maxItems,
         perRepoSoftCap,
+        bodyExcerptChars,
       }),
     });
 
@@ -205,12 +290,24 @@ async function runRankStage({
     JSON.parse(fs.readFileSync(paths.researchJsonPath, 'utf8')),
   );
   const selectionConfig = buildSelectionConfig(repoScope);
+  const totalCandidates = listPullRequestCandidates(researchDocument).length;
+  const promptCandidateCount = Math.min(
+    totalCandidates,
+    selectionConfig.max_candidates_for_model || 24,
+  );
+
+  console.error(
+    `Ranking ${promptCandidateCount} prefiltered candidates (from ${totalCandidates} collected pull requests)...`,
+  );
+
   const selectionDocument = await selectCandidates({
     research: researchDocument,
     invokeModel,
     minItems: selectionConfig.minimum_items || 5,
     maxItems: selectionConfig.maximum_items || 8,
     perRepoSoftCap: selectionConfig.per_repo_soft_cap || 2,
+    maxCandidatesForModel: selectionConfig.max_candidates_for_model || 24,
+    bodyExcerptChars: selectionConfig.body_excerpt_chars || 600,
     workdir: projectRoot,
   });
 
@@ -238,10 +335,14 @@ if (require.main === module) {
 
 module.exports = {
   buildRankingPrompt,
+  buildModelCandidateContext,
   buildSelectionConfig,
   createCandidateId,
+  limitCandidatesForModel,
   listPullRequestCandidates,
   loadRepoScope,
   runRankStage,
+  sortCandidatesForModel,
   selectCandidates,
+  truncateText,
 };
