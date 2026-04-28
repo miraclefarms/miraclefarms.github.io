@@ -42,6 +42,7 @@ function validateArticleSource(doc) {
   requireField(doc.title, 'title');
   requireField(doc.intro, 'intro');
   requireField(doc.thesis, 'thesis');
+  requireField(doc.cover_prompt, 'cover_prompt');
   requireField(doc.sections, 'sections');
   requireObject(doc.wechat, 'wechat');
   requireField(doc.wechat.title, 'wechat.title');

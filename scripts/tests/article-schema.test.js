@@ -8,12 +8,13 @@ const {
   validatePublishRecord,
 } = require('../../ai-morning-report/src/lib/article-schema');
 
-test('validateArticleSource requires title, intro, thesis, sections, and wechat metadata', () => {
+test('validateArticleSource requires cover_prompt plus core article and wechat metadata', () => {
   const articleSource = {
     target_date: '2026-04-27',
     title: 'AI Infra 早报｜缺字段',
     intro: '今天最值得看的变化集中在推理系统和训练框架。',
     thesis: '这波变化说明系统层优化仍是 AI Infra 的主战场。',
+    cover_prompt: 'A systems diagram showing default execution paths absorbing complex runtime behaviors.',
     sections: [{ heading: '一、推理系统', body: 'SGLang 与 vLLM 都在加速演进。' }],
     wechat: {
       title: 'AI Infra 早报｜缺字段',
@@ -30,6 +31,17 @@ test('validateArticleSource requires title, intro, thesis, sections, and wechat 
       wechat: articleSource.wechat,
     }),
     /missing required field: target_date/,
+  );
+  assert.throws(
+    () => validateArticleSource({
+      target_date: articleSource.target_date,
+      title: 'AI Infra 早报｜缺字段',
+      intro: articleSource.intro,
+      thesis: articleSource.thesis,
+      sections: articleSource.sections,
+      wechat: articleSource.wechat,
+    }),
+    /missing required field: cover_prompt/,
   );
   assert.throws(
     () => validateArticleSource({
