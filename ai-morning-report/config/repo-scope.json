@@ -12,6 +12,107 @@
     "ray-project/ray",
     "openclaw/openclaw"
   ],
+  "window": {
+    "lookback_days": 3,
+    "timezone": "Asia/Shanghai"
+  },
+  "selection": {
+    "minimum_items": 5,
+    "maximum_items": 8,
+    "per_repo_soft_cap": 2
+  },
+  "collection": {
+    "pr_first": true,
+    "require_pull_requests": true,
+    "limits": {
+      "pull_requests": 20,
+      "releases": 5,
+      "commits": 10
+    }
+  },
+  "candidate_priority": {
+    "weights": {
+      "default_path": 6,
+      "runtime": 4,
+      "performance": 4,
+      "feature": 2,
+      "stability": 2,
+      "docs_only": -6,
+      "ci_only": -5,
+      "tests_only": -5
+    },
+    "signal_terms": {
+      "default_path": [
+        "default path",
+        "default-path",
+        "hot path",
+        "critical path"
+      ],
+      "runtime": [
+        "runtime",
+        "serving",
+        "scheduler",
+        "kernel",
+        "executor",
+        "engine",
+        "kv cache",
+        "moe",
+        "quantization",
+        "throughput"
+      ],
+      "performance": [
+        "performance",
+        "latency",
+        "throughput",
+        "optimize",
+        "optimization",
+        "faster",
+        "speedup",
+        "benchmark",
+        "cache",
+        "memory"
+      ],
+      "feature": [
+        "feature",
+        "add ",
+        "support",
+        "enable",
+        "introduce",
+        "launch"
+      ],
+      "stability": [
+        "fix",
+        "stability",
+        "correctness",
+        "reliability",
+        "fallback",
+        "crash",
+        "panic"
+      ],
+      "docs_only": [
+        "docs",
+        "documentation",
+        "readme",
+        "changelog"
+      ],
+      "ci_only": [
+        "ci",
+        "workflow",
+        "github actions",
+        "buildkite",
+        "pipeline"
+      ],
+      "tests_only": [
+        "test",
+        "tests",
+        "pytest",
+        "unit test",
+        "integration test",
+        "coverage",
+        "snapshot"
+      ]
+    }
+  },
   "timeWindow": {
     "days": 3,
     "timezone": "Asia/Shanghai"
