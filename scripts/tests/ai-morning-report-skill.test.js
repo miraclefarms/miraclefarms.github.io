@@ -7,6 +7,8 @@ const {
   extractSkillConfig,
   loadAiMorningReportSkillConfig,
 } = require('../../ai-morning-report/src/lib/skill-config');
+const { loadRepoScope: loadCollectRepoScope } = require('../../ai-morning-report/src/stages/01-collect');
+const { loadRepoScope: loadRankRepoScope } = require('../../ai-morning-report/src/stages/02-rank');
 
 test('ai-morning-report skill exposes a machine-readable strategy block', () => {
   const skill = fs.readFileSync(AI_MORNING_REPORT_SKILL_PATH, 'utf8');
@@ -40,4 +42,13 @@ test('loadAiMorningReportSkillConfig returns repo scope and narrative handoff se
   assert.equal(config.selection.minimum_items, 5);
   assert.equal(config.writer_handoff.article_source_shape.sections.summary_required, true);
   assert.equal(config.writer_handoff.narrative_rules.item_analysis_min_sentences, 2);
+});
+
+test('collect and rank stages default to the ai-morning-report skill config', () => {
+  const collectConfig = loadCollectRepoScope();
+  const rankConfig = loadRankRepoScope();
+
+  assert.deepEqual(collectConfig.repos, rankConfig.repos);
+  assert.equal(collectConfig.window.lookback_days, 3);
+  assert.equal(rankConfig.selection.maximum_items, 8);
 });

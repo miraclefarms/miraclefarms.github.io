@@ -9,9 +9,9 @@ const {
   createGhClient,
 } = require('../lib/github-research');
 const { buildPipelinePaths } = require('../lib/pipeline-paths');
+const { loadAiMorningReportSkillConfig } = require('../lib/skill-config');
 
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
-const DEFAULT_CONFIG_PATH = path.join(PROJECT_ROOT, 'ai-morning-report', 'config', 'repo-scope.json');
 const DRY_RUN_REPO_DATA = {
   'sgl-project/sglang': [
     {
@@ -91,8 +91,8 @@ const DRY_RUN_REPO_DATA = {
   ],
 };
 
-function loadRepoScope(configPath = DEFAULT_CONFIG_PATH) {
-  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+function loadRepoScope() {
+  return loadAiMorningReportSkillConfig();
 }
 
 function buildWindowConfig(repoScope = {}) {
