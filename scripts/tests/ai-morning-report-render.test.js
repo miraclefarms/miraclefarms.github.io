@@ -21,11 +21,11 @@ function createArticleSource(overrides = {}) {
     sections: [
       {
         heading: '一、运行时默认路径',
+        summary: '这组变化共同说明，复杂能力正在进入默认执行路径。',
         items: [
           {
             title: 'SGLang runtime path',
-            what_changed: '默认路径吸收了新的调度和 fallback 能力。',
-            why_it_matters: '复杂场景不再依赖旁路实现。',
+            analysis: '默认路径吸收了新的调度和 fallback 能力。复杂场景因此不再依赖旁路实现，而是更像主链路的一部分。',
             references: [
               { index: 1, title: 'SGLang PR', url: 'https://github.com/example/pr/1' },
             ],
@@ -34,11 +34,11 @@ function createArticleSource(overrides = {}) {
       },
       {
         heading: '二、缓存与稳定性',
+        summary: '另一条主线是性能和稳定性能力继续向生产默认路径收敛。',
         items: [
           {
             title: 'vLLM kv cache eviction',
-            what_changed: '缓存淘汰策略开始对 hot path 做更细粒度控制。',
-            why_it_matters: '这让性能优化更容易进入默认配置。',
+            analysis: '缓存淘汰策略开始对 hot path 做更细粒度控制。这让性能优化更容易进入默认配置，而不是停留在特定调优场景里。',
             references: [
               { index: 2, title: 'vLLM PR', url: 'https://github.com/example/pr/2' },
             ],
@@ -101,11 +101,14 @@ test('renderOutputs emits GitHub and WeChat markdown from one article source', (
   assert.match(result.githubMarkdown, /!\[题图\]\(\/assets\/ai-infra-daily-brief\/2026-04-27-ai-infra-daily-brief\/cover\.png\)/);
   assert.match(result.githubMarkdown, /## 参考来源/);
   assert.match(result.githubMarkdown, /\[\[1\]\]\(https:\/\/github\.com\/example\/pr\/1\)/);
+  assert.match(result.githubMarkdown, /这组变化共同说明，复杂能力正在进入默认执行路径。/);
+  assert.match(result.githubMarkdown, /\*\*SGLang runtime path\*\*\[\[1\]\]\(https:\/\/github\.com\/example\/pr\/1\)：默认路径吸收了新的调度和 fallback 能力。/);
   assert.match(result.wechatMarkdown, /^# AI Infra 早报｜测试标题/m);
   assert.match(result.wechatMarkdown, /\*\*📅 2026-04-27\*\*/);
   assert.match(result.wechatMarkdown, /!\[题图\]\(\/assets\/ai-infra-daily-brief\/2026-04-27-ai-infra-daily-brief\/cover\.png\)/);
   assert.match(result.wechatMarkdown, /> 默认路径开始吸收复杂场景。/);
-  assert.match(result.wechatMarkdown, /\*\*SGLang runtime path\*\*：默认路径吸收了新的调度和 fallback 能力。\[1\]/);
+  assert.match(result.wechatMarkdown, /这组变化共同说明，复杂能力正在进入默认执行路径。/);
+  assert.match(result.wechatMarkdown, /\*\*SGLang runtime path\*\*\[1\]：默认路径吸收了新的调度和 fallback 能力。/);
   assert.match(result.wechatMarkdown, /## 参考/);
   assert.doesNotMatch(result.wechatMarkdown, /## 参考来源/);
   assert.match(result.wechatMarkdown, /\[1\] SGLang PR：https:\/\/github\.com\/example\/pr\/1/);

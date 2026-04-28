@@ -44,6 +44,17 @@ function validateArticleSource(doc) {
   requireField(doc.thesis, 'thesis');
   requireField(doc.cover_prompt, 'cover_prompt');
   requireField(doc.sections, 'sections');
+  doc.sections.forEach((section, sectionIndex) => {
+    requireObject(section, `sections[${sectionIndex}]`);
+    requireField(section.heading, `sections[${sectionIndex}].heading`);
+    requireField(section.summary, `sections[${sectionIndex}].summary`);
+    requireField(section.items, `sections[${sectionIndex}].items`);
+    section.items.forEach((item, itemIndex) => {
+      requireObject(item, `sections[${sectionIndex}].items[${itemIndex}]`);
+      requireField(item.title, `sections[${sectionIndex}].items[${itemIndex}].title`);
+      requireField(item.analysis, `sections[${sectionIndex}].items[${itemIndex}].analysis`);
+    });
+  });
   requireObject(doc.wechat, 'wechat');
   requireField(doc.wechat.title, 'wechat.title');
   requireField(doc.wechat.digest, 'wechat.digest');

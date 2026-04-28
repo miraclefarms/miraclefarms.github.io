@@ -176,11 +176,11 @@ test('research -> selection -> article-source smoke test writes validated artifa
         sections: [
           {
             heading: '一、运行时默认路径',
+            summary: '这组变化共同说明，复杂能力开始回流到默认执行路径。',
             items: [
               {
                 title: 'SGLang runtime path',
-                what_changed: '默认路径吸收了新的图执行和 fallback 能力。',
-                why_it_matters: '这让复杂场景不再依赖旁路实现。',
+                analysis: '默认路径吸收了新的图执行和 fallback 能力。更重要的是，这让复杂场景不再依赖旁路实现，而是开始进入主链路。',
                 references: [
                   { index: 1, title: 'SGLang PR 101', url: 'https://github.com/sgl-project/sglang/pull/101' },
                 ],
@@ -197,6 +197,8 @@ test('research -> selection -> article-source smoke test writes validated artifa
   });
 
   assert.equal(composeCalls[0].role, 'writing');
+  assert.match(composeCalls[0].prompt, /section_first_judgment/);
+  assert.match(composeCalls[0].prompt, /item\.analysis/);
   assert.equal(composeResult.articleSource.title, 'AI Infra 早报｜默认路径开始吸收复杂场景');
   assert.equal(composeResult.articleSource.cover_prompt, 'An editorial cover about default execution paths absorbing advanced runtime behavior.');
   assert.equal(composeResult.articleSource.target_date, targetDate);

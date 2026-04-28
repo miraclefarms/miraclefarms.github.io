@@ -38,15 +38,16 @@ function renderReferenceSuffix(references, formatter) {
 
 function renderSectionItems(section, referenceFormatter) {
   return (section.items || []).map((item) => {
-    const title = item.title ? `**${item.title}**：` : '';
-    const whatChanged = item.what_changed || '';
-    const whyItMatters = item.why_it_matters || '';
+    const title = item.title ? `**${item.title}**` : '';
+    const analysis = item.analysis
+      || [item.what_changed, item.why_it_matters].filter(Boolean).join(' ');
     const references = renderReferenceSuffix(item.references, referenceFormatter);
 
-    return [
-      `${title}${whatChanged}${references}`,
-      whyItMatters,
-    ].filter(Boolean).join('\n\n');
+    if (!analysis) {
+      return `${title}${references}`;
+    }
+
+    return `${title}${references}：${analysis}`;
   }).join('\n\n');
 }
 
@@ -57,8 +58,10 @@ function renderSections(article, referenceFormatter) {
     return [
       `## ${section.heading}`,
       '',
+      section.summary || '',
+      '',
       body,
-    ].join('\n');
+    ].filter(Boolean).join('\n');
   }).join('\n\n');
 }
 
