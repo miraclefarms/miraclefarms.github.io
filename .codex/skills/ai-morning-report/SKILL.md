@@ -16,6 +16,156 @@ description: >
 - 这个 skill 不负责：定义 front matter、引用格式、标题风格、配图规则、GitHub.io 正文格式、微信公众号正文格式。
 - 需要成稿时，直接调用 `/Users/lychee/mycode/miraclefarms.github.io/.codex/skills/miraclefarms-writer/SKILL.md`。
 
+## 机器可读策略配置
+
+下面这段配置会被 `ai-morning-report` 流水线直接读取。后续如果你要改关注仓库、时间窗口、选题偏好，或者想把早报写得更像“节先行、条目嵌入”的判断型文章，优先改这段，而不是先改 JS。
+
+<!-- codex:skill-config:start -->
+{
+  "repos": [
+    "vllm-project/vllm",
+    "sgl-project/sglang",
+    "NVIDIA/TensorRT-LLM",
+    "NVIDIA/Megatron-LM",
+    "ggml-org/llama.cpp",
+    "kvcache-ai/Mooncake",
+    "LMCache/LMCache",
+    "huggingface/trl",
+    "microsoft/DeepSpeed",
+    "ray-project/ray",
+    "openclaw/openclaw"
+  ],
+  "window": {
+    "lookback_days": 3,
+    "timezone": "Asia/Shanghai"
+  },
+  "collection": {
+    "pr_first": true,
+    "require_pull_requests": true,
+    "limits": {
+      "pull_requests": 20,
+      "releases": 5,
+      "commits": 10
+    }
+  },
+  "selection": {
+    "minimum_items": 5,
+    "maximum_items": 8,
+    "per_repo_soft_cap": 2,
+    "prefer_today_first": true,
+    "backfill_from_previous_days": 3
+  },
+  "candidate_priority": {
+    "weights": {
+      "default_path": 6,
+      "runtime": 4,
+      "performance": 4,
+      "feature": 2,
+      "stability": 2,
+      "docs_only": -6,
+      "ci_only": -5,
+      "tests_only": -5
+    },
+    "signal_terms": {
+      "default_path": [
+        "default path",
+        "default-path",
+        "hot path",
+        "critical path"
+      ],
+      "runtime": [
+        "runtime",
+        "serving",
+        "scheduler",
+        "kernel",
+        "executor",
+        "engine",
+        "kv cache",
+        "moe",
+        "quantization",
+        "throughput"
+      ],
+      "performance": [
+        "performance",
+        "latency",
+        "throughput",
+        "optimize",
+        "optimization",
+        "faster",
+        "speedup",
+        "benchmark",
+        "cache",
+        "memory"
+      ],
+      "feature": [
+        "feature",
+        "add ",
+        "support",
+        "enable",
+        "introduce",
+        "launch"
+      ],
+      "stability": [
+        "fix",
+        "stability",
+        "correctness",
+        "reliability",
+        "fallback",
+        "crash",
+        "panic"
+      ],
+      "docs_only": [
+        "docs",
+        "documentation",
+        "readme",
+        "changelog"
+      ],
+      "ci_only": [
+        "ci",
+        "workflow",
+        "github actions",
+        "buildkite",
+        "pipeline"
+      ],
+      "tests_only": [
+        "test",
+        "tests",
+        "pytest",
+        "unit test",
+        "integration test",
+        "coverage",
+        "snapshot"
+      ]
+    }
+  },
+  "clustering": {
+    "minimum_topics": 3,
+    "maximum_topics": 6,
+    "theme_first": true,
+    "max_primary_evidence_per_topic": 3
+  },
+  "dedupe": {
+    "lookback_days": 3,
+    "skip_small_follow_ups_without_new_direction": true
+  },
+  "writer_handoff": {
+    "article_source_shape": {
+      "sections": {
+        "summary_required": true,
+        "items_require_analysis_paragraph": true
+      }
+    },
+    "narrative_rules": {
+      "section_first_judgment": true,
+      "item_analysis_min_sentences": 2,
+      "item_analysis_max_sentences": 4,
+      "avoid_bullet_like_copy": true,
+      "explain_why_it_matters_in_plain_language": true
+    }
+  }
+}
+<!-- codex:skill-config:end -->
+
 ## 快速流程
 
 ### 1. 确定范围
