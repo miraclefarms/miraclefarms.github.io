@@ -15,6 +15,11 @@ DATE=$(TZ="Asia/Shanghai" date +%Y-%m-%d)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPORT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"          # ai-morning-report/
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"     # repo root
+
+# Load .env from project root
+if [ -f "${PROJECT_ROOT}/.env" ]; then
+  set -a; source "${PROJECT_ROOT}/.env"; set +a
+fi
 STAGES_DIR="${REPORT_DIR}/src/stages"
 CONFIG_DIR="${REPORT_DIR}/config"
 WORK_DIR="/tmp/morning-report/${DATE}"
