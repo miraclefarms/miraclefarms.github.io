@@ -23,7 +23,7 @@ fi
 STAGES_DIR="${REPORT_DIR}/src/stages"
 CONFIG_DIR="${REPORT_DIR}/config"
 WORK_DIR="/tmp/morning-report/${DATE}"
-WECHAT_OUT_DIR="${PROJECT_ROOT}/docs/wechat"
+WECHAT_OUT_DIR="${WORK_DIR}/wechat"
 
 POST_FILE="${PROJECT_ROOT}/_posts/${DATE}-ai-infra-daily-brief.md"
 REPO_SCOPE="${CONFIG_DIR}/repo-scope.json"
