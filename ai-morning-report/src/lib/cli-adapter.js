@@ -40,12 +40,13 @@ function spawnCLI(cli, fullPrompt, model) {
   return new Promise((resolve, reject) => {
     let args;
 
+    let stdinPrompt = fullPrompt;
+
     if (cli === 'claude') {
-      // Claude Code non-interactive mode
       args = ['--print', '--output-format', 'text'];
       if (model) args.push('--model', model);
     } else if (cli === 'opencode') {
-      args = ['run'];
+      args = ['run', '--pure'];
       if (model) args.push('--model', model);
     } else if (cli === 'codex') {
       args = ['--quiet'];
@@ -57,7 +58,7 @@ function spawnCLI(cli, fullPrompt, model) {
       env: { ...process.env },
     });
 
-    child.stdin.write(fullPrompt);
+    child.stdin.write(stdinPrompt);
     child.stdin.end();
 
     let stdout = '';
@@ -68,7 +69,11 @@ function spawnCLI(cli, fullPrompt, model) {
 
     child.on('close', (code) => {
       if (code === 0) {
-        resolve(stdout.trim());
+        const clean = stdout
+          .replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '')
+          .replace(/\x1b\][^\x07]*\x07/g, '')
+          .trim();
+        resolve(clean);
       } else {
         reject(new Error(`${cli} exited ${code}\nstderr: ${stderr.slice(0, 500)}`));
       }
@@ -114,6 +119,7 @@ async function runAI({ prompt, skillPath, model, cli: cliOverride } = {}) {
 
 function findSkill(skillName, projectRoot) {
   const candidates = [
+    path.join(projectRoot, '.opencode', 'skills', skillName, 'SKILL.md'),
     path.join(projectRoot, '.codex', 'skills', skillName, 'SKILL.md'),
     path.join(projectRoot, '.claude', 'skills', skillName, 'SKILL.md'),
   ];
