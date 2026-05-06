@@ -148,10 +148,10 @@ if node "${STAGES}/06-wechat-format.js" \
   fi
   if [ -f "$html_out" ]; then
     ok "WeChat HTML created"
-    if grep -q "<style>" "$html_out"; then
-      ok "HTML contains <style> block"
+    if grep -q 'style="' "$html_out"; then
+      ok "HTML has inline styles"
     else
-      fail "HTML missing <style> block" ""
+      fail "HTML missing inline styles" ""
     fi
   else
     fail "WeChat HTML not found" ""

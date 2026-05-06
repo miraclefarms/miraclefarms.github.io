@@ -147,8 +147,14 @@ function render(markdownContent, coverImagePath) {
   }
 
   const bodyHTML = renderMarkdown(fullBody);
+  const styledHTML = `<style>${resolvedCSS}</style>\n<div id="output">\n${bodyHTML}\n</div>`;
 
-  return `<style>${resolvedCSS}</style>\n<div id="output">\n${bodyHTML}\n</div>`;
+  try {
+    const juice = require('juice');
+    return juice(styledHTML, { removeStyleTags: true });
+  } catch {
+    return styledHTML;
+  }
 }
 
 module.exports = { render, parseFrontMatter, selectTheme, resolveCSSVars };
