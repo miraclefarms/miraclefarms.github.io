@@ -10,17 +10,16 @@ const { spawn, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const SUPPORTED = ['claude', 'opencode', 'codex', 'mock'];
+const SUPPORTED = ['opencode', 'claude', 'codex', 'mock'];
+const DEFAULT_CLI = 'opencode';
 
 function detectCLI() {
-  const preferred = process.env.AI_CLI;
-  if (preferred) {
-    if (!SUPPORTED.includes(preferred)) {
-      throw new Error(`AI_CLI=${preferred} is not supported. Use: ${SUPPORTED.join(', ')}`);
-    }
-    return preferred;
+  const preferred = process.env.AI_CLI || DEFAULT_CLI;
+  if (!SUPPORTED.includes(preferred)) {
+    throw new Error(`AI_CLI=${preferred} is not supported. Use: ${SUPPORTED.join(', ')}`);
   }
-  for (const cli of SUPPORTED) {
+  if (preferred === 'mock') return 'mock';
+  for (const cli of [preferred, ...SUPPORTED.filter(c => c !== preferred && c !== 'mock')]) {
     try {
       execSync(`which ${cli}`, { stdio: 'ignore' });
       return cli;

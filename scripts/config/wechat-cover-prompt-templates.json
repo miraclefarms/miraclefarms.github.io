@@ -1,7 +1,15 @@
 {
-  "version": 1,
-  "defaultTemplateId": "hand-drawn-infographic-card-v1",
+  "version": 2,
+  "defaultTemplateId": "dark-tech-infographic-v1",
   "templates": {
+    "dark-tech-infographic-v1": {
+      "id": "dark-tech-infographic-v1",
+      "label": "Dark tech infographic",
+      "imageConfig": {
+        "aspectRatio": "9:16"
+      },
+      "prompt": "Create a 9:16 vertical infographic card with a dark background (#1a1a2e) and emerald green (#2e9e6b) accent color. Style: modern, minimalist, professional tech aesthetic. Include subtle circuit board traces, neural network nodes, or data flow patterns as background decoration. Use clean geometric shapes and thin connecting lines to convey technical precision. No text overlays, no faces. The overall mood should be futuristic, calm, and authoritative — suitable for an AI infrastructure daily briefing cover."
+    },
     "hand-drawn-infographic-card-v1": {
       "id": "hand-drawn-infographic-card-v1",
       "label": "Hand-drawn infographic card",

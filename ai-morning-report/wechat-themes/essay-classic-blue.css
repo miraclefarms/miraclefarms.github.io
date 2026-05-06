@@ -1,4 +1,4 @@
-/* Essay 经典蓝主题 */
+/* Essay 经典蓝主题 — Doocs 经典风格 */
 :root {
   --accent: #2563eb;
   --accent-dark: #1e40af;
@@ -6,16 +6,26 @@
   --blockquote-color: #1e3a8a;
 }
 
-#output h1 { color: #1e40af; border-bottom: 2px solid #2563eb; padding-bottom: 0.3em; }
-#output h2 { color: #2563eb; border-left: 4px solid #2563eb; padding-left: 0.6em; }
-#output h3 { color: #3b82f6; }
+#output h2 {
+  display: table;
+  color: #fff;
+  background: var(--accent);
+  margin: 2.5em auto 1.5em;
+  padding: 0.3em 1.5em;
+  border-radius: 4px;
+  text-align: center;
+}
 
-#output strong { color: #1e40af; }
+#output h1 { color: var(--accent-dark); }
+
+#output h3 { color: #333; border-left-color: var(--accent); }
+
+#output strong { color: var(--accent-dark); }
 
 #output blockquote {
-  border-left-color: #2563eb;
-  background: #eff6ff;
-  color: #1e3a8a;
+  border-left-color: var(--accent);
+  background: var(--blockquote-bg);
+  color: var(--blockquote-color);
 }
 
 #output blockquote:last-of-type {
@@ -28,11 +38,12 @@
 
 #output blockquote:last-of-type strong { color: #fff; }
 
-/* Essay 图注样式 */
+#output blockquote:last-of-type > p { color: #fff; }
+
 #output p em {
   display: block;
   text-align: center;
   font-size: 13px;
-  color: #666;
+  color: #888;
   margin-top: -0.5em;
 }

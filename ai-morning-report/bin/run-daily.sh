@@ -58,7 +58,8 @@ COVER_PATH=""
 node "${STAGES_DIR}/04-cover.js" \
   "${DATE}" \
   "${POST_FILE}" \
-  "${WORK_DIR}/assets" || true
+  "${WORK_DIR}/assets" \
+  "${PROJECT_ROOT}" || true
 # Detect generated cover (any extension)
 for ext in png jpg webp; do
   if [ -f "${WORK_DIR}/assets/cover.${ext}" ]; then

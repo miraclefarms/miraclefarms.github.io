@@ -1,4 +1,4 @@
-/* Brief 翡翠绿主题 */
+/* Brief 翡翠绿主题 — Doocs 经典风格 */
 :root {
   --accent: #2e9e6b;
   --accent-dark: #1f6e4a;
@@ -6,19 +6,29 @@
   --blockquote-color: #2e6b4f;
 }
 
-#output h1 { color: #1f6e4a; border-bottom: 2px solid #2e9e6b; padding-bottom: 0.3em; }
-#output h2 { color: #2e9e6b; border-left: 4px solid #2e9e6b; padding-left: 0.6em; }
-#output h3 { color: #2e9e6b; }
-
-#output strong { color: #1f6e4a; }
-
-#output blockquote {
-  border-left-color: #2e9e6b;
-  background: #f0faf5;
-  color: #2e6b4f;
+/* H2: 居中实色背景条 + 白字（Doocs 经典标志性样式） */
+#output h2 {
+  display: table;
+  color: #fff;
+  background: var(--accent);
+  margin: 2.5em auto 1.5em;
+  padding: 0.3em 1.5em;
+  border-radius: 4px;
+  text-align: center;
 }
 
-/* 结论 blockquote（最后一个）*/
+#output h1 { color: var(--accent-dark); }
+
+#output h3 { color: #333; border-left-color: var(--accent); }
+
+#output strong { color: var(--accent-dark); }
+
+#output blockquote {
+  border-left-color: var(--accent);
+  background: var(--blockquote-bg);
+  color: var(--blockquote-color);
+}
+
 #output blockquote:last-of-type {
   border-left: none;
   background: linear-gradient(135deg, #2e9e6b 0%, #1f6e4a 100%);
@@ -28,3 +38,14 @@
 }
 
 #output blockquote:last-of-type strong { color: #fff; }
+
+#output blockquote:last-of-type > p { color: #fff; }
+
+/* 图注 */
+#output p em {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-top: -0.5em;
+}

@@ -13,11 +13,11 @@ test('cover prompt templates are stored in a versioned template file with a lock
   const registry = loadWechatCoverPromptTemplates(projectRoot);
   const template = resolveWechatCoverPromptTemplate({}, registry);
 
-  assert.equal(registry.version, 1);
-  assert.equal(registry.defaultTemplateId, 'hand-drawn-infographic-card-v1');
-  assert.equal(template.id, 'hand-drawn-infographic-card-v1');
+  assert.equal(registry.version, 2);
+  assert.equal(registry.defaultTemplateId, 'dark-tech-infographic-v1');
+  assert.equal(template.id, 'dark-tech-infographic-v1');
   assert.equal(template.imageConfig.aspectRatio, '9:16');
-  assert.match(template.prompt, /Create a hand-drawn style infographic card with a 9:16 vertical ratio\./);
+  assert.match(template.prompt, /9:16 vertical infographic card/);
 });
 
 test('cover prompt builder uses the locked template and article body context without conflicting old requirements', () => {
@@ -35,8 +35,8 @@ test('cover prompt builder uses the locked template and article body context wit
     registry,
   });
 
-  assert.match(prompt, /9:16 vertical ratio/);
-  assert.match(prompt, /Summarize the content based on the main body of the article/);
+  assert.match(prompt, /9:16 vertical infographic card/);
+  assert.match(prompt, /dark background/);
   assert.match(prompt, /Article title:/);
   assert.match(prompt, /Main body summary:/);
   assert.doesNotMatch(prompt, /landscape 16:9/i);
@@ -63,7 +63,7 @@ test('cover image request inherits aspect ratio from the locked template instead
   assert.equal(payload.model, 'openrouter/mock-image-model');
   assert.equal(payload.image_config.aspect_ratio, '9:16');
   assert.equal(payload.image_config.image_size, '1536x1024');
-  assert.match(payload.messages[0].content, /9:16 vertical ratio/);
+  assert.match(payload.messages[0].content, /9:16 vertical infographic card/);
 });
 
 test('title image insertion works even when articles no longer contain inline Chinese\/English prompt blocks', () => {
