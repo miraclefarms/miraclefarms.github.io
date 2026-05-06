@@ -1,0 +1,94 @@
+/* WeChat base styles — shared by all themes */
+#output {
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #333;
+  word-break: break-word;
+}
+
+#output p {
+  margin: 1em 0;
+  padding: 0;
+}
+
+#output h1, #output h2, #output h3 {
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+}
+
+#output h1 { font-size: 20px; }
+#output h2 { font-size: 17px; }
+#output h3 { font-size: 15px; }
+
+#output blockquote {
+  margin: 1em 0;
+  padding: 0.6em 1em;
+  border-left: 4px solid var(--accent);
+  background: var(--blockquote-bg);
+  color: var(--blockquote-color);
+  font-size: 14px;
+}
+
+#output strong { font-weight: bold; color: var(--accent-dark); }
+
+#output code {
+  font-family: "SF Mono", Menlo, "Courier New", monospace;
+  font-size: 13px;
+  background: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #c7254e;
+}
+
+#output pre {
+  background: #f5f5f5;
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1em 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#output pre code {
+  background: none;
+  padding: 0;
+  color: #333;
+}
+
+#output ul, #output ol {
+  margin: 0.8em 0;
+  padding-left: 1.6em;
+}
+
+#output li { margin: 0.3em 0; }
+
+#output hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 1.5em 0;
+}
+
+#output img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+#output table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 14px;
+}
+
+#output th, #output td {
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+#output th { background: #f5f5f5; font-weight: bold; }
