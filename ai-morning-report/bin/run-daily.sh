@@ -9,12 +9,21 @@
 #   WECHAT_THUMB_MEDIA_ID                  (fallback cover if no generated image)
 #   SKIP_WECHAT=1                          (skip WeChat stages)
 
-set -euo pipefail
+set -uo pipefail
 
 DATE=$(TZ="Asia/Shanghai" date +%Y-%m-%d)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPORT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"          # ai-morning-report/
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"     # repo root
+LOG_DIR="/tmp/morning-report/logs"
+LOG_FILE="${LOG_DIR}/${DATE}.log"
+
+mkdir -p "${LOG_DIR}"
+
+# Rotate: keep last 7 days
+find "${LOG_DIR}" -name '*.log' -mtime +7 -delete 2>/dev/null || true
+
+exec >> "${LOG_FILE}" 2>&1
 
 # Load .env from project root
 if [ -f "${PROJECT_ROOT}/.env" ]; then
@@ -32,40 +41,56 @@ mkdir -p "${WORK_DIR}"
 
 log() { echo "[$(TZ="Asia/Shanghai" date '+%H:%M:%S')] $*"; }
 
+FINAL_STATUS="SUCCESS"
+
 log "=== AI Morning Report ${DATE} ==="
 log "AI_CLI: ${AI_CLI:-auto}"
 
 # ── Stage 1: Fetch raw data ────────────────────────────────────────────────
 log "[1/7] Fetching repo data..."
-bash "${STAGES_DIR}/01-fetch.sh" \
-  "${DATE}" \
-  "${WORK_DIR}/raw-data.md" \
-  "${REPO_SCOPE}"
+if ! bash "${STAGES_DIR}/01-fetch.sh" \
+    "${DATE}" \
+    "${WORK_DIR}/raw-data.md" \
+    "${REPO_SCOPE}"; then
+  log "FAILED at stage 1 (fetch)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
 # ── Stage 2: AI analysis ───────────────────────────────────────────────────
-log "[2/7] Analyzing (AI call 1/2)..."
-node "${STAGES_DIR}/02-analyze.js" \
-  "${DATE}" \
-  "${WORK_DIR}/raw-data.md" \
-  "${WORK_DIR}/material.md" \
-  "${PROJECT_ROOT}"
+log "[2/7] Analyzing (AI call 1/3)..."
+if ! node "${STAGES_DIR}/02-analyze.js" \
+    "${DATE}" \
+    "${WORK_DIR}/raw-data.md" \
+    "${WORK_DIR}/material.md" \
+    "${PROJECT_ROOT}"; then
+  log "FAILED at stage 2 (analyze)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
 # ── Stage 3: AI writing ────────────────────────────────────────────────────
-log "[3/7] Writing brief (AI call 2/2)..."
-node "${STAGES_DIR}/03-write.js" \
-  "${DATE}" \
-  "${WORK_DIR}/material.md" \
-  "${PROJECT_ROOT}"
+log "[3/7] Writing brief (AI call 2/3)..."
+if ! node "${STAGES_DIR}/03-write.js" \
+    "${DATE}" \
+    "${WORK_DIR}/material.md" \
+    "${PROJECT_ROOT}"; then
+  log "FAILED at stage 3 (write)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
 # ── Stage 4: Cover image (non-blocking) ───────────────────────────────────
-log "[4/7] Generating cover image (optional)..."
+log "[4/7] Generating cover image (AI call 3/3)..."
 COVER_PATH=""
 node "${STAGES_DIR}/04-cover.js" \
   "${DATE}" \
   "${POST_FILE}" \
   "${WORK_DIR}/assets" \
   "${PROJECT_ROOT}" || true
-# Detect generated cover (any extension)
 for ext in png jpg webp; do
   if [ -f "${WORK_DIR}/assets/cover.${ext}" ]; then
     COVER_PATH="${WORK_DIR}/assets/cover.${ext}"
@@ -76,28 +101,43 @@ done
 
 # ── Stage 5: Publish to GitHub.io ─────────────────────────────────────────
 log "[5/7] Publishing to GitHub.io..."
-bash "${STAGES_DIR}/05-publish.sh" "${DATE}" "${PROJECT_ROOT}"
+if ! bash "${STAGES_DIR}/05-publish.sh" "${DATE}" "${PROJECT_ROOT}"; then
+  log "FAILED at stage 5 (publish)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
 # ── Stage 6: WeChat formatting ────────────────────────────────────────────
 if [ "${SKIP_WECHAT:-0}" = "1" ]; then
   log "[6/7] Skipping WeChat (SKIP_WECHAT=1)"
   log "[7/7] Skipping WeChat push"
-  log "=== Done (GitHub.io only) ==="
+  log "=== ${FINAL_STATUS} (GitHub.io only) ==="
   exit 0
 fi
 
 log "[6/7] Formatting for WeChat..."
-node "${STAGES_DIR}/06-wechat-format.js" \
-  "${DATE}" \
-  "${POST_FILE}" \
-  "${WECHAT_OUT_DIR}" \
-  "${PROJECT_ROOT}" \
-  "${COVER_PATH}"
+if ! node "${STAGES_DIR}/06-wechat-format.js" \
+    "${DATE}" \
+    "${POST_FILE}" \
+    "${WECHAT_OUT_DIR}" \
+    "${PROJECT_ROOT}" \
+    "${COVER_PATH}"; then
+  log "FAILED at stage 6 (wechat-format)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
 # ── Stage 7: WeChat push ──────────────────────────────────────────────────
 log "[7/7] Pushing WeChat draft..."
-node "${STAGES_DIR}/07-wechat-push.js" \
-  "${WECHAT_OUT_DIR}/${DATE}-ai-infra-daily-brief-wechat.md" \
-  "${COVER_PATH}"
+if ! node "${STAGES_DIR}/07-wechat-push.js" \
+    "${WECHAT_OUT_DIR}/${DATE}-ai-infra-daily-brief-wechat.md" \
+    "${COVER_PATH}"; then
+  log "FAILED at stage 7 (wechat-push)"
+  FINAL_STATUS="FAILED"
+  log "=== ${FINAL_STATUS} ==="
+  exit 1
+fi
 
-log "=== Done ==="
+log "=== ${FINAL_STATUS} ==="
