@@ -130,7 +130,7 @@ async function generateViaOpenRouter(prompt) {
   if (!apiKey) throw new Error('OPENROUTER_API_KEY not set');
 
   const payload = JSON.stringify({
-    model: process.env.COVER_IMAGE_MODEL || 'google/gemini-2.0-flash-exp:free',
+    model: process.env.COVER_IMAGE_MODEL || 'google/gemini-2.5-flash-image',
     messages: [{ role: 'user', content: prompt }],
     modalities: ['image', 'text'],
   });
