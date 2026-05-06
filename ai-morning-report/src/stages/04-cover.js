@@ -90,6 +90,8 @@ async function generateCoverPrompt(date, postContent, projectRoot) {
   const body = extractBody(postContent);
   const prompt = `你是一个技术配图提示词专家。请阅读以下 AI Infra 早报全文，生成一段用于 AI 图片生成的提示词。
 
+**重要约束：不要读取任何文件，不要创建任何文件，不要使用任何工具。只需要将提示词作为纯文本输出。**
+
 要求：
 - 提示词用英文撰写
 - 控制在 500 字符以内

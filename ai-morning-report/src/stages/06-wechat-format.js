@@ -27,6 +27,8 @@ async function wechatFormat(date, postFile, outputDir, projectRoot, coverImagePa
   // Step A: AI semantic rewrite
   const prompt = `请将以下 GitHub.io 版日报改写为微信公众号格式。
 
+**重要约束：不要读取任何文件，不要创建任何文件，不要使用任何工具。只需要将改写后的 markdown 作为纯文本输出。输出第一行必须是 ---。**
+
 报道日期：${date}
 
 <github-post>

@@ -13,20 +13,16 @@ const { runAI, findSkill } = require('../lib/cli-adapter');
 const REQUIRED_FM_FIELDS = ['title', 'date', 'intro'];
 
 function extractAndValidate(raw) {
-  // Normalize line endings
   let text = raw.replace(/\r\n/g, '\n');
 
-  // Strip markdown code fence if AI wrapped the entire output (e.g. ```yaml or ```markdown)
   text = text.replace(/^```[a-z]*\n/, '').replace(/\n```\s*$/, '\n');
 
-  // Find front matter start (---) — skip any preamble text
   const fmStart = text.search(/(?:^|\n)---\n/);
   if (fmStart === -1) {
     const preview = text.slice(0, 300).replace(/\n/g, '↵');
     throw new Error(`No front matter found in AI output. First 300 chars: ${preview}`);
   }
 
-  // Slice from the --- line (handle the leading \n from the regex)
   const content = text.slice(fmStart).replace(/^\n/, '');
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) throw new Error('Malformed front matter in AI output');
@@ -38,6 +34,28 @@ function extractAndValidate(raw) {
     }
   }
   return content;
+}
+
+function tryReadFallbackFile(date, projectRoot) {
+  const postsDir = path.join(projectRoot, '_posts');
+  const candidates = [
+    path.join(postsDir, `${date}-ai-infra-daily-brief.md`),
+  ];
+  const entries = fs.existsSync(postsDir) ? fs.readdirSync(postsDir) : [];
+  for (const e of entries) {
+    if (e.startsWith(date) && e.endsWith('.md') && !candidates.some(c => c.endsWith(e))) {
+      candidates.push(path.join(postsDir, e));
+    }
+  }
+  for (const p of candidates) {
+    if (!fs.existsSync(p)) continue;
+    const content = fs.readFileSync(p, 'utf8');
+    try {
+      extractAndValidate(content);
+      return { content, path: p };
+    } catch {}
+  }
+  return null;
 }
 
 async function write(date, materialFile, projectRoot) {
@@ -58,7 +76,11 @@ ${material}
 
 请按照上面 miraclefarms-writer skill 的要求，生成一篇完整的 GitHub.io 版 AI Infra 早报（kind: brief）。
 
-**输出必须直接以 --- 开始（YAML front matter），不要任何前置说明、不要"好的"、不要代码块包裹。**
+**重要约束：**
+- 不要读取任何文件，不要创建任何文件，不要使用任何工具
+- 只需要将文章内容作为纯文本输出到 stdout
+- 输出必须直接以 --- 开始（YAML front matter），不要任何前置说明、不要"好的"、不要解释、不要代码块包裹
+- 输出第一行必须是 ---
 
 front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（荔枝不耐思）、kind（brief）、category（Brief）、series（ai-infra-daily-brief）、intro
 正文结构：开头综述段（无 H2）→ H2 章节（中文数字编号：一、二、三、）→ 可选"今天真正值得记住的判断"→ 分隔线 → ## 参考来源
@@ -66,8 +88,22 @@ front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（
 所有 URL 必须来自素材包中的真实链接，不要编造。重点内容加粗。控制在 800-1500 字。`;
 
   console.log('[write] Calling AI...');
-  const raw = await runAI({ prompt, skillPath });
-  const result = extractAndValidate(raw);
+  let raw = await runAI({ prompt, skillPath });
+
+  let result;
+  try {
+    result = extractAndValidate(raw);
+  } catch (validateErr) {
+    console.warn(`[write] AI stdout parse failed: ${validateErr.message}`);
+    console.log('[write] Checking if AI wrote file directly...');
+    const fallback = tryReadFallbackFile(date, projectRoot);
+    if (fallback) {
+      result = fallback.content;
+      console.log(`[write] Recovered from fallback file: ${fallback.path}`);
+    } else {
+      throw validateErr;
+    }
+  }
 
   const postsDir = path.join(projectRoot, '_posts');
   fs.mkdirSync(postsDir, { recursive: true });
