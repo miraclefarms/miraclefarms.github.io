@@ -96,7 +96,7 @@ async function generateCoverPrompt(date, postContent, projectRoot) {
 - 提示词用英文撰写
 - 控制在 500 字符以内
 - 突出当天最重要的 PR 内容或整体技术趋势
-- 风格：暗色背景 + 翡翠绿配色，科技信息图风格，手绘线条质感
+- 风格：米白/米色纸张质感背景，手绘插画风格，红黑配色点缀
 - 不要出现文字/字母叠加
 - 不要描述具体的人脸
 
@@ -203,7 +203,7 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
     if (!aiPrompt) {
       const fm = parseFrontMatter(postContent);
       const cleanTitle = (fm.title || '').replace(/AI Infra 早报｜/, '').trim();
-      aiPrompt = `Create a clean, modern tech infographic card. Dark background with emerald green accents. Topic: "${cleanTitle}". Minimalist, professional, hand-drawn diagram aesthetic. No text overlays.`;
+      aiPrompt = `Create a hand-drawn style infographic card. Beige or off-white paper texture background, warm rustic aesthetic. Topic: "${cleanTitle}". Simple hand-drawn illustrations, no text overlays, no faces.`;
       console.log('[cover] Using fallback prompt');
     }
 
