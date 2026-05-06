@@ -36,7 +36,11 @@ ${postContent}
 按照上面 wechat-formatter skill 的规则输出完整 markdown（含 front matter）。直接开始，不要任何前缀。`;
 
   console.log('[wechat-format] Step A: AI rewriting for WeChat...');
-  const wechatMd = await runAI({ prompt, skillPath });
+  const rawMd = await runAI({ prompt, skillPath });
+  const wechatMd = rawMd
+    .replace(/\r\n/g, '\n')
+    .replace(/^```[a-z]*\n/, '')
+    .replace(/\n```\s*$/, '\n');
 
   fs.mkdirSync(outputDir, { recursive: true });
   const mdPath = path.join(outputDir, `${date}-ai-infra-daily-brief-wechat.md`);

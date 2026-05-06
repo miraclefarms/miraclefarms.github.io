@@ -29,26 +29,35 @@ function parseFrontMatter(content) {
 
 function wechatRequest(method, urlPath, accessToken, body, isForm) {
   return new Promise((resolve, reject) => {
-    const base = 'https://api.weixin.qq.com';
     const fullPath = `${urlPath}${urlPath.includes('?') ? '&' : '?'}access_token=${accessToken}`;
+    const headers = isForm ? body.getHeaders() : { 'Content-Type': 'application/json; charset=utf-8' };
+
+    let bodyBuf = null;
+    if (!isForm && body != null) {
+      const str = typeof body === 'string' ? body : JSON.stringify(body);
+      bodyBuf = Buffer.from(str, 'utf8');
+      headers['Content-Length'] = bodyBuf.length;
+    }
+
     const options = {
       hostname: 'api.weixin.qq.com',
       path: fullPath,
       method,
-      headers: isForm ? body.getHeaders() : { 'Content-Type': 'application/json' },
+      headers,
     };
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', (d) => { data += d; });
       res.on('end', () => {
         try { resolve(JSON.parse(data)); }
-        catch { resolve({ raw: data }); }
+        catch { resolve({ raw: data, status: res.statusCode }); }
       });
     });
     req.on('error', reject);
     req.setTimeout(30000, () => req.destroy(new Error('timeout')));
     if (isForm) body.pipe(req);
-    else { req.write(typeof body === 'string' ? body : JSON.stringify(body)); req.end(); }
+    else if (bodyBuf) { req.write(bodyBuf); req.end(); }
+    else { req.end(); }
   });
 }
 
@@ -70,8 +79,25 @@ async function uploadCoverImage(accessToken, imagePath) {
     filename: path.basename(imagePath),
     contentType: mime.lookup(imagePath) || 'image/png',
   });
-  const res = await wechatRequest('POST', '/cgi-bin/material/add_material?type=image', accessToken, form, true);
+  const res = await new Promise((resolve, reject) => {
+    form.submit({
+      protocol: 'https:',
+      host: 'api.weixin.qq.com',
+      path: `/cgi-bin/material/add_material?type=image&access_token=${accessToken}`,
+      method: 'POST',
+    }, (err, response) => {
+      if (err) return reject(err);
+      let data = '';
+      response.on('data', (d) => { data += d; });
+      response.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch { resolve({ raw: data }); }
+      });
+      response.on('error', reject);
+    });
+  });
   if (res.errcode) throw new Error(`upload cover: ${res.errcode} ${res.errmsg}`);
+  if (!res.media_id) throw new Error(`upload cover: no media_id in response: ${JSON.stringify(res).slice(0, 200)}`);
   return res.media_id;
 }
 
@@ -102,9 +128,12 @@ async function pushWechatDraft(wechatMdPath, coverImagePath) {
   const mdContent = fs.readFileSync(wechatMdPath, 'utf8');
   const { fm } = parseFrontMatter(mdContent);
 
-  const htmlContent = fs.existsSync(htmlPath)
+  let htmlContent = fs.existsSync(htmlPath)
     ? fs.readFileSync(htmlPath, 'utf8')
     : mdContent; // fallback: raw markdown (renders poorly but doesn't fail)
+  // WeChat draft uses thumb_media_id for the cover; strip any base64-embedded
+  // cover image from the body to stay under the content size limit.
+  htmlContent = htmlContent.replace(/<img[^>]+src="data:image\/[^"]+"[^>]*>/g, '');
 
   const title = fm.title || 'AI Infra 早报';
   const author = fm.author || '荔枝不耐思';

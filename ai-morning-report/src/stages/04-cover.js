@@ -63,7 +63,7 @@ async function generateViaOpenRouter(prompt) {
   const payload = JSON.stringify({
     model: process.env.COVER_IMAGE_MODEL || 'google/gemini-2.0-flash-exp:free',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 1,
+    modalities: ['image', 'text'],
   });
 
   const { status, body } = await httpPost(
