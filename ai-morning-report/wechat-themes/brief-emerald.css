@@ -1,0 +1,30 @@
+/* Brief 翡翠绿主题 */
+:root {
+  --accent: #2e9e6b;
+  --accent-dark: #1f6e4a;
+  --blockquote-bg: #f0faf5;
+  --blockquote-color: #2e6b4f;
+}
+
+#output h1 { color: #1f6e4a; border-bottom: 2px solid #2e9e6b; padding-bottom: 0.3em; }
+#output h2 { color: #2e9e6b; border-left: 4px solid #2e9e6b; padding-left: 0.6em; }
+#output h3 { color: #2e9e6b; }
+
+#output strong { color: #1f6e4a; }
+
+#output blockquote {
+  border-left-color: #2e9e6b;
+  background: #f0faf5;
+  color: #2e6b4f;
+}
+
+/* 结论 blockquote（最后一个）*/
+#output blockquote:last-of-type {
+  border-left: none;
+  background: linear-gradient(135deg, #2e9e6b 0%, #1f6e4a 100%);
+  color: #fff;
+  border-radius: 6px;
+  padding: 1em 1.2em;
+}
+
+#output blockquote:last-of-type strong { color: #fff; }

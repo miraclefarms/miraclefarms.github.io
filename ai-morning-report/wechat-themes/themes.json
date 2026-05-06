@@ -1,0 +1,15 @@
+{
+  "default": "brief",
+  "themes": {
+    "brief": {
+      "name": "Brief 翡翠绿",
+      "files": ["base.css", "brief-emerald.css"],
+      "wechatVariants": ["brief"]
+    },
+    "essay": {
+      "name": "Essay 经典蓝",
+      "files": ["base.css", "essay-classic-blue.css"],
+      "wechatVariants": ["essay-longform"]
+    }
+  }
+}

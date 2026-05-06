@@ -1,115 +1,119 @@
-# AI Morning Report Scaffold - SPEC
+# AI Morning Report — SPEC v2
 
-## 概述
+每天 05:30 Asia/Shanghai 自动运行，生成 AI Infra 日报并发布到 GitHub.io + 微信公众号草稿箱。
 
-在 `miraclefarms.github.io/ai-morning-report/` 下搭建脚手架程序，每天 5 AM 自动生成 AI Infra 早报，通过 opencode CLI 调用 AI 执行 skill 来完成调研和写作。
+## 核心设计原则
 
-## 核心流程（修改后）
+- **AI 做 AI 的事，脚本做脚手架**：数据抓取用 `gh` CLI，AI 分析+写作调用 CLI，格式渲染用 Node 工具
+- **Skills 是核心知识层**：提示词逻辑沉淀在 `.codex/skills/`，脚本不内嵌长提示词
+- **Multi-CLI 可互换**：通过 `cli-adapter.js` 支持 claude / opencode / codex，`AI_CLI` 环境变量选择
+- **配图不阻塞发布**：Stage 4 失败只告警，GitHub.io 和微信草稿箱均可无图发布
+
+## 流程
 
 ```
-systemd timer (5:00 AM Asia/Shanghai)
+05:30 launchd
   → bin/run-daily.sh
-    → Stage 1: 调研 (调用 ai-morning-report skill)
-    → Stage 2: 写作 (调用 miraclefarms-writer skill)
-    → Stage 3: 图片处理（封面生成 + 正文配图抓取）← 原来在 pre-push hook 中
-    → Stage 4: GitHub.io push
-    → Stage 5: WeChat 草稿推送
+      ├── [1] 01-fetch.sh       纯 gh CLI，并行抓取 merged PR + release + commits
+      ├── [2] 02-analyze.js     AI call 1：筛选/聚类 → material.md
+      ├── [3] 03-write.js       AI call 2：写作 → _posts/YYYY-MM-DD-ai-infra-daily-brief.md
+      ├── [4] 04-cover.js       封面图生成（非阻塞，失败继续）
+      ├── [5] 05-publish.sh     git push → GitHub.io
+      ├── [6] 06-wechat-format.js  AI 改写（wechat-formatter skill）+ CSS 渲染 → .md + .html
+      └── [7] 07-wechat-push.js    WeChat draft API → 草稿箱
 ```
 
-**关键变更：** 微信公众号题图生成从 `pre-push hook` 移至 stage 3，在文章生成后、git push 之前完成。
+## 文件结构
 
-## 组件
-
-### bin/
-- `run-daily.sh` — 入口脚本，被 systemd timer 调用
-
-### src/stages/
-- `01-research.js` — 调用 ai-morning-report skill 进行调研
-- `02-write.js` — 调用 miraclefarms-writer skill 生成 GitHub.io + 微信文章
-- `03-images.js` — 封面图生成（调用 OpenRouter）+ 正文配图抓取
-- `04-publish.js` — GitHub.io push
-- `05-wechat.js` — 微信公众号草稿推送
-
-### src/lib/
-- `openai.js` — opencode CLI 调用封装
-- `image-fetch.js` — 从参考链接抓取正文配图（预留）
-- `wechat-push.js` — 公众号草稿 API 调用（预留）
-
-### config/
-- `repo-scope.json` — 追踪的仓库列表
-- `model-config.json` — AI 模型配置（默认 minimax-2.7，可通过 AI_MODEL 环境变量覆盖）
-
-### docs/
-- `SPEC.md` — 本设计文档
-- `ai-morning-report.timer` — systemd timer 配置
-- `ai-morning-report.service` — systemd service 配置
-
-## 阶段化 commit 记录
-
-| Phase | Commit | 内容 |
-|-------|--------|------|
-| 1 | 585be3b | 目录结构、model config、repo scope 配置 |
-| 2 | f24eb55 | openai.js 封装 opencode CLI 调用 |
-| 3-4 | b56eea5 | research + write stages，调用 ai-morning-report 和 miraclefarms-writer skills |
-| 5-8 | 5308661 | image、publish、wechat stages、run-daily 脚本、systemd timer 配置 |
-| - | (pending) | pre-push hook 改为 NOOP（图片生成已移至 stage 3） |
-
-## 模型配置
-
-config/model-config.json:
-```json
-{
-  "default": "minimax-2.7",
-  "available": ["minimax-2.7", "gpt-4o", "claude-sonnet-4"]
-}
+```
+ai-morning-report/
+  bin/
+    run-daily.sh              入口，launchd 调用
+  src/
+    lib/
+      cli-adapter.js          Multi-CLI 封装（claude/opencode/codex）
+      wechat-renderer.js      Markdown → Styled HTML（不依赖浏览器）
+    stages/
+      01-fetch.sh             并行 gh CLI 数据抓取
+      02-analyze.js           AI：筛选 + 聚类
+      03-write.js             AI：撰写 GitHub.io 日报
+      04-cover.js             封面图生成（OpenRouter）
+      05-publish.sh           git add/commit/push
+      06-wechat-format.js     AI 改写 + CSS 渲染
+      07-wechat-push.js       WeChat API
+  wechat-themes/
+    base.css                  公共基础样式
+    brief-emerald.css         Brief 翡翠绿主题
+    essay-classic-blue.css    Essay 经典蓝主题
+    themes.json               主题注册表（wechat_variant → css 文件）
+  config/
+    repo-scope.json           追踪的仓库列表 + 时间窗口
+    model-config.json         默认模型配置
+  docs/
+    SPEC.md                   本文档
+    ai-morning-report.plist   macOS launchd 配置
 ```
 
-通过环境变量 `AI_MODEL` 覆盖默认模型。
+## Skills（核心知识层）
 
-## 图片处理流程（修改后的关键变更）
+| Skill | 路径 | 用途 |
+|-------|------|------|
+| `ai-morning-report` | `.codex/skills/ai-morning-report/` | 调研范围、筛选标准、聚类规则 |
+| `miraclefarms-writer` | `.codex/skills/miraclefarms-writer/` | GitHub.io brief/essay 写作规范 |
+| `wechat-formatter` | `.codex/skills/wechat-formatter/` | 公众号语义改写规则 |
 
-原流程：pre-push hook → 调用 publish-wechat.js → 生成题图 → push
+## 环境变量
 
-**新流程：**
-```
-Stage 3 (03-images.js):
-  1. 读取 docs/wechat/{date}-ai-infra-daily-brief-wechat.md
-  2. 调用 OpenRouter API 生成封面图
-  3. 将封面图写入 /tmp/morning-report/{date}/assets/cover.png
-  4. 更新 wechat 文章中的题图路径（insertGeneratedTitleImageMarkdown）
-  5. 抓取正文中的外部图片到本地 assets 目录
-Stage 4: git add + commit + push（包含更新后的 wechat 文章和本地图片）
-Stage 5: WeChat draft API（使用已生成的本地封面图作为 thumb_media_id）
-```
+| 变量 | 必填 | 说明 |
+|------|------|------|
+| `AI_CLI` | 否 | `claude`/`opencode`/`codex`，未设则自动探测 |
+| `OPENROUTER_API_KEY` | 否 | 封面图生成（无则跳过）|
+| `COVER_IMAGE_MODEL` | 否 | 默认 `google/gemini-2.0-flash-exp:free` |
+| `WECHAT_APPID` | 是* | 微信公众号 AppID |
+| `WECHAT_APPSECRET` | 是* | 微信公众号 AppSecret |
+| `WECHAT_THUMB_MEDIA_ID` | 否 | 无封面图时的备用 media_id |
+| `SKIP_WECHAT=1` | 否 | 跳过 Stage 6-7（只发 GitHub.io）|
 
-## 输出路径
+*`SKIP_WECHAT=1` 时可不填。
 
-- GitHub.io 文章：`../_posts/YYYY-MM-DD-ai-infra-daily-brief.md`
-- 微信公众号草稿：`docs/wechat/YYYY-MM-DD-ai-infra-daily-brief-wechat.md`
-- 临时工作目录：`/tmp/morning-report/YYYY-MM-DD/`
-- 封面图：`/tmp/morning-report/YYYY-MM-DD/assets/cover.png`
+## 门控
 
-## systemd timer 安装（Linux）
+| Stage | 门控条件 | 失败行为 |
+|-------|---------|---------|
+| 02-analyze | 素材包主题 < 2 | 停止整个流程 |
+| 03-write | front matter 缺少 title/date/intro | 停止 |
+| 04-cover | 图片生成失败 | 告警，继续 |
+| 05-publish | git push 失败 | 停止（不推微信）|
 
-```bash
-cp ai-morning-report/docs/ai-morning-report.timer /etc/systemd/system/
-cp ai-morning-report/docs/ai-morning-report.service /etc/systemd/system/
-systemctl enable ai-morning-report.timer
-systemctl start ai-morning-report.timer
-```
+## WeChat CSS 主题管理
+
+`wechat-themes/themes.json` 定义 `wechat_variant → [css files]` 映射。
+`wechat-renderer.js` 合并 CSS、解析 `var()` 为静态值后注入 `<style>` 块。
+切换主题：修改 `themes.json` 映射，或新增 CSS 文件。
 
 ## macOS launchd 安装
 
 ```bash
 cp ai-morning-report/docs/ai-morning-report.plist ~/Library/LaunchAgents/
+# 编辑 plist 中的路径和环境变量
 launchctl load ~/Library/LaunchAgents/ai-morning-report.plist
 ```
 
-**注意：** `ai-morning-report.timer` 和 `ai-morning-report.service` 是 systemd 格式（Linux），macOS 使用 `ai-morning-report.plist`（launchd 格式）。
-
-## 手动测试
+## 手动运行
 
 ```bash
-cd /Users/lychee/mycode/miraclefarms.github.io
+# 全流程
 ./ai-morning-report/bin/run-daily.sh
+
+# 只发 GitHub.io
+SKIP_WECHAT=1 ./ai-morning-report/bin/run-daily.sh
+
+# 指定 CLI
+AI_CLI=opencode ./ai-morning-report/bin/run-daily.sh
+
+# 单独测试某个 stage
+node ai-morning-report/src/stages/02-analyze.js 2026-05-06 \
+  /tmp/morning-report/2026-05-06/raw-data.md \
+  /tmp/morning-report/2026-05-06/material.md \
+  .
 ```

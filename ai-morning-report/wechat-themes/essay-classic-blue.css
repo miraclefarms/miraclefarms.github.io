@@ -1,0 +1,38 @@
+/* Essay 经典蓝主题 */
+:root {
+  --accent: #2563eb;
+  --accent-dark: #1e40af;
+  --blockquote-bg: #eff6ff;
+  --blockquote-color: #1e3a8a;
+}
+
+#output h1 { color: #1e40af; border-bottom: 2px solid #2563eb; padding-bottom: 0.3em; }
+#output h2 { color: #2563eb; border-left: 4px solid #2563eb; padding-left: 0.6em; }
+#output h3 { color: #3b82f6; }
+
+#output strong { color: #1e40af; }
+
+#output blockquote {
+  border-left-color: #2563eb;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+#output blockquote:last-of-type {
+  border-left: none;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  color: #fff;
+  border-radius: 6px;
+  padding: 1em 1.2em;
+}
+
+#output blockquote:last-of-type strong { color: #fff; }
+
+/* Essay 图注样式 */
+#output p em {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-top: -0.5em;
+}
