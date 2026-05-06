@@ -2,96 +2,112 @@
 # Stage 1: Fetch raw data from GitHub repos (no AI, pure gh CLI)
 # Usage: ./01-fetch.sh <date> <output-file> <repo-scope-json>
 
-set -euo pipefail
+set -uo pipefail  # no -e: we handle errors explicitly per command
 
 DATE="${1:?Usage: $0 <date> <output-file> <repo-scope-json>}"
 OUTPUT_FILE="${2:?}"
 REPO_SCOPE_JSON="${3:?}"
 
-# 3 days ago in ISO 8601 (macOS + Linux compatible)
-SINCE=$(date -v-3d +%Y-%m-%dT00:00:00Z 2>/dev/null || date -d "3 days ago" +%Y-%m-%dT00:00:00Z)
+# ── Dependency checks ──────────────────────────────────────────────────────
+if ! command -v gh >/dev/null 2>&1; then
+  echo "[fetch] ERROR: 'gh' not in PATH. Install: https://cli.github.com" >&2
+  exit 1
+fi
+if ! command -v jq >/dev/null 2>&1; then
+  echo "[fetch] ERROR: 'jq' not in PATH. Install: brew install jq" >&2
+  exit 1
+fi
+if ! gh auth status >/dev/null 2>&1; then
+  echo "[fetch] ERROR: gh not authenticated. Run: gh auth login" >&2
+  exit 1
+fi
+
+# ── Date range ────────────────────────────────────────────────────────────
+SINCE=$(date -v-3d +%Y-%m-%dT00:00:00Z 2>/dev/null \
+     || date -d "3 days ago" +%Y-%m-%dT00:00:00Z)
 SINCE_DATE="${SINCE%T*}"
 
 REPOS=$(jq -r '.repos[]' "$REPO_SCOPE_JSON")
 REPO_COUNT=$(echo "$REPOS" | wc -l | tr -d ' ')
-echo "[fetch] Fetching $REPO_COUNT repos since $SINCE_DATE" >&2
+echo "[fetch] $REPO_COUNT repos | window: $SINCE_DATE → $DATE" >&2
 
-TMPDIR_FETCH=$(mktemp -d)
-trap 'rm -rf "$TMPDIR_FETCH"' EXIT
-
-fetch_one() {
+# ── Fetch each repo sequentially with visible errors ──────────────────────
+fetch_repo() {
   local repo="$1"
-  local since="$2"
-  local tmpdir="$3"
-  local safe="${repo//\//_}"
-  local out="${tmpdir}/${safe}.md"
+  echo "[fetch] → $repo" >&2
 
-  {
-    echo "## ${repo}"
-    echo ""
+  echo "## ${repo}"
+  echo ""
 
-    # Merged PRs via gh api (filter by merged_at >= since)
-    echo "### Merged PRs"
-    local pr_json
-    pr_json=$(gh api "repos/${repo}/pulls?state=closed&per_page=30&sort=updated&direction=desc" 2>/dev/null) || pr_json="[]"
+  # Merged PRs
+  echo "### Merged PRs"
+  local pr_err pr_json exit_code
+  pr_json=$(gh api "repos/${repo}/pulls?state=closed&per_page=50&sort=updated&direction=desc" 2>/tmp/gh-stderr-$$) \
+    && exit_code=0 || exit_code=$?
+  pr_err=$(cat /tmp/gh-stderr-$$ 2>/dev/null); rm -f /tmp/gh-stderr-$$
+
+  if [ $exit_code -ne 0 ]; then
+    echo "(gh api error: ${pr_err:-exit $exit_code})"
+  elif [ -z "$pr_json" ] || [ "$pr_json" = "[]" ]; then
+    echo "(repo returned no closed PRs)"
+  else
     local prs
-    prs=$(echo "$pr_json" | jq -r \
-      --arg since "$since" \
+    prs=$(echo "$pr_json" | jq -r --arg since "$SINCE" \
       '[.[] | select(.merged_at != null and .merged_at >= $since)] |
-       .[] | "- [#\(.number)] \(.title)\n  merged: \(.merged_at)\n  url: \(.html_url)\n  body_excerpt: \(.body // "" | gsub("[\r\n]+";" ") | .[0:200])"' \
+       .[] | "- [#\(.number)] \(.title)\n  merged: \(.merged_at)\n  url: \(.html_url)\n  summary: \(.body // "" | gsub("[\r\n]+"; " ") | .[0:200])"' \
       2>/dev/null) || prs=""
     if [ -n "$prs" ]; then
       echo "$prs"
     else
-      echo "(no merged PRs in window)"
+      echo "(no merged PRs in window $SINCE_DATE)"
     fi
+  fi
 
-    echo ""
-    echo "### Releases"
-    local rel_json
-    rel_json=$(gh api "repos/${repo}/releases?per_page=10" 2>/dev/null) || rel_json="[]"
+  echo ""
+
+  # Releases
+  echo "### Releases"
+  local rel_err rel_json rel_exit
+  rel_json=$(gh api "repos/${repo}/releases?per_page=10" 2>/tmp/gh-stderr-$$) \
+    && rel_exit=0 || rel_exit=$?
+  rel_err=$(cat /tmp/gh-stderr-$$ 2>/dev/null); rm -f /tmp/gh-stderr-$$
+
+  if [ $rel_exit -ne 0 ]; then
+    echo "(gh api error: ${rel_err:-exit $rel_exit})"
+  else
     local rels
-    rels=$(echo "$rel_json" | jq -r \
-      --arg since "$since" \
-      '[.[] | select(.published_at >= $since)] |
-       .[] | "- \(.tag_name): \(.name)\n  published: \(.published_at)\n  url: \(.html_url)\n  notes: \(.body // "" | gsub("[\r\n]+";" ") | .[0:300])"' \
+    rels=$(echo "$rel_json" | jq -r --arg since "$SINCE" \
+      '[.[] | select(.published_at != null and .published_at >= $since)] |
+       .[] | "- \(.tag_name): \(.name)\n  published: \(.published_at)\n  url: \(.html_url)\n  notes: \(.body // "" | gsub("[\r\n]+"; " ") | .[0:300])"' \
       2>/dev/null) || rels=""
     if [ -n "$rels" ]; then
       echo "$rels"
     else
-      echo "(no releases in window)"
+      echo "(no releases in window $SINCE_DATE)"
     fi
+  fi
 
-    echo ""
-    echo "---"
-    echo ""
-  } > "$out"
+  echo ""
+  echo "---"
+  echo ""
   echo "[fetch] done: $repo" >&2
 }
 
-# Launch all repos in parallel (background jobs, no export -f needed)
-pids=()
-for repo in $REPOS; do
-  fetch_one "$repo" "$SINCE" "$TMPDIR_FETCH" &
-  pids+=($!)
-done
-
-for pid in "${pids[@]}"; do
-  wait "$pid" || true
-done
-
-# Assemble in original repo order
+# Run sequentially, write to output file
 {
   echo "# AI Infra Raw Data — ${DATE}"
-  echo ""
   echo "Time window: ${SINCE_DATE} to ${DATE} (Asia/Shanghai)"
   echo ""
+
   for repo in $REPOS; do
-    safe="${repo//\//_}"
-    f="${TMPDIR_FETCH}/${safe}.md"
-    [ -f "$f" ] && cat "$f"
+    fetch_repo "$repo"
   done
 } > "$OUTPUT_FILE"
 
 LINE_COUNT=$(wc -l < "$OUTPUT_FILE" | tr -d ' ')
 echo "[fetch] Output: $OUTPUT_FILE ($LINE_COUNT lines)" >&2
+
+# Gate: warn if every repo returned errors or no data
+if ! grep -q "^- \[#" "$OUTPUT_FILE" && ! grep -q "^- v" "$OUTPUT_FILE"; then
+  echo "[fetch] WARN: no PR or release data found in output — check gh auth or date window" >&2
+fi

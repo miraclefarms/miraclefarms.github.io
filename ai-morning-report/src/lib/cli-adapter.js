@@ -10,7 +10,7 @@ const { spawn, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const SUPPORTED = ['claude', 'opencode', 'codex'];
+const SUPPORTED = ['claude', 'opencode', 'codex', 'mock'];
 
 function detectCLI() {
   const preferred = process.env.AI_CLI;
@@ -86,6 +86,16 @@ function spawnCLI(cli, fullPrompt, model) {
  * @param {string} [opts.cli]         - CLI override; defaults to AI_CLI env or auto-detection
  * @returns {Promise<string>}         - stdout from the AI CLI
  */
+async function runMock(prompt) {
+  const fixtureFile = process.env.MOCK_AI_RESPONSE_FILE;
+  if (fixtureFile) {
+    if (!fs.existsSync(fixtureFile)) throw new Error(`MOCK_AI_RESPONSE_FILE not found: ${fixtureFile}`);
+    return fs.readFileSync(fixtureFile, 'utf8');
+  }
+  // Default: echo prompt back (useful for smoke testing the pipeline shape)
+  return `[MOCK AI RESPONSE]\n\nPrompt length: ${prompt.length} chars\nFirst 200: ${prompt.slice(0, 200)}`;
+}
+
 async function runAI({ prompt, skillPath, model, cli: cliOverride } = {}) {
   const cli = cliOverride || detectCLI();
 
@@ -98,6 +108,7 @@ async function runAI({ prompt, skillPath, model, cli: cliOverride } = {}) {
   }
 
   const fullPrompt = buildPrompt(skillContent, prompt);
+  if (cli === 'mock') return runMock(fullPrompt);
   return spawnCLI(cli, fullPrompt, model);
 }
 
