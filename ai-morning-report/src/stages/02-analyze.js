@@ -71,9 +71,10 @@ ${recentSummaries || '（暂无）'}
 
   console.log('[analyze] Calling AI...');
   const raw = await runAI({ prompt, skillPath });
-  // Strip any preamble before the first heading
-  const headingStart = raw.indexOf('# ');
-  const result = headingStart > 0 ? raw.slice(headingStart) : raw;
+  // Normalize + strip code fences + preamble before first heading
+  let text = raw.replace(/\r\n/g, '\n').replace(/^```[a-z]*\n/, '').replace(/\n```\s*$/, '\n');
+  const headingStart = text.search(/(?:^|\n)# /);
+  const result = headingStart > 0 ? text.slice(headingStart).replace(/^\n/, '') : text;
 
   const themeCount = countThemes(result);
   if (themeCount < MIN_THEMES) {

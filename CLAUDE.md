@@ -20,15 +20,26 @@ MiracleFarms is a Jekyll-based static blog deployed to GitHub Pages at `https://
 
 ## Commands
 
+> **重要（macOS）：系统自带 Ruby 2.6.10 版本过低**，需要使用 Homebrew 安装的 Ruby 4.0.2（`/usr/local/Cellar/ruby/4.0.2/`）。如果 `bundle` 命令报错 `Could not find 'bundler' (2.6.9)`，说明系统 Ruby 劫持了 PATH，需要显式使用完整路径。
+>
+> **其它平台**：参考思路——用项目级 gem（而非系统 gem）安装匹配版本的 bundler 和 jekyll；具体路径和版本号请根据实际环境调整，不要直接照搬 macOS 的路径。
+
 ```bash
-# Install dependencies
-bundle install
+# 确认 Ruby 版本（应该显示 ruby 4.0.2）
+/usr/local/Cellar/ruby/4.0.2/bin/ruby -v
 
-# Local development server (http://localhost:4000)
-bundle exec jekyll serve
+# 如果 Gemfile.lock 的 BUNDLED WITH 版本不匹配，先更新 bundler 并修复 lockfile
+/usr/local/Cellar/ruby/4.0.2/bin/gem install bundler
+# 编辑 Gemfile.lock 将 BUNDLED WITH 改为对应的 bundler 版本号（如 4.0.10）
 
-# Build only
-bundle exec jekyll build
+# 安装依赖（安装到 vendor/bundle，不会污染系统 gem）
+/usr/local/Cellar/ruby/4.0.2/bin/bundle install
+
+# 构建（生产环境）
+/usr/local/Cellar/ruby/4.0.2/bin/bundle exec jekyll build
+
+# 本地开发预览 (http://localhost:4000)
+/usr/local/Cellar/ruby/4.0.2/bin/bundle exec jekyll serve --host 127.0.0.1 --port 4000
 ```
 
 Pushing to `main` triggers automatic deployment via GitHub Actions (`.github/workflows/pages.yml`).

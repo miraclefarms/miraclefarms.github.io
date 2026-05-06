@@ -13,12 +13,24 @@ const { runAI, findSkill } = require('../lib/cli-adapter');
 const REQUIRED_FM_FIELDS = ['title', 'date', 'intro'];
 
 function extractAndValidate(raw) {
-  // Strip any preamble text the AI may have added before the front matter
-  const fmStart = raw.indexOf('---\n');
-  if (fmStart === -1) throw new Error('No front matter found in AI output');
-  const content = raw.slice(fmStart);
+  // Normalize line endings
+  let text = raw.replace(/\r\n/g, '\n');
+
+  // Strip markdown code fence if AI wrapped the entire output (e.g. ```yaml or ```markdown)
+  text = text.replace(/^```[a-z]*\n/, '').replace(/\n```\s*$/, '\n');
+
+  // Find front matter start (---) — skip any preamble text
+  const fmStart = text.search(/(?:^|\n)---\n/);
+  if (fmStart === -1) {
+    const preview = text.slice(0, 300).replace(/\n/g, '↵');
+    throw new Error(`No front matter found in AI output. First 300 chars: ${preview}`);
+  }
+
+  // Slice from the --- line (handle the leading \n from the regex)
+  const content = text.slice(fmStart).replace(/^\n/, '');
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) throw new Error('Malformed front matter in AI output');
+
   const fm = match[1];
   for (const field of REQUIRED_FM_FIELDS) {
     if (!new RegExp(`^${field}:`, 'm').test(fm)) {
