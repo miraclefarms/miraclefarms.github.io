@@ -13,9 +13,10 @@ set -euo pipefail
 
 DATE=$(TZ="Asia/Shanghai" date +%Y-%m-%d)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-STAGES_DIR="${SCRIPT_DIR}/../src/stages"
-CONFIG_DIR="${SCRIPT_DIR}/../config"
+REPORT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"          # ai-morning-report/
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"     # repo root
+STAGES_DIR="${REPORT_DIR}/src/stages"
+CONFIG_DIR="${REPORT_DIR}/config"
 WORK_DIR="/tmp/morning-report/${DATE}"
 WECHAT_OUT_DIR="${PROJECT_ROOT}/docs/wechat"
 
