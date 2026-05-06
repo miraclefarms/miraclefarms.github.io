@@ -70,7 +70,10 @@ ${recentSummaries || '（暂无）'}
 - URL 必须来自原始数据中出现的真实链接`;
 
   console.log('[analyze] Calling AI...');
-  const result = await runAI({ prompt, skillPath });
+  const raw = await runAI({ prompt, skillPath });
+  // Strip any preamble before the first heading
+  const headingStart = raw.indexOf('# ');
+  const result = headingStart > 0 ? raw.slice(headingStart) : raw;
 
   const themeCount = countThemes(result);
   if (themeCount < MIN_THEMES) {

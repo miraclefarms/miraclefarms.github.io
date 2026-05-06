@@ -12,15 +12,20 @@ const { runAI, findSkill } = require('../lib/cli-adapter');
 
 const REQUIRED_FM_FIELDS = ['title', 'date', 'intro'];
 
-function validateFrontMatter(content) {
+function extractAndValidate(raw) {
+  // Strip any preamble text the AI may have added before the front matter
+  const fmStart = raw.indexOf('---\n');
+  if (fmStart === -1) throw new Error('No front matter found in AI output');
+  const content = raw.slice(fmStart);
   const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) throw new Error('No front matter found in AI output');
+  if (!match) throw new Error('Malformed front matter in AI output');
   const fm = match[1];
   for (const field of REQUIRED_FM_FIELDS) {
     if (!new RegExp(`^${field}:`, 'm').test(fm)) {
       throw new Error(`Missing front matter field: ${field}`);
     }
   }
+  return content;
 }
 
 async function write(date, materialFile, projectRoot) {
@@ -41,19 +46,16 @@ ${material}
 
 请按照上面 miraclefarms-writer skill 的要求，生成一篇完整的 GitHub.io 版 AI Infra 早报（kind: brief）。
 
-**输出要求：**
-- 直接输出完整 markdown（含 front matter），不要任何前缀说明
-- front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（荔枝不耐思）、kind（brief）、category（Brief）、series（ai-infra-daily-brief）、intro
-- 正文结构：开头综述段（无 H2）→ H2 章节（中文数字编号：一、二、三、）→ 可选"今天真正值得记住的判断"→ 分隔线 → ## 参考来源
-- 引用格式：正文用 [[N]](url)，参考来源用 [N] [标题](url)
-- 所有 URL 必须来自素材包中的真实链接，不要编造
-- 重点内容加粗
-- 控制在 800-1500 字`;
+**输出必须直接以 --- 开始（YAML front matter），不要任何前置说明、不要"好的"、不要代码块包裹。**
+
+front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（荔枝不耐思）、kind（brief）、category（Brief）、series（ai-infra-daily-brief）、intro
+正文结构：开头综述段（无 H2）→ H2 章节（中文数字编号：一、二、三、）→ 可选"今天真正值得记住的判断"→ 分隔线 → ## 参考来源
+引用格式：正文用 [[N]](url)，参考来源用 [N] [标题](url)
+所有 URL 必须来自素材包中的真实链接，不要编造。重点内容加粗。控制在 800-1500 字。`;
 
   console.log('[write] Calling AI...');
-  const result = await runAI({ prompt, skillPath });
-
-  validateFrontMatter(result);
+  const raw = await runAI({ prompt, skillPath });
+  const result = extractAndValidate(raw);
 
   const postsDir = path.join(projectRoot, '_posts');
   fs.mkdirSync(postsDir, { recursive: true });
