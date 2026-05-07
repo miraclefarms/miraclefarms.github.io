@@ -56,9 +56,9 @@ intro: {一句话摘要，说明文章的技术覆盖范围和核心判断，40-
 
 ## 参考资料
 
-[1] Title. https://url
+[1] [Title](https://url)
 
-[2] Title. https://url
+[2] [Title](https://url)
 ```
 
 ---
@@ -75,21 +75,21 @@ LoCoBench-Agent 将静态任务改造为交互式 agent 环境<a href="https://a
 
 格式：`<a href="url">[N]</a>`（HTML anchor，数字在方括号内）
 
-### 文末参考资料：学术风格
+### 文末参考资料：隐藏 URL 的 Markdown 链接
 
 ```markdown
 ---
 
 ## 参考资料
 
-[1] SCBench: A KV Cache-Centric Analysis of Long-Context Methods. https://arxiv.org/pdf/2412.10319
+[1] [SCBench: A KV Cache-Centric Analysis of Long-Context Methods](https://arxiv.org/pdf/2412.10319)
 
-[2] LoCoBench-Agent: An Interactive Benchmark for LLM Agents in Long-Context Software Engineering. https://arxiv.org/pdf/2511.13998
+[2] [LoCoBench-Agent: An Interactive Benchmark for LLM Agents in Long-Context Software Engineering](https://arxiv.org/pdf/2511.13998)
 
-[3] vLLM: Efficient Memory Management for Large Language Model Serving with PagedAttention. https://arxiv.org/abs/2309.06180
+[3] [vLLM: Efficient Memory Management for Large Language Model Serving with PagedAttention](https://arxiv.org/abs/2309.06180)
 ```
 
-格式：`[N] Title. URL`（学术引用风格，不是 markdown 链接）
+格式：`[N] [Title](URL)`（Markdown 链接；页面只显示标题，不直接展示裸 URL）
 
 注意：**章节名是 `## 参考资料`**（资料），不是 `## 参考来源`（来源是 brief 用的）
 
@@ -158,11 +158,11 @@ intro: {一句话摘要}
 
 ## 参考资料
 
-[1] Title of Paper or Article. https://arxiv.org/...
+[1] [Title of Paper or Article](https://arxiv.org/...)
 
-[2] vLLM PR / Blog / Doc Title. https://github.com/...
+[2] [vLLM PR / Blog / Doc Title](https://github.com/...)
 
-[3] Another Reference. https://...
+[3] [Another Reference](https://...)
 ```
 
 ---
@@ -173,7 +173,7 @@ intro: {一句话摘要}
 |------|---------|
 | Essay 用了 `[[N]](url)` 引用格式 | Essay 只用 `<a href="url">[N]</a>` |
 | 章节名写成 `## 参考来源` | Essay 用 `## 参考资料`（来源是 brief 专用的） |
-| 参考格式用 `[N] [Title](url)` | Essay 用 `[N] Title. URL` |
+| 参考格式用 `[N] Title. https://url` | Essay 文末用 `[N] [Title](https://url)`，不要直接展示裸 URL |
 | 开篇段落先介绍背景 | 开篇直接提出核心问题 / 判断 |
 | `author: 荔枝不耐思` | Essay 的作者是 `Ethan` |
 | `kind: Essay`（大写） | 应为 `kind: essay`（小写） |

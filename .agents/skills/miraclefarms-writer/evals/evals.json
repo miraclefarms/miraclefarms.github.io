@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "请写一篇 essay，分析 vLLM 的 PagedAttention 内存管理机制设计。参考资料：https://vllm.ai/blog/2023/06/20/vllm.html 和 https://arxiv.org/abs/2309.06180。文章应该有核心判断，解释为什么这个设计能解决 LLM 推理的碎片化问题，以及它的适用边界。",
-      "expected_output": "一篇 kind=essay 的文章，author=Ethan，使用 HTML anchor 引用格式 <a href=\"url\">[N]</a>，文末有 ## 参考资料 章节（学术风格 [N] Title. URL），开篇有核心判断而不是背景介绍，H2 用中文数字编号。",
+      "expected_output": "一篇 kind=essay 的文章，author=Ethan，正文使用 HTML anchor 引用格式 <a href=\"url\">[N]</a>，文末有 ## 参考资料 章节且每条参考资料使用 [N] [Title](url) Markdown 链接格式，不直接展示裸 URL，开篇有核心判断而不是背景介绍，H2 用中文数字编号。",
       "files": []
     },
     {

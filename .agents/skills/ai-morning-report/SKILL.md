@@ -14,7 +14,7 @@ description: >
 
 - 这个 skill 负责：确定日期范围、扫描指定 repo、筛选重要更新、做主题聚类、去重。
 - 这个 skill 不负责：定义 front matter、引用格式、标题风格、配图规则、GitHub.io 正文格式、微信公众号正文格式。
-- 需要成稿时，直接调用同仓库下 `.codex/skills/miraclefarms-writer/SKILL.md`。
+- 需要成稿时，直接调用同仓库下 `.agents/skills/miraclefarms-writer/SKILL.md`。
 
 ## 快速流程
 
