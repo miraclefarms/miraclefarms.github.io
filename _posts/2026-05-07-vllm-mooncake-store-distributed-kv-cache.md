@@ -93,24 +93,24 @@ vLLM x Mooncake Store 的关键判断，是 agentic serving 不能继续把 KV c
 
 ## 参考资料
 
-[1] Serving Agentic Workloads at Scale with vLLM x Mooncake. https://vllm.ai/blog/mooncake-store
+[1] [Serving Agentic Workloads at Scale with vLLM x Mooncake](https://vllm.ai/blog/mooncake-store)
 
-[2] vLLM PR #40900: Add MooncakeStoreConnector for KV cache offloading via Mooncake distributed store. https://github.com/vllm-project/vllm/pull/40900
+[2] [vLLM PR #40900: Add MooncakeStoreConnector for KV cache offloading via Mooncake distributed store](https://github.com/vllm-project/vllm/pull/40900)
 
-[3] vLLM MooncakeStoreScheduler source, commit 0d5c2e0. https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_scheduler.py
+[3] [vLLM MooncakeStoreScheduler source, commit 0d5c2e0](https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_scheduler.py)
 
-[4] vLLM Mooncake Store data structures source, commit 0d5c2e0. https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_data.py
+[4] [vLLM Mooncake Store data structures source, commit 0d5c2e0](https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_data.py)
 
-[5] vLLM MooncakeStoreWorker source, commit 0d5c2e0. https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_worker.py
+[5] [vLLM MooncakeStoreWorker source, commit 0d5c2e0](https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/mooncake/store/mooncake_store_worker.py)
 
-[6] vLLM MooncakeStoreConnector usage guide, commit 0d5c2e0. https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/docs/features/mooncake_store_connector_usage.md
+[6] [vLLM MooncakeStoreConnector usage guide, commit 0d5c2e0](https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/docs/features/mooncake_store_connector_usage.md)
 
-[7] Mooncake Python Store binding source, commit 43ce0f8. https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-integration/store/store_py.cpp
+[7] [Mooncake Python Store binding source, commit 43ce0f8](https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-integration/store/store_py.cpp)
 
-[8] Mooncake RealClient source, commit 43ce0f8. https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-store/src/real_client.cpp
+[8] [Mooncake RealClient source, commit 43ce0f8](https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-store/src/real_client.cpp)
 
-[9] Mooncake MasterService source, commit 43ce0f8. https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-store/src/master_service.cpp
+[9] [Mooncake MasterService source, commit 43ce0f8](https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-store/src/master_service.cpp)
 
-[10] Mooncake MultiTransport source, commit 43ce0f8. https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-transfer-engine/src/multi_transport.cpp
+[10] [Mooncake MultiTransport source, commit 43ce0f8](https://github.com/kvcache-ai/Mooncake/blob/43ce0f8ff5305e48e8fc4b44372dd271f5140c2a/mooncake-transfer-engine/src/multi_transport.cpp)
 
-[11] vLLM MultiConnector source, commit 0d5c2e0. https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/multi_connector.py
+[11] [vLLM MultiConnector source, commit 0d5c2e0](https://github.com/vllm-project/vllm/blob/0d5c2e0512e5868580bd77797c6a61b349d98d57/vllm/distributed/kv_transfer/kv_connector/v1/multi_connector.py)
