@@ -12,7 +12,7 @@
 ## 题图模板
 
 - 微信公众号题图提示词不再直接内嵌在文章正文里，默认改由版本化模板文件统一管理：
-  - `scripts/config/wechat-cover-prompt-templates.json`
+  - `ai-morning-report/config/wechat-cover-prompt-templates.json`
 - 当前默认锁定这一套模板：`hand-drawn-infographic-card-v1`
 - 模板文件除了 prompt 文案，也负责声明生成参数（例如 `aspectRatio`）；发布脚本会直接读取它，避免“模板写竖图、接口还在发横图”的上下游错位
 - 后续可以扩展成“按文章手动选择”或“由程序自动选择”模板，但**当前先锁定这一个模板**，不要在文章里重新发明一套 prompt block
@@ -137,7 +137,7 @@ wechat_variant: essay-longform
 
 - front matter 必须写 `wechat_variant: essay-longform`
 - front matter 建议写 `author` 与 `intro`，让草稿箱摘要可直接复用
-- 题图提示词默认从 `scripts/config/wechat-cover-prompt-templates.json` 读取，当前锁定模板 `hand-drawn-infographic-card-v1`
+- 题图提示词默认从 `ai-morning-report/config/wechat-cover-prompt-templates.json` 读取，当前锁定模板 `hand-drawn-infographic-card-v1`
 - 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`

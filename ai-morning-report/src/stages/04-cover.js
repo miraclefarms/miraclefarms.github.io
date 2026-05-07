@@ -71,7 +71,7 @@ function extForMime(mime) {
 }
 
 function loadImageTemplate(projectRoot) {
-  const templatePath = path.join(projectRoot, 'scripts', 'config', 'wechat-cover-prompt-templates.json');
+  const templatePath = path.join(projectRoot, 'ai-morning-report', 'config', 'wechat-cover-prompt-templates.json');
   if (!fs.existsSync(templatePath)) return null;
   const registry = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
   const templateId = registry.defaultTemplateId;
