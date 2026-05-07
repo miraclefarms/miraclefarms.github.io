@@ -52,13 +52,23 @@ function spawnCLI(cli, fullPrompt, model) {
       if (model) args.push('--model', model);
     }
 
+    let exited = false;
+    let stdinError = null;
+
     const child = spawn(cli, args, {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: { ...process.env },
     });
 
-    child.stdin.write(stdinPrompt);
-    child.stdin.end();
+    child.stdin.on('error', (err) => {
+      stdinError = err;
+    });
+
+    child.stdin.write(stdinPrompt, () => {
+      if (!exited && !stdinError) {
+        child.stdin.end();
+      }
+    });
 
     let stdout = '';
     let stderr = '';
@@ -67,6 +77,11 @@ function spawnCLI(cli, fullPrompt, model) {
     child.stderr.on('data', (d) => { stderr += d.toString(); });
 
     child.on('close', (code) => {
+      exited = true;
+      if (stdinError && code !== 0) {
+        reject(new Error(`${cli} exited ${code} (stdin error: ${stdinError.message})\nstderr: ${stderr.slice(0, 500)}`));
+        return;
+      }
       if (code === 0) {
         const clean = stdout
           .replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '')
