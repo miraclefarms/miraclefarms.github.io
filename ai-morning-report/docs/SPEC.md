@@ -1,6 +1,6 @@
 # AI Morning Report — SPEC v2
 
-每天 05:30 Asia/Shanghai 自动运行，生成 AI Infra 日报并发布到 GitHub.io + 微信公众号草稿箱。
+每天 05:30 Asia/Shanghai 自动运行，生成 AI Infra 日报并发布到 GitHub.io + 微信公众号草稿箱，可选同步发布 X thread。
 
 ## 核心设计原则
 
@@ -20,7 +20,8 @@
       ├── [4] 04-cover.js       封面图生成（非阻塞，失败继续）
       ├── [5] 05-publish.sh     git push → GitHub.io
       ├── [6] 06-wechat-format.js  AI 改写（wechat-formatter skill）+ CSS 渲染 → .md + .html
-      └── [7] 07-wechat-push.js    WeChat draft API → 草稿箱
+      ├── [7] 07-wechat-push.js    WeChat draft API → 草稿箱
+      └── [8] 08-x-push.js         AI 生成英文 thread → X API 发帖（默认关闭）
 ```
 
 ## 文件结构
@@ -41,6 +42,7 @@ ai-morning-report/
       05-publish.sh           git add/commit/push
       06-wechat-format.js     AI 改写 + CSS 渲染
       07-wechat-push.js       WeChat API
+      08-x-push.js            X thread 生成与发布
   wechat-themes/
     base.css                  公共基础样式
     brief-emerald.css         Brief 翡翠绿主题
@@ -73,8 +75,16 @@ ai-morning-report/
 | `WECHAT_APPSECRET` | 是* | 微信公众号 AppSecret |
 | `WECHAT_THUMB_MEDIA_ID` | 否 | 无封面图时的备用 media_id |
 | `SKIP_WECHAT=1` | 否 | 跳过 Stage 6-7（只发 GitHub.io）|
+| `ENABLE_X_PUSH=1` | 否 | 开启 Stage 8；默认关闭，不做 X 改写也不推送 |
+| `X_USER_ACCESS_TOKEN` | 是** | X OAuth 2.0 user access token，需包含 `tweet.write` |
+| `X_USERNAME` | 否 | 用于输出最终 X URL |
+| `X_DRY_RUN=1` | 否 | 只生成并打印 thread，不实际发帖 |
+| `X_POST_MODE` | 否 | `thread` 或 `single`，默认为 `thread` |
+| `X_AI_TIMEOUT_MS` | 否 | X thread AI 生成超时，默认 `90000` |
+| `X_FORCE_POST=1` | 否 | 忽略本地记录，强制重发 |
 
 *`SKIP_WECHAT=1` 时可不填。
+**`ENABLE_X_PUSH` 未设为 `1` 或 `X_DRY_RUN=1` 时可不填。
 
 ## 门控
 
@@ -84,6 +94,7 @@ ai-morning-report/
 | 03-write | front matter 缺少 title/date/intro | 停止 |
 | 04-cover | 图片生成失败 | 告警，继续 |
 | 05-publish | git push 失败 | 停止（不推微信）|
+| 08-x-push | X 生成或发布失败 | 告警，保留 GitHub.io/微信结果 |
 
 ## WeChat CSS 主题管理
 
@@ -107,6 +118,15 @@ launchctl load ~/Library/LaunchAgents/ai-morning-report.plist
 
 # 只发 GitHub.io
 SKIP_WECHAT=1 ./ai-morning-report/bin/run-daily.sh
+
+# GitHub.io + 微信 + X dry-run（需要显式开启 X Stage）
+ENABLE_X_PUSH=1 X_DRY_RUN=1 ./ai-morning-report/bin/run-daily.sh
+
+# 手动预览某篇文章的 X thread
+npm run publish:x -- _posts/2026-05-08-ai-infra-daily-brief.md --dry-run
+
+# 手动预览单条摘要模式
+npm run publish:x -- _posts/2026-05-08-ai-infra-daily-brief.md --dry-run --single
 
 # 指定 CLI
 AI_CLI=opencode ./ai-morning-report/bin/run-daily.sh

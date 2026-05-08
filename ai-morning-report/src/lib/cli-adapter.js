@@ -35,7 +35,7 @@ function buildPrompt(skillContent, userPrompt) {
   return `${skillContent.trim()}\n\n---\n\n${userPrompt.trim()}`;
 }
 
-function spawnCLI(cli, fullPrompt, model) {
+function spawnCLI(cli, fullPrompt, model, timeoutMs) {
   return new Promise((resolve, reject) => {
     let args;
 
@@ -48,8 +48,9 @@ function spawnCLI(cli, fullPrompt, model) {
       args = ['run', '--pure'];
       if (model) args.push('--model', model);
     } else if (cli === 'codex') {
-      args = ['--quiet'];
+      args = ['exec', '--color', 'never'];
       if (model) args.push('--model', model);
+      args.push('-');
     }
 
     let exited = false;
@@ -59,6 +60,12 @@ function spawnCLI(cli, fullPrompt, model) {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: { ...process.env },
     });
+    const timeout = timeoutMs
+      ? setTimeout(() => {
+        child.kill('SIGTERM');
+        reject(new Error(`${cli} timed out after ${timeoutMs}ms`));
+      }, timeoutMs)
+      : null;
 
     child.stdin.on('error', (err) => {
       stdinError = err;
@@ -78,6 +85,7 @@ function spawnCLI(cli, fullPrompt, model) {
 
     child.on('close', (code) => {
       exited = true;
+      if (timeout) clearTimeout(timeout);
       if (stdinError && code !== 0) {
         reject(new Error(`${cli} exited ${code} (stdin error: ${stdinError.message})\nstderr: ${stderr.slice(0, 500)}`));
         return;
@@ -115,7 +123,7 @@ async function runMock(prompt) {
   return `[MOCK AI RESPONSE]\n\nPrompt length: ${prompt.length} chars\nFirst 200: ${prompt.slice(0, 200)}`;
 }
 
-async function runAI({ prompt, skillPath, model, cli: cliOverride } = {}) {
+async function runAI({ prompt, skillPath, model, cli: cliOverride, timeoutMs } = {}) {
   const cli = cliOverride || detectCLI();
 
   let skillContent = '';
@@ -128,7 +136,7 @@ async function runAI({ prompt, skillPath, model, cli: cliOverride } = {}) {
 
   const fullPrompt = buildPrompt(skillContent, prompt);
   if (cli === 'mock') return runMock(fullPrompt);
-  return spawnCLI(cli, fullPrompt, model);
+  return spawnCLI(cli, fullPrompt, model, timeoutMs);
 }
 
 function findSkill(skillName, projectRoot) {
