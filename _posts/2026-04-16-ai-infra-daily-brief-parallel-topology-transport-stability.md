@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: SGLang 移除了长期以断言硬封的 Pipeline Parallelism 与混合分块预填充组合限制；Mooncake TENT 跨传输故障转移从一段从未被调用的死代码被激活，附带 Prometheus 计数器与重试上限；Ray Serve 将 SGLang 引擎提升为正式 user guide，与 vLLM 并列。
+tags: [Inference, Networking]
 ---
 
 过去三天，两件性质不同的事情同时发生，但都指向同一个方向：系统约束正在被有意识地拆除，而不是绕过。SGLang 用一个 PR 移除了此前以断言强制拒绝的并行拓扑组合；Mooncake TENT 则把一段已写好、却从未被调用的故障转移逻辑激活，补上了安全上限和监控指标。前者是扩展边界，后者是激活隐藏能力。两件事放在一起看，AI Infra 正在从"让单一路径跑起来"进入"让组合路径跑稳"的阶段。

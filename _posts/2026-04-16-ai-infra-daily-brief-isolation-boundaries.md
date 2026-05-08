@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去三天，vLLM 与 LMCache 开始把按用户隔离的 cache_salt 透传进 KV 复用与驱逐接口，Mooncake 把 failover 和 SSD 指标做成可观测状态，llama.cpp 与 SGLang 则收紧 GPU 互联和上下文 ownership，推理系统正在系统改写那些过去默认成立的边界假设。
+tags: [KV Cache]
 ---
 
 过去三天，AI Infra 最值得写的变化，不是哪一个项目又多了一项 headline feature，而是多个核心项目都开始重写“边界条件”。缓存系统不再默认所有请求共享同一套复用命名空间，传输层不再默认一条链路出问题后只能让上层自己兜底，GPU 互联也不再默认只要硬件宣称可用就应该自动打开。过去那些被当作“运行环境细节”的东西，正在被正式写进推理基础设施的主设计里。

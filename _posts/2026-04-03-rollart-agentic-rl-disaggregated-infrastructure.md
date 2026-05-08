@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 阿里与港科大的 RollArt 讨论的不是 RL 算法细节，而是 Agentic RL 训练系统的基础设施形态。当 rollout、reward、training 与 environment 同时进入主路径后，系统竞争开始从资源堆叠转向关键路径重构。本文从背景、目标、创新、结果与展望几个部分分析这篇论文。
+tags: [Agents, Training, Disaggregation]
 ---
 
 2025 年之后，Agentic RL 越来越像一个系统问题，而不只是一个算法问题。

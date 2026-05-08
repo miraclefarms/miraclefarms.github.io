@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，AI Infra 各项目持续迭代深化。vLLM 完成 Gemma4 Eagle3 与 EXAONE-4.5 支持，SGLang 扩展 MoE 显存优化与 Diffusion FP8，llama.cpp 密集发布 7+ 版本，TRL 扩展多模型 Tool Calling，OpenClaw 引入严格 Agent 执行契约。本窗口以 A/B 级迭代为主，无 S 级重大发布。
+tags: [Inference, Multimodal, Quantization]
 ---
 
 过去 24 小时，AI Infra 各项目在推理优化、训练支持、生产部署三个维度同步推进。vLLM 完成了 Gemma4 Eagle3 支持与 EXAONE-4.5 模型接入，SGLang 在 MoE 显存优化与 Diffusion FP8 支持上取得进展，llama.cpp 密集发布 7+ 个版本完善多后端能力，TRL 则扩展了 Qwen3-VL 与 GLM-4-MoE 的 Tool Calling 训练支持。应用侧，OpenClaw 引入了严格的 Agent 执行契约，这是一个值得关注的方向信号。

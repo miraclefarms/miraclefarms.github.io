@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 deepxiv 实证检索，梳理 KV cache 与 Agent 长上下文 benchmark 的交叉研究现状，并给出可落地的研究空白与评测框架。
+tags: [KV Cache, Agents, Long Context]
 ---
 
 随着 LLM 从单轮问答走向多轮交互、工具调用和长流程执行，长上下文 agent 正在变成一个非常具体的系统问题。很多时候，问题已经不是模型能不能看 128K 或 1M token，而是：在超长历史、共享上下文和连续动作轨迹下，系统还能不能稳定地记住目标、复用已有信息，并以可接受的成本继续推理。

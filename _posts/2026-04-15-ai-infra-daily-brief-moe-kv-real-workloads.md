@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去三天，vLLM 与 Megatron-LM 正在拆掉 MoE 路径对理想 hidden dim、理想路由和理想 overlap 条件的依赖；与此同时，vLLM、Mooncake 与 LMCache 把 offload、恢复与生命周期观测补进 KV 数据面，推理基础设施开始为真实生产负载补工程课。
+tags: [MoE, KV Cache]
 ---
 
 过去三天，AI Infra 更值得写的变化，不是又多了一个 headline feature，而是几个核心项目开始系统拆掉“默认假设”。MoE 内核不再只服务于对齐得刚刚好的 hidden dim，router 不再满足于用旧精度路径勉强工作，共享专家 overlap 也不再停留在理想 dispatcher 条件下。另一边，KV cache 相关项目同步在补另一类短板：offload 布局、主从恢复、生命周期观测和 eviction 语义，正在从“能跑通”走向“在真实生产场景下也能接住问题”。

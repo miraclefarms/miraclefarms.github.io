@@ -5,7 +5,8 @@ author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: 过去三天，vLLM、llama.cpp 与 Megatron Core 正把 FP8/NVFP4 从“能跑”推进到默认选路；TensorRT-LLM 则把前缀复用写进调度器核心开销模型，SGLang 和 Ray 进一步把拆分式 serving、流式入口与 HA 能力从专项路径推进为平台主线。
+intro: 过去三天，vLLM、llama.cpp 与 Megatron Core 正把 FP8/NVFP4 从”能跑”推进到默认选路；TensorRT-LLM 则把前缀复用写进调度器核心开销模型，SGLang 和 Ray 进一步把拆分式 serving、流式入口与 HA 能力从专项路径推进为平台主线。
+tags: [Quantization, KV Cache, Inference]
 ---
 
 过去三天，更值得写的变化不是谁又补了一页模型支持表，而是两条过去经常被当作“优化加分项”的路线，正在被正式写进默认主路径。一条是低比特执行栈：框架不再满足于“模型能加载”，而开始把 FP8、NVFP4 对应的 kernel 选路、图执行和量化上下文变成稳定默认。另一条是前缀复用与拆分式 serving：它不再只是 cache 命中率好不好看的问题，而是直接进入调度器开销、容量计算和服务拓扑设计。

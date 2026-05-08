@@ -4,7 +4,8 @@ date: 2026-04-20 12:00:00 +0800
 author: Ethan
 kind: essay
 category: Essay
-intro: 把 attention 看成“路由规则”与“成本优化”两条轴，就能读懂从 Transformer 到 MLA 的主流演化。
+intro: 把 attention 看成”路由规则”与”成本优化”两条轴，就能读懂从 Transformer 到 MLA 的主流演化。
+tags: [Attention]
 ---
 
 如果只把 attention 机制当成一串名词表来背，很容易把 `Self-Attention`、`FlashAttention`、`GQA`、`MLA` 混成同一层概念。可它们实际改写的并不是同一个问题。我的判断是，过去几年 attention 的演化主线一直围绕两条正交的轴展开：第一条轴回答“谁能看谁”，也就是信息路由规则；第二条轴回答“怎么把算力、显存和 KV cache 成本压下来”，也就是执行效率策略。把这两条轴分开，主流 attention 算法的脉络就会清楚得多。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，AI Infra 整体以小幅改进为主。vLLM 修复量化 KV cache crash，SGLang 推进异构部署（支持 Qwen3.5 Mamba 状态切片传输），llama.cpp 在异构 KV 旋转和 SYCL 优化上取得进展，TensorRT-LLM 完成 NVFP4 配置更新。生态层面，Mooncake 完善 Rust bindings 和 UB Transport，TRL 清理废弃接口，OpenClaw 继续安全加固。无重大 S 级发布，本窗口属于"打磨迭代期"。
+tags: [Inference, Quantization, KV Cache]
 ---
 
 过去 24 小时，AI Infra 各主要项目继续保持小幅迭代节奏，没有出现 S 级重大发布。本窗口属于"打磨迭代期"——各框架在生产稳定性、异构部署支持、废弃接口清理等方面持续推进。

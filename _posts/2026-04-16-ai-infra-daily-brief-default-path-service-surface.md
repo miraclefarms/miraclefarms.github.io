@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去三天，SGLang 与 vLLM 把并行策略、CUDA Graph 与前后处理线程模型继续收进默认路径；TensorRT-LLM 开始系统补齐 Prometheus 指标和 disaggregated serving 稳定性，Mooncake 则把 SSD offload 与异构传输进一步下沉到底座。
+tags: [Inference, Disaggregation]
 ---
 
 过去三天，AI Infra 的变化已经不太像前一阶段那种“再多一个新特性”的竞赛，而更像一场默认路径收口。推理框架不再满足于把某个 kernel、某种并行策略或某段服务逻辑做成可选开关，而是开始把这些能力直接变成默认配置、稳定路径和可观测指标；真正的竞争点，正在从“你能不能跑起来”转向“默认情况下能不能跑得又快又稳”。

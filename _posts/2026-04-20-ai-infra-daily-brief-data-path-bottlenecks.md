@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 这两天最值得记住的不是又多了几个快 kernel，而是越来越多主干项目开始正面处理调度气泡、KV 传输批处理、缓存记账与 checkpoint handoff 的系统瓶颈。
+tags: [Inference, KV Cache]
 ---
 
 这两天翻完几家主干仓库，我最强烈的感受不是“又快了多少”，而是“大家终于开始承认真正卡住生产系统的，往往不是那一个 kernel”。

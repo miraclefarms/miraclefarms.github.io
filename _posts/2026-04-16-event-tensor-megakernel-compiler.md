@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: MLSys 2026 论文 Event Tensor 提出了一种统一的编译器抽象，让 megakernel 第一次能够处理动态形状和 MoE 数据依赖，在保住全部融合收益的同时将 vLLM warmup 时间从 123 秒降到 35 秒。
+tags: [Inference, MoE]
 ---
 
 LLM 推理系统在 GPU 上的执行效率，有一个长期被低估的成本中心：kernel launch overhead。每次调用 NCCL AllReduce 或 GEMM，CPU 都要向驱动发起一次 kernel 提交，GPU 等待这条命令的间隙就是白白烧掉的时间。CUDA Graph 把这些提交批量预录，消除了 CPU-GPU 往返延迟，但代价是计算图必须在录制时形状固定——一旦遇到 MoE 的 token routing，或者不同请求的动态序列长度，图就得重新 capture，warmup 时间以百秒计。

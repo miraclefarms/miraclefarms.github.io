@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM v0.18.1 修复 Blackwell 上 Qwen3.5 FP8 精度退化并稳定 MLA 后端；TRT-LLM v1.3.0rc10 打包 FlexKV、KV cache-aware 路由和 Qwen3.5 NVFP4；TRL v1.0.0 tag 确认里程碑；DeepSpeed 补上 ZeRO Stage 3 内存碎片整理工具和进程组竞态修复；OpenClaw v2026.3.31 完成任务控制平面统一，原子写入与 owner-key 访问边界同日上线。
+tags: [Inference, Quantization, Attention, vLLM]
 ---
 
 今天没有大规模功能上线，但一批重要的稳定性和安全修复密集落地，几个主要框架都在把前一阶段的功能债和安全欠账结清。

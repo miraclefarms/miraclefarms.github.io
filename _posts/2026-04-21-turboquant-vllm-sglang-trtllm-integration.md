@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 谷歌 TurboQuant 把 KV Cache 压到 3 bit 级别且几乎无损，但这只是算法论文层面的结论。真正把它推进生产环境，vLLM、SGLang、TRT-LLM 三个框架走了三条截然不同的工程路线，各有技术取舍。
+tags: [Quantization, KV Cache, Inference, vLLM, SGLang, TRT-LLM]
 ---
 
 > **版本声明**：本文调研截至 2026 年 4 月 21 日，基于各仓库最新 open PR 和 merged commit；社区进展较快，具体数字以各框架官方实测为准。

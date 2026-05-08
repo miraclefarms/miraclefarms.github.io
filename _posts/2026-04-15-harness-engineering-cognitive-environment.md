@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 驾驭工程的本质不是给模型添加外部能力，而是设计一个认知环境，将未完成任务转化为模型可以可靠解决的结构化问题。
+tags: [Agents]
 ---
 
 为什么在模型能力持续提升的今天，生产级 Agent 系统的可靠性差异与模型本身关系越来越小？当 OpenAI Codex、Anthropic Claude Code 等系统在相似规模的模型上 converge 出高度相似的架构模式时，核心差异已经不在模型内部，而在于包裹模型的运行时结构。这指向一个被忽视但正在改变游戏规则的设计哲学：驾驭工程（Harness Engineering）。可靠的 Agent 系统不是模型加上外围工具，而是模型嵌入到精心设计的认知环境中——这个环境通过六个维度的结构性约束，将未限定的推理任务转化为模型可以可靠执行的结构化操作<a href="https://arxiv.org/html/2604.08224v1">[1]</a>。

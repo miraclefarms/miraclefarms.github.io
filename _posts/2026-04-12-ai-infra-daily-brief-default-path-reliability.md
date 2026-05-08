@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，真正有密度的更新集中在 vLLM 与 OpenClaw：前者继续修补 FP8、KV 交换、多模态与驱动能力差异带来的生产边界，后者则把 strict-agentic 执行契约、安全导航与多渠道消息路由进一步收紧。今天没有大版本发布，但默认路径可靠性明显成为共同主题。
+tags: [Inference, KV Cache, Quantization]
 ---
 
 今天这波 AI Infra 更新，表面看并不热闹：没有重量级 release，没有跨项目的功能爆发，也没有一个新模型把所有注意力都吸走。但如果把过去几天连起来看，趋势反而更清楚了——框架层竞争已经从“支持了多少能力”，转向“默认情况下会不会稳定工作”。

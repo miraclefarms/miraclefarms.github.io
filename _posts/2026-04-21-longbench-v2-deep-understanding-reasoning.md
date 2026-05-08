@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: LongBench v2 以 503 道选择题、8K–2M token 上下文和严格的人工基准，揭示当前最强 LLMs 在直接作答时仅达 50.1%，而 o1-preview 通过延长推理达到 57.7%，超越人类专家 4%。
+tags: [Long Context, Evaluation]
 ---
 
 当 LongBench v2 的论文出现在 arXiv 时，长上下文评测领域有了一个值得认真对待的新坐标。不是因为它规模最大，而是因为它做了一件更根本的事：把「深度理解与推理」而不是「大海捞针」变成了评测的核心维度。

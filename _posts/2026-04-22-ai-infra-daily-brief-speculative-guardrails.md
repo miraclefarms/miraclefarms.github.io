@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去一天，speculative decoding、PD disaggregation、KV Store 和 Serve 路由的更新都指向同一个方向：推理快路径正在从单纯追求速度，转向补齐正确性、回退、批处理、观测和运行时控制。
+tags: [Speculative Decoding, Inference, KV Cache]
 ---
 
 今天这批更新最有意思的地方，是“快路径”开始变得保守。过去 speculative decoding、PD disaggregation、KV offload 和 replica 直连路由常被当成性能增强项来讲；最近一天，主干项目合进来的变化却更多在补状态初始化、默认模式、unsupported config guard、批处理失败收敛、trace replay 和 endpoint metadata。

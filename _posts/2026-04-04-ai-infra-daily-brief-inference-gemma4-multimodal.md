@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 72 小时，AI 推理框架加速迭代，Google Gemma 4 多模态能力在 vLLM、llama.cpp、TensorRT-LLM 多处同步落地。MoE 路由、缓存管理、跨芯片平台生态适配成为核心工程重点。分布式缓存与推理框架紧耦合，从端侧到云端的完整链路日趋成熟。
+tags: [Inference, Multimodal, MoE, Quantization]
 ---
 
 ## 推理框架的多模态新时代

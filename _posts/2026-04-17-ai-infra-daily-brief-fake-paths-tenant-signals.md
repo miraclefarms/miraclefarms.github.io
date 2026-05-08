@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去三天，TRL 直接弃用更慢且更耗显存的 paged 训练路径，vLLM 只在真正需要时才初始化 SSU dispatch；另一边，LMCache 把 cache_salt、用户级驱逐与请求级 tracing 补进主干，Mooncake 则让跨机 SSD offload 和 SSD 指标真正进入可部署状态。
+tags: [Training, KV Cache, Inference]
 ---
 
 过去三天，更值得写的变化不是谁又多了一个 headline feature，而是几个项目开始主动承认一件事：很多“理论上更高级”的路径，如果没有在真实环境里证明自己，就不该继续占据默认位置。TRL 直接给 `use_transformers_paged` 判了死缓，因为它既没有实际用户，又比默认 padded 路径更慢、还多吃了六倍显存；vLLM 也把 SSU dispatch 初始化改成按需触发，没有对应 layer 时就直接变成 no-op。框架团队开始主动清理伪能力，而不是继续把它们当作功能表里的加分项。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去三天，更值得记住的不是谁又多卷出一个快 kernel，而是长上下文、超大 KV 池、异构 CUDA 版本和复杂并行拓扑这些过去常靠特殊分支兜底的路径，开始被项目方收回默认实现。
+tags: [KV Cache, Long Context, Inference, Networking]
 ---
 
 过去三天翻完几家主干仓库，我最强烈的感受不是“又多了几个 headline feature”，而是越来越多团队开始对一件事失去耐心: 那些只在极端规模、异构环境或复杂拓扑里才会触发的特殊路径，不能再继续作为主路径旁边的临时补丁存在。

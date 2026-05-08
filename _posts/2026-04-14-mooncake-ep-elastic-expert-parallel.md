@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 LMSYS、SGLang 与 Mooncake 官方材料，分析 Elastic EP 为何改变了大规模 MoE 推理的故障模型，以及 Mooncake EP 在其中承担的系统角色。
+tags: [MoE, Disaggregation, Mooncake]
 ---
 
 为什么 Elastic EP 会在 2026 年 3 月 25 日之后迅速变成一个值得单独讨论的话题？因为它解决的不是一个普通优化项，而是大规模 MoE 推理里最尴尬、也最昂贵的系统矛盾：你必须把 Expert Parallelism 做得很宽，才能把 batch size 做大、把 TPOT 压低；但 EP 越宽，单个 rank 故障把整条服务链路拖垮的概率也越高<a href="https://www.lmsys.org/blog/2026-03-25-eep-partial-failure-tolerance/">[1]</a>。

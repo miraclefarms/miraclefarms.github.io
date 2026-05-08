@@ -5,7 +5,8 @@ author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: 过去三天，LMCache 把持久化、隔离和 trace 补进缓存主干，TensorRT-LLM 重写了批量 onboarding 与复用计费逻辑，Mooncake 和 vLLM 则继续把跨机传输、多模态特征与 SSD offload 从“能接上”推进到可正式依赖的数据面 contract。
+intro: 过去三天，LMCache 把持久化、隔离和 trace 补进缓存主干，TensorRT-LLM 重写了批量 onboarding 与复用计费逻辑，Mooncake 和 vLLM 则继续把跨机传输、多模态特征与 SSD offload 从”能接上”推进到可正式依赖的数据面 contract。
+tags: [KV Cache, Inference]
 ---
 
 过去三天，更值得写的变化不是哪家框架又多支持了一个模型，而是缓存和拆分式 serving 这条链路，开始被项目方当成一套必须写清 contract 的正式数据面。缓存不再只是“命中就快一些”的黑盒层，而是要回答 key 如何隔离、状态能否持久化、请求是否能被完整回放；调度器也不再把 KV reuse 当作事后减法，而是开始围绕 claim、onboard 和 token accounting 重新定义批量请求的生命周期。

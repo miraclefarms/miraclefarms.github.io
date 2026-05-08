@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: VILA Lab 对 Claude Code 的系统级逆向分析揭示了一个出人意料的架构结论：这套 agentic 编程系统的 JS 运行时基础设施只占 1.6%，其余 98.4% 是 prompt、markdown 和配置文本——而这个比例本身，就是其核心设计哲学"minimal footprint + trust in Claude's judgment"的最直接体现。
+tags: [Agents]
 ---
 
 如果你打开 Claude Code 的源码，你会发现它的核心是一个 while 循环：调用模型、执行工具、拿回结果、循环往复。这个循环本身只有几十行，但围绕它的系统——权限管理、上下文压缩、工具路由、安全拦截——才是真正的工程复杂度所在。

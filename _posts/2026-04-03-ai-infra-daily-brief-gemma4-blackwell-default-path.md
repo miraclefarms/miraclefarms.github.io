@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: Gemma 4 在 24 小时内同步进入 vLLM 与 llama.cpp，是近期最密集的一次跨框架型号协调上线。SGLang 将 TRT-LLM 稀疏注意力内核升格为 Blackwell DSA 预填充默认路径，Mooncake 落地无锁 P2P 路由缓存。TRT-LLM 修复分离式推理卡死与 KV 缓存计数错误，Megatron-LM 解决 FSDP 梯度双缓冲精度问题。OpenClaw v2026.4.2 恢复 Task Flow 基础设施并完成 Android 助理集成。
+tags: [Inference, Attention, Multimodal, vLLM]
 ---
 
 过去 24 小时，AI Infra 层有一个罕见的节奏现象：Google Gemma 4 在同一天进入了 vLLM 和 llama.cpp 的主干，两个框架各自的主支持 PR 当天均被一条 bugfix PR 紧随跟进。这种"型号同步上线"的模式意味着主要推理框架的型号追踪机制已经足够成熟，能够以近乎协调发布的方式处理新架构的首日支持。
