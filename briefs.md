@@ -69,11 +69,16 @@ permalink: /briefs/
       {% assign yr = post.date | date: "%Y" %}
       {% if yr != prev_year %}
         {% unless forloop.first %}</div></section>{% endunless %}
+        {% assign yr_count = 0 %}
+        {% for p in briefs %}
+          {% assign pyr = p.date | date: "%Y" %}
+          {% if pyr == yr %}{% assign yr_count = yr_count | plus: 1 %}{% endif %}
+        {% endfor %}
         <section class="brief-year-group" data-year="{{ yr }}">
         <div class="year-row">
           <span class="yr">{{ yr }}</span>
           <span class="ln"></span>
-          <span>{% assign yr_posts = briefs | where_exp: "p", "p.date contains yr" %}{{ yr_posts.size }} 条</span>
+          <span class="yr-count" data-total="{{ yr_count }}">{{ yr_count }} 条</span>
         </div>
         <div class="pagelist" role="list">
         {% assign prev_year = yr %}
@@ -178,9 +183,16 @@ permalink: /briefs/
       el.style.display = matchesTag(el) ? '' : 'none';
     });
     yearGroups.forEach(function(group) {
-      var hasVisible = Array.from(group.querySelectorAll('.brief-item'))
-        .some(function(el) { return el.style.display !== 'none'; });
-      group.style.display = hasVisible ? '' : 'none';
+      var groupItems = Array.from(group.querySelectorAll('.brief-item'));
+      var groupVisible = groupItems.filter(function(el) { return el.style.display !== 'none'; });
+      group.style.display = groupVisible.length > 0 ? '' : 'none';
+      var countEl = group.querySelector('.yr-count');
+      if (countEl) {
+        var total = countEl.dataset.total;
+        countEl.textContent = activeTag
+          ? groupVisible.length + ' / ' + total + ' 条'
+          : total + ' 条';
+      }
     });
     emptyMsg.style.display = visible === 0 ? '' : 'none';
   }
