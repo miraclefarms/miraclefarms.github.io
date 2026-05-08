@@ -2,8 +2,8 @@
 title: 上下文窗口是第一约束：OpenDev 终端代理的工程逻辑
 date: 2026-04-15 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: OpenDev 技术报告提出了一个不寻常的主张：在终端 AI 编程代理的设计中，上下文窗口管理不是附加功能，而是第一设计约束，由此衍生出复合 AI 路由、五层安全防线和扩展版 ReAct 循环等一系列结构性决策。
 tags: [Agents]
 ---

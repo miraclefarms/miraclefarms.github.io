@@ -2,8 +2,8 @@
 title: StreamWise 如何把多模态生成从离线流水线推到实时服务
 date: 2026-04-17 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 基于 StreamWise 论文，分析多模态工作流为何不能照搬 LLM serving 范式，以及其实时化背后的系统抽象与成本边界。
 tags: [Multimodal, Inference]
 ---

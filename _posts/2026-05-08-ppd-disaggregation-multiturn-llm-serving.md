@@ -2,8 +2,8 @@
 title: 多轮对话里的 Prefill 已经分化：PPD Disaggregation 的系统启示
 date: 2026-05-08 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 本文从多轮 LLM serving 的真实瓶颈出发，分析 PPD 如何把 append-prefill 变成可调度对象，并重新划分 prefill 与 decode 的边界。
 tags: [Disaggregation, Inference, Long Context]
 ---

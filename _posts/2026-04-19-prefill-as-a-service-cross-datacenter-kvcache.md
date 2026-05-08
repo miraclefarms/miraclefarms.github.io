@@ -2,8 +2,8 @@
 title: Prefill-as-a-Service：LLM 推理的部署边界为何开始越过数据中心
 date: 2026-04-19 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 这篇论文真正重要的地方，不是又发明了一套调度器，而是指出 hybrid attention 已经把 KVCache 的网络成本压到一个新拐点，让跨数据中心的 prefill 开始成为可计算的工程问题。
 tags: [Disaggregation, KV Cache, Inference]
 ---

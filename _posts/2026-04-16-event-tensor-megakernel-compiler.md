@@ -2,8 +2,8 @@
 title: Event Tensor：为动态 Megakernel 设计一套编译器抽象
 date: 2026-04-16 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: MLSys 2026 论文 Event Tensor 提出了一种统一的编译器抽象，让 megakernel 第一次能够处理动态形状和 MoE 数据依赖，在保住全部融合收益的同时将 vLLM warmup 时间从 123 秒降到 35 秒。
 tags: [Inference, MoE]
 ---

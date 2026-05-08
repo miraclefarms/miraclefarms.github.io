@@ -2,8 +2,8 @@
 title: "RollArt：Agentic RL 训练系统，开始从资源拼装转向关键路径重构"
 date: 2026-04-03 21:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 阿里与港科大的 RollArt 讨论的不是 RL 算法细节，而是 Agentic RL 训练系统的基础设施形态。当 rollout、reward、training 与 environment 同时进入主路径后，系统竞争开始从资源堆叠转向关键路径重构。本文从背景、目标、创新、结果与展望几个部分分析这篇论文。
 tags: [Agents, Training, Disaggregation]
 ---

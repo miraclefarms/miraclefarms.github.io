@@ -2,8 +2,8 @@
 title: "Meta-Harness：当 LLM 学会优化自己的「外挂系统」"
 date: 2026-04-01 09:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: Stanford/MIT 最新研究 Meta-Harness，用 LLM 自动搜索并优化围绕 LLM 的整个系统框架（Harness），仅 4 次评估匹配其他方法 40 次的性能，并在 TerminalBench-2 上击败所有人工设计的同模型系统。
 tags: [Agents, Evaluation]
 ---

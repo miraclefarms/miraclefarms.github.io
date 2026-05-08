@@ -2,8 +2,8 @@
 title: "LangChain 的 Harness 工程实践：从手工调优到可迭代的反馈系统"
 date: 2026-04-07 10:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: LangChain 通过 harness 工程将其 coding agent 从 Top 30 提升至 Top 5，仅通过改动 harness（而非模型）将 Terminal Bench 2.0 得分从 52.8 提升至 66.5。本文深入分析其核心方法论，并与 Meta-Harness 的自动化思路形成对话。
 tags: [Agents, Evaluation]
 ---

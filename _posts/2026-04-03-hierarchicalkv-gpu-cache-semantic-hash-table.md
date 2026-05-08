@@ -2,8 +2,8 @@
 title: "HierarchicalKV 论文解读：面向持续在线 Embedding 存储的 GPU 缓存语义哈希表"
 date: 2026-04-03 09:30:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: "从系统架构视角解读 HierarchicalKV 如何以缓存语义重构 GPU 哈希表，用于持续在线 embedding 存储。"
 tags: [KV Cache, Inference]
 ---

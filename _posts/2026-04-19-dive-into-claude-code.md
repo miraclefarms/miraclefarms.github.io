@@ -2,8 +2,8 @@
 title: Claude Code 的设计哲学：当 98.4% 的代码是纯文本
 date: 2026-04-19 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: VILA Lab 对 Claude Code 的系统级逆向分析揭示了一个出人意料的架构结论：这套 agentic 编程系统的 JS 运行时基础设施只占 1.6%，其余 98.4% 是 prompt、markdown 和配置文本——而这个比例本身，就是其核心设计哲学"minimal footprint + trust in Claude's judgment"的最直接体现。
 tags: [Agents]
 ---

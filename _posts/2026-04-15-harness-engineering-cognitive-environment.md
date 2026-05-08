@@ -2,8 +2,8 @@
 title: 驾驭工程：LLM Agent 的认知环境设计
 date: 2026-04-15 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 驾驭工程的本质不是给模型添加外部能力，而是设计一个认知环境，将未完成任务转化为模型可以可靠解决的结构化问题。
 tags: [Agents]
 ---

@@ -2,8 +2,8 @@
 title: MRC 与 SRv6：OpenAI 如何把百 K GPU 训练网络做成端侧自愈系统
 date: 2026-05-07 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: OpenAI 的 MRC 论文把百 K GPU 训练网络的主线从平均带宽推进到尾延迟治理：让端侧协议主动绕开拥塞和故障，交换机控制面反而变得更静态。
 tags: [Networking, Training]
 ---
