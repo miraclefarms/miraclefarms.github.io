@@ -76,7 +76,8 @@ intro: 一句话摘要，不超过 100 字。
 
 **Author by content type:**
 - `荔枝不耐思` — AI Infra daily briefs
-- `Ethan` — Technical essays
+- `Lychee & Ethan` — Technical essays (essay)
+- `Ethan` — Paper readings and tech overviews (reading)
 - `MiracleFarms` — Site notes / founding notes
 
 ### Timezone

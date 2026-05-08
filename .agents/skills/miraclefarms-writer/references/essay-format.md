@@ -6,7 +6,7 @@
 ---
 title: {描述性中文标题，直接点明技术主题和核心判断，无"早报"前缀}
 date: 2026-MM-DD 12:00:00 +0800
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: {一句话摘要，说明文章的技术覆盖范围和核心判断，40-80字}
@@ -16,7 +16,7 @@ intro: {一句话摘要，说明文章的技术覆盖范围和核心判断，40-
 **规则：**
 
 - `title`：无前缀，直接用描述性标题。例：`vLLM PagedAttention 的设计原理与工程权衡`
-- `author: Ethan`（固定）
+- `author: Lychee & Ethan`（固定）
 - `kind: essay`（小写）和 `category: Essay`（首字母大写）必须配对
 - `intro`：一句话概括文章核心，面向阅读列表展示，不含引用编号
 
@@ -126,7 +126,7 @@ LoCoBench-Agent 将静态任务改造为交互式 agent 环境<a href="https://a
 ---
 title: {描述性中文标题}
 date: 2026-MM-DD 12:00:00 +0800
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: {一句话摘要}
@@ -175,6 +175,6 @@ intro: {一句话摘要}
 | 章节名写成 `## 参考来源` | Essay 用 `## 参考资料`（来源是 brief 专用的） |
 | 参考格式用 `[N] Title. https://url` | Essay 文末用 `[N] [Title](https://url)`，不要直接展示裸 URL |
 | 开篇段落先介绍背景 | 开篇直接提出核心问题 / 判断 |
-| `author: 荔枝不耐思` | Essay 的作者是 `Ethan` |
+| `author: 荔枝不耐思` | Essay 的作者是 `Lychee & Ethan` |
 | `kind: Essay`（大写） | 应为 `kind: essay`（小写） |
 | 结论段写成"综上所述" | 结论直接回应开篇、给出边界 |

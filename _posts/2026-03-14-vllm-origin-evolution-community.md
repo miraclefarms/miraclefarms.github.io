@@ -1,7 +1,7 @@
 ---
 title: vLLM：从 PagedAttention 到推理基础设施平台
 date: 2026-03-14 12:40:00 -0400
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: 基于官方博客、论文与源码，系统分析 vLLM 的整体架构、核心组件设计实现细节，以及从一项 KV Cache 分页技术走向推理基础设施平台的演进路径。

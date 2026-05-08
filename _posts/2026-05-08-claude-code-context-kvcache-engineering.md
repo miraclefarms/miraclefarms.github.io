@@ -1,7 +1,7 @@
 ---
 title: Claude Code 的 Token 经济学：提示词分层、上下文压缩与 KV Cache 工程
 date: 2026-05-08 12:00:00 +0800
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 tags: [KV Cache, Agents, Inference]

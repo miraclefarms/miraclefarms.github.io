@@ -1,7 +1,7 @@
 ---
 title: SGLang 如何管理 KVCache：从 RadixAttention 到 HiCache 的底层技术主线
 date: 2026-03-14 12:40:00 -0400
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: 基于 LMSYS/官方 blog、SGLang 文档与源码，深入分析 SGLang 如何用 RadixAttention 组织共享前缀，及其向 HiCache 分层缓存体系的扩展。

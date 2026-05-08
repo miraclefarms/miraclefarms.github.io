@@ -29,8 +29,13 @@ description: >
 在开始调研之前，先确认写哪种文章：
 
 **Essay（技术深度分析）**
-- 主题是深度技术分析、论文解读、架构分析、源码解读、benchmark 综述
-- 通常 800–3000 字，结构严密，有核心论点
+- 主题是深度技术分析、架构分析、源码解读、benchmark 综述，有完整的核心论点
+- 通常 800–3000 字，结构严密
+- 作者：Lychee & Ethan
+
+**Reading（论文阅读 / 技术综述）**
+- 主题是对单篇论文或单一技术主题的阅读笔记、解读或综述
+- 结构与 Essay 一致（HTML anchor 引用、`## 参考资料`），但视角更偏"读者视角"而非原创分析
 - 作者：Ethan
 
 **Brief（日报 / 简报）**
@@ -40,7 +45,7 @@ description: >
 
 **如果用户没有明确说明类型**，根据参考资料判断：
 - 参考资料以 PR 列表为主 -> brief
-- 参考资料是一篇论文 / 单一技术主题 -> essay
+- 参考资料是一篇论文 / 单一技术主题 -> reading（偏解读）或 essay（有明确原创判断）
 - 仍不确定 -> 直接问用户
 
 **文章修改润色**：如果用户提供了已有文章（本地路径或粘贴全文），而不是主题+链接：
@@ -145,6 +150,7 @@ description: >
 
 - **Brief** -> 读 `references/brief-format.md`（frontmatter 模板、引用格式、完整结构模板）
 - **Essay** -> 读 `references/essay-format.md`（frontmatter 模板、引用格式、完整结构模板）
+- **Reading** -> 读 `references/essay-format.md`（格式与 Essay 完全一致；注意 `kind: reading`、`category: Reading`、`author: Ethan`）
 - **如果参考资料含有可用图片** -> 再读 `references/image-handling.md`（候选图筛选、原图抓取、失败回退、落盘命名）
 - **如果用户要求微信公众号版本** -> 再读 `references/wechat-format.md`（公众号改写规则、参考资料链接保留、输出路径）
 - **如果用户要求的是 essay 的微信公众号技术长文** -> 把它当成独立长文路径处理，不要沿用 brief 的默认配图与配色假设
@@ -202,7 +208,8 @@ description: >
 写完后自检：
 
 - [ ] front matter 所有必填字段都有？
-- [ ] `kind` 和 `category` 配对正确？
+- [ ] `kind` 和 `category` 配对正确？（essay/Essay、reading/Reading、brief/Brief）
+- [ ] Essay 作者是 `Lychee & Ethan`？Reading 作者是 `Ethan`？Brief 作者是 `荔枝不耐思`？
 - [ ] 日期用 `+0800`？
 - [ ] Brief：引用是 `[[N]](url)` 格式？有 `## 参考来源` 章节？
 - [ ] Essay：正文引用是 `<a href="url">[N]</a>`；文末有 `## 参考资料`，且每条参考资料是 `[N] [Title](url)`，页面不直接展示裸 URL？

@@ -1,7 +1,7 @@
 ---
 title: KV Cache 在 Agent 长上下文场景的 Benchmark：现状、代表工作与研究空白
 date: 2026-04-08 13:07:00 +0800
-author: Ethan
+author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: 基于 deepxiv 实证检索，梳理 KV cache 与 Agent 长上下文 benchmark 的交叉研究现状，并给出可落地的研究空白与评测框架。
