@@ -5,7 +5,8 @@ author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: SGLang 的 H20 风格 KV 缓存剪枝、llama.cpp 的原生 QLoRA 训练支持、TensorRT-LLM 的推理侧持续优化，以及 OpenClaw 的工具能力扩展，共同显示 AI Infra 的竞争焦点正从“支持什么”转向“能否真正可用”。
+intro: SGLang 的 H20 风格 KV 缓存剪枝、llama.cpp 的原生 QLoRA 训练支持、TensorRT-LLM 的推理侧持续优化，以及 OpenClaw 的工具能力扩展，共同显示 AI Infra 的竞争焦点正从”支持什么”转向”能否真正可用”。
+tags: [Quantization, Inference, KV Cache, SGLang, llama.cpp, TRT-LLM]
 ---
 
 过去 24 小时里，AI Infra 的新增变化继续围绕两条主线展开：一条是**量化精度与低精度算子的落地能力**，另一条是**推理效率与运行时路径的持续收敛**。如果把前几天的更新放在一起看，一个很明显的趋势是，行业的关注点正在从“某项能力是否已经被支持”，转向“这些能力是否已经进入可用状态，能不能在真实部署环境里稳定跑起来”。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 两个 CVSS 9.8 RCE 漏洞（SGLang ZMQ 未认证反序列化、Ray Data Parquet 扩展类型 cloudpickle）在同一天修复；llama.cpp 关闭多轮 CoT 截断缺口，reasoning_content 跨轮保留正式落地；Mooncake Store 引入 Redis snapshot catalog，etcd 不再是 HA 的唯一路径；OpenClaw 延续系统性安全收口，Discord 审批链与设备配对授权批量加固。
+tags: [Inference, Agents, SGLang, llama.cpp]
 ---
 
 今天的主线不是性能数字，而是两件本应更早发生的事情终于发生了：一个多月来悬在 SGLang 生产服务上的 RCE 漏洞被修补，Ray Data 处理不可信数据时的任意代码执行路径被封堵。与此同时，llama.cpp 关闭了多轮思维链对话中一个基础但影响显著的缺口——模型再也不会在每一轮对话开始时忘掉自己上一次是怎么思考的。

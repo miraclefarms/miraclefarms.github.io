@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 本文从多轮 LLM serving 的真实瓶颈出发，分析 PPD 如何把 append-prefill 变成可调度对象，并重新划分 prefill 与 decode 的边界。
+tags: [Disaggregation, Inference, Long Context]
 ---
 
 > **版本声明**：本文分析基于 arXiv 论文《Not All Prefills Are Equal: PPD Disaggregation for Multi-turn LLM Serving》v2（2026-05-05）<a href="https://arxiv.org/pdf/2603.13358">[1]</a>；除非特别说明，以下描述均基于该版本。

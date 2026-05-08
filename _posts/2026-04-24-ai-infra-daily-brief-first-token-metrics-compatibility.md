@@ -5,7 +5,8 @@ author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: Mooncake 重写 EFA SRD 共享端点后，把跨节点首包延迟和 QP 扩展性一起推进到可部署区间；LMCache、Ray、SGLang 同时修正“指标有值但语义失真”的观测路径；llama.cpp、TRT-LLM、DeepSpeed 则继续为 Anthropic 兼容、MoE 多流和 ZeRO offload 补正确性。
+intro: Mooncake 重写 EFA SRD 共享端点后，把跨节点首包延迟和 QP 扩展性一起推进到可部署区间；LMCache、Ray、SGLang 同时修正”指标有值但语义失真”的观测路径；llama.cpp、TRT-LLM、DeepSpeed 则继续为 Anthropic 兼容、MoE 多流和 ZeRO offload 补正确性。
+tags: [Inference, KV Cache, MoE]
 ---
 
 今天这批更新的共同点，不再是“谁又多快了几个点”，而是几个项目同时把过去容易被当成边角料的问题收回了主路径：第一包请求为什么慢、指标看起来正常却不代表真实状态、兼容层和训练路径在复杂组合下会不会悄悄出错。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: TRT-LLM 发 Helix Parallelism 博文并去掉模型专用补丁，SGLang 将 P2P 权重传输迁入主线，vLLM 修 PP 并发 token 丢失——推理框架的竞争重心正在从"首发支持"转向"通用路径上跑稳"。
+tags: [Inference, Disaggregation]
 ---
 
 ![题图](/assets/2026-05-07-ai-infra-daily-brief/cover.jpg)

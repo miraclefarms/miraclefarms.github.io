@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于官方博客、论文与源码，系统分析 vLLM 的整体架构、核心组件设计实现细节，以及从一项 KV Cache 分页技术走向推理基础设施平台的演进路径。
+tags: [KV Cache, Inference, vLLM]
 ---
 
 > **版本声明**：本文分析基于 vLLM 仓库（2026-03 前后）；除非特别说明，文中关于 PagedAttention、Block Manager、Scheduler、Prefix Cache 的实现描述，均以官方公开的代码和文档为依据。

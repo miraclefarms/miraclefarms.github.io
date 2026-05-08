@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: LightSeek 发布 TokenSpeed 性能预览，把 coding agent 的长上下文、多轮对话和 TPS/User 下限作为推理引擎第一约束；这会把竞争焦点从离线吞吐推向用户体感、调度正确性和 kernel 专用化。
+tags: [Inference, Agents, Long Context]
 ---
 
 TokenSpeed 这篇发布文章释放的信号，已经超出“又一个推理引擎开源”。更关键的是，agentic coding 已经把推理系统的评价坐标改写了一遍：服务端不能只追求总吞吐，还要在长上下文、多轮会话、并发用户和可感知生成速度之间找 Pareto 前沿。LightSeek 给出的 TokenSpeed 预览，把 TPS/User 下限和 TPM/GPU 同时放到台面上[[1]](https://lightseek.org/blog/lightseek-tokenspeed.html)，这比传统 benchmark 更接近 Claude Code、Codex、Cursor 这类工作负载的真实压力。

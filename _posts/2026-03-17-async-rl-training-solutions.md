@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 系统梳理 AReaL、verl、slime、StreamRL、AsyncFlow、LlamaRL、TRL AsyncGRPO 等七大异步 RL 训练方案，以激进派、保守派、工程派三条路线为框架，分析各方案的架构设计、staleness 处理策略与选型边界。
+tags: [Training, Agents]
 ---
 
 2025 年是异步强化学习（Async RL）爆发的一年。主流训练框架密集发布异步方案，从学术原型到生产验证，经历了从"能否工作"到"如何选型"的范式转变。本文基于 AReaL、verl、slime、StreamRL、AsyncFlow、LlamaRL 等核心工作，系统梳理当前异步 RL 的技术路线分化，为 AI Infra 架构师和工程团队提供选型参考。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: TRT-LLM v1.3.0rc9 一次性带来了 Qwen3.5 文本、GLM 5 支持与 DeepSeek V3.2 NVFP4 路由优化，KVCacheManagerV2 新增 Python 调度器接口；SGLang 在 B200 上修复 DSA 性能下降并合并 CuTeDSL KDA 解码内核；Mooncake 完成 MACA 构建路径初始接入，KV cache 传输引擎开始向国产加速卡延伸；OpenClaw 修复 LanceDB embedding bootstrap 路径，记忆搜索功能恢复正常。
+tags: [Inference, Quantization, KV Cache]
 ---
 
 过去 24 小时，最密集的工程推进发生在 Blackwell 适配和 NVFP4 量化这两条轨道上。TRT-LLM 用 v1.3.0rc9 告诉市场：1.3.0 正式版快了；SGLang 在 B200 硬件细节上逐个攻坚。与此同时，Mooncake 悄悄迈出了一步——把 KV cache 传输引擎引向国产 GPU 架构，这个方向的商业逻辑值得单独讨论。

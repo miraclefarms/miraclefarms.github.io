@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: OpenClaw 单日合并超过 8 条 PR，覆盖 fal.ai 图片生成、Google Chat 接入、UI Canvas 扩展和 xAI 网页搜索；vLLM 补齐 EP Weight Filter 与 KV Connector plugin 覆盖；TRL 修复 DPO VLM 训练数据损坏问题。
+tags: [Agents, Inference, KV Cache]
 ---
 
 今天 AI Infra 的主要信号来自两个方向：一是 **OpenClaw 在单日内密集落地多项功能扩展**，从图片生成、渠道接入到 UI 能力全面推进；二是**推理框架在细粒度可控性与训练正确性上继续补短板**。放在一起看，这说明 AI Infra 的竞争正在从"框架功能支持"加速走向"端到端体验与多 provider 生态集成"。

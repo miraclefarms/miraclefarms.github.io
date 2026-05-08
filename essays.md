@@ -76,7 +76,10 @@ permalink: /essays/
           <div class="pl-excerpt">{{ post.intro | truncate: 140 }}</div>
           {% endif %}
           <div class="pl-meta">
-            <span class="tag">{{ post.category | default: post.kind }}</span>
+            <span class="tag-kind">{{ post.category | default: post.kind }}</span>
+            {% for tag in post.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
           </div>
         </div>
         <div class="pl-date">{{ post.date | date: "%Y.%m.%d" }}</div>

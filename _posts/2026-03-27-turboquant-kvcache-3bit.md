@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: Google Research 最新提出的 TurboQuant，把大模型 KV Cache 压到 3 bit 级别，在多项长上下文基准上几乎无损，同时把向量检索压缩推向更接近理论下界的方向。
+tags: [Quantization, KV Cache, Long Context]
 ---
 
 > **版本声明**：本文基于 Google Research 博客《TurboQuant: Redefining AI efficiency with extreme compression》与其文中引用的三篇论文：TurboQuant<a href="https://arxiv.org/abs/2504.19874">[1]</a>、QJL<a href="https://arxiv.org/abs/2406.03482">[2]</a>、PolarQuant<a href="https://arxiv.org/abs/2502.02617">[3]</a>。

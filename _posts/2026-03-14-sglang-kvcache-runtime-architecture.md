@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 LMSYS/官方 blog、SGLang 文档与源码，深入分析 SGLang 如何用 RadixAttention 组织共享前缀，及其向 HiCache 分层缓存体系的扩展。
+tags: [KV Cache, Inference, SGLang]
 ---
 
 > **版本声明**：本文分析基于 SGLang 仓库 commit `0de0d74`（2026-03-05）；除非特别说明，文中关于 RadixAttention、prefix caching、HiCache、调度与 memory pool 的实现描述，均以该版本源码为依据。

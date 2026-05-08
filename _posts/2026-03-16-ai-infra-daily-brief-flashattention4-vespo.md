@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: Transformers 首次支持 FlashAttention4（要求 torch >= 2.3.3），TRL 推出 VESPO 强化学习优化算法（比官方快 25%），vLLM 新增 GDN 内核选择配置，AI Infra 框架层进入"新一代注意力"与"强化学习优化"双重迭代窗口。
+tags: [Attention, Training, Transformers]
 ---
 
 AI Infra 框架层今天迎来两个重要里程碑——Transformers 正式引入 FlashAttention4 初始支持（要求 torch >= 2.3.3），TRL 推出 VESPO 强化学习优化算法。这两个更新分别从注意力机制和训练优化两个方向推动框架能力边界，标志着 AI Infra 在"功能军备竞赛"后进入"深度优化"与"新一代基础设施"并行的阶段。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: llama.cpp b8579 重写 MoE GEMV 核，边缘侧多 token 推理吞吐系统性提升；vLLM 消除 pooling 路径冗余设备拷贝，E2E 吞吐意外提升 48.9%。Mooncake 让弹性 EP rank 恢复变为异步非阻塞，LMCache 引入 Intel DSA 作为 KV cache 第三条传输路径。OpenClaw 2026.3.28 发布，plugin 工具通过 MCP server 打通 ACP session，FTS5 CJK 检索补齐。这是一个把已知瓶颈逐一打穿的迭代日。
+tags: [Inference, KV Cache, MoE, vLLM]
 ---
 
 今天的主线不是某个重大发布，而是多个项目在各自关键路径上同时"打穿"了一个已知瓶颈。llama.cpp 边缘侧 MoE 核重写、vLLM 推理服务 pooling 路径去冗余、Mooncake 弹性容错异步化、LMCache 异构传输扩展——每一件单独看都是合理的工程优化，合在一起看则是一张从端侧到数据中心的推理加速图在同步向前推进。

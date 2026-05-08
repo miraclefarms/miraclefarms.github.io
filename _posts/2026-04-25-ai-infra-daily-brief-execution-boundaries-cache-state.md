@@ -5,7 +5,8 @@ author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: 过去一天，推理框架开始拆掉“整段静态执行”的默认前提，缓存系统也不再只保存 token，而把路由、分层对象与恢复状态一起纳入主链路。AI Infra 的竞争点，正在继续从单点性能转向复杂执行边界下的可成立性。
+intro: 过去一天，推理框架开始拆掉”整段静态执行”的默认前提，缓存系统也不再只保存 token，而把路由、分层对象与恢复状态一起纳入主链路。AI Infra 的竞争点，正在继续从单点性能转向复杂执行边界下的可成立性。
+tags: [Inference, KV Cache, MoE]
 ---
 
 今天最值得写的，不是谁又把某个 kernel 提快了几个点，而是几个主干项目同时承认了一件更现实的事：真正上线后的系统，很少活在一条干净、连续、永远不被打断的执行路径里。CUDA graph 会遇到 offload，prefix cache 会遇到 MoE 路由，控制面会在 shutdown 中途崩掉，浏览器后端也未必具备完整的 subgroup matrix 能力。

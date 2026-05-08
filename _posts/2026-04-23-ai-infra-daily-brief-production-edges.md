@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去一天，多模态视频输入、KV/offload 状态保存、异构后端内存控制和训练/Serve 资源调度都在补默认路径。AI Infra 的新竞争点，正在从单点加速扩展到生产边缘条件的可治理性。
+tags: [Inference, Multimodal, KV Cache]
 ---
 
 今天这批更新最有意思的地方，是几个主干项目都在处理“边缘路径”的默认化。视频输入不再只是把帧喂给模型，长视频并发解码、预抽帧元数据、ASR hotwords 都开始进入 OpenAI-compatible 服务接口；KV/offload 也不再只是把缓存搬到别处，而是要保存 Mamba 状态、区分热冷数据、支持 master 不可用时的降级启动；异构后端则在 WebGPU、SYCL、CPU INT4、FlexAttention 这些过去常被视作补充路径的地方继续补能力。

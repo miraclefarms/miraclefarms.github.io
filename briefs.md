@@ -6,19 +6,13 @@ permalink: /briefs/
 ---
 
 {% assign briefs = site.posts | where: 'kind', 'brief' | sort: 'date' | reverse %}
-{% assign all_series = "" %}
+{% assign all_tag_str = "" %}
 {% for post in briefs %}
-  {% if post.series %}
-    {% unless all_series contains post.series %}
-      {% if all_series == "" %}
-        {% assign all_series = post.series %}
-      {% else %}
-        {% assign all_series = all_series | append: "," | append: post.series %}
-      {% endif %}
-    {% endunless %}
-  {% endif %}
+  {% for tag in post.tags %}
+    {% assign all_tag_str = all_tag_str | append: "," | append: tag %}
+  {% endfor %}
 {% endfor %}
-{% assign series_list = all_series | split: "," %}
+{% assign tag_list = all_tag_str | split: "," | uniq | sort %}
 
 <main class="page">
   <div class="pg-meta">
@@ -45,14 +39,16 @@ permalink: /briefs/
 
   <div class="filterbar" role="toolbar" aria-label="筛选与视图" id="briefs-filterbar">
     <span class="lbl">Filter:</span>
-    <button class="fchip on" data-series="" type="button">
+    <button class="fchip on" data-tag="" type="button">
       全部 <span class="count">{{ briefs.size }}</span>
     </button>
-    {% for s in series_list %}
-    {% assign s_count = briefs | where: 'series', s | size %}
-    <button class="fchip" data-series="{{ s }}" type="button">
-      {{ s | replace: '-', ' ' }} <span class="count">{{ s_count }}</span>
+    {% for tag in tag_list %}
+    {% if tag != "" %}
+    {% assign t_count = briefs | where_exp: "p", "p.tags contains tag" | size %}
+    <button class="fchip" data-tag="{{ tag }}" type="button">
+      {{ tag }} <span class="count">{{ t_count }}</span>
     </button>
+    {% endif %}
     {% endfor %}
     <span style="flex:1"></span>
     <span class="viewtabs" role="tablist">
@@ -68,7 +64,6 @@ permalink: /briefs/
   </div>
 
   <div id="briefs-list-view">
-    {% assign years = briefs | map: 'date' | map: 'year' | uniq %}
     {% assign prev_year = "" %}
     {% for post in briefs %}
       {% assign yr = post.date | date: "%Y" %}
@@ -84,7 +79,7 @@ permalink: /briefs/
         {% assign prev_year = yr %}
       {% endif %}
       <a class="pagelink brief-item" href="{{ post.url | relative_url }}" role="listitem"
-         data-series="{{ post.series }}" data-year="{{ yr }}">
+         data-tags="{{ post.tags | join: ',' }}" data-year="{{ yr }}">
         <span class="pl-handle" aria-hidden="true">⋮⋮</span>
         <span class="pl-ico" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/></svg>
@@ -95,7 +90,10 @@ permalink: /briefs/
           <div class="pl-excerpt">{{ post.intro | truncate: 140 }}</div>
           {% endif %}
           <div class="pl-meta">
-            {% if post.series %}<span class="tag">{{ post.series | replace: '-', ' ' }}</span>{% endif %}
+            <span class="tag-kind">{{ post.category | default: post.kind }}</span>
+            {% for tag in post.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
           </div>
         </div>
         <div class="pl-date">{{ post.date | date: "%Y.%m.%d" }}</div>
@@ -127,7 +125,7 @@ permalink: /briefs/
       </thead>
       <tbody>
         {% for post in briefs %}
-        <tr class="brief-table-row" data-series="{{ post.series }}">
+        <tr class="brief-table-row" data-tags="{{ post.tags | join: ',' }}">
           <td class="col-date">{{ post.date | date: "%Y.%m.%d" }}</td>
           <td class="col-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></td>
           <td class="col-tags">
@@ -156,8 +154,14 @@ permalink: /briefs/
   var listView   = document.getElementById('briefs-list-view');
   var tableView  = document.getElementById('briefs-table-view');
   var emptyMsg   = document.getElementById('briefs-empty');
-  var activeSeries = '';
+  var activeTag  = '';
   var activeView = 'list';
+
+  function matchesTag(el) {
+    if (!activeTag) return true;
+    var tags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+    return tags.indexOf(activeTag) !== -1;
+  }
 
   function applyFilter() {
     var listItems  = listView.querySelectorAll('.brief-item');
@@ -166,12 +170,12 @@ permalink: /briefs/
     var visible = 0;
 
     listItems.forEach(function(el) {
-      var show = !activeSeries || el.dataset.series === activeSeries;
+      var show = matchesTag(el);
       el.style.display = show ? '' : 'none';
       if (show) visible++;
     });
     tableRows.forEach(function(el) {
-      el.style.display = (!activeSeries || el.dataset.series === activeSeries) ? '' : 'none';
+      el.style.display = matchesTag(el) ? '' : 'none';
     });
     yearGroups.forEach(function(group) {
       var hasVisible = Array.from(group.querySelectorAll('.brief-item'))
@@ -183,8 +187,8 @@ permalink: /briefs/
 
   chips.forEach(function(chip) {
     chip.addEventListener('click', function() {
-      activeSeries = this.dataset.series;
-      chips.forEach(function(c) { c.classList.toggle('on', c.dataset.series === activeSeries); });
+      activeTag = this.dataset.tag;
+      chips.forEach(function(c) { c.classList.toggle('on', c.dataset.tag === activeTag); });
       applyFilter();
     });
   });

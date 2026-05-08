@@ -223,7 +223,11 @@ p.muted { color: var(--ink-soft); }
 }
 .pagelink .pl-meta .tag {
   background: var(--tag-bg); border-radius: 3px; padding: 1px 6px;
-  color: var(--ink-soft); font-size: 11px;
+  color: var(--accent); font-size: 11px;
+}
+.pagelink .pl-meta .tag-kind {
+  background: rgba(44,42,38,0.08); border-radius: 3px; padding: 1px 6px;
+  color: var(--ink-soft); font-size: 11px; font-weight: 500;
 }
 .pagelink .pl-excerpt { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin-top: 4px; }
 .pagelink .pl-date {
