@@ -172,7 +172,19 @@ description: >
 
 ---
 
-## 第六步：输出文件
+## 第六步：内容标签
+
+写完正文、完成图片处理后，给文章打标签：
+
+1. **读取 `references/content-tags.md`**，获取当前标签体系和选标签规则。
+2. 阅读文章正文，识别主要技术主题（通常 2–4 个）。
+3. 从体系表中选 2–5 个匹配标签，写入 front matter：`tags: [Tag1, Tag2, Tag3]`。
+4. 框架专属标签（vLLM / SGLang / TRT-LLM / llama.cpp / Mooncake）只在该框架是文章主要分析对象时才加。
+5. 如果现有标签无法覆盖，先用最接近的标签，然后在说明中提示用户可能需要新增。
+
+---
+
+## 第七步：输出文件
 
 - GitHub.io 默认保存路径：`/Users/lychee/mycode/miraclefarms.github.io/_posts/YYYY-MM-DD-slug.md`
 - GitHub.io 文件名：日期取自 front matter 的 date 字段 + 英文 slug（小写、连字符分隔）
@@ -207,3 +219,5 @@ description: >
 - [ ] 如果输出的是 essay 的微信公众号技术长文，是否已经写入 `wechat_variant: essay-longform`？
 - [ ] 如果输出的是 essay 的微信公众号技术长文，是否保留了与 GitHub.io essay 相同的正文配图，而不光是题图？
 - [ ] 如果输出的是 essay 的微信公众号技术长文，是否明确走经典蓝主题，而不是 brief 的默认绿色主题？
+- [ ] front matter 里有 `tags` 字段？标签数量在 2–5 个之间？大小写与 `references/content-tags.md` 体系一致？
+- [ ] 框架专属标签（vLLM / SGLang 等）只在该框架是主要分析对象时才出现？
