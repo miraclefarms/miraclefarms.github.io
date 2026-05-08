@@ -555,7 +555,7 @@ details.toggle > .toggle-body p { color: var(--ink-soft); margin: 6px 0; }
 }
 
 /* Post ToC */
-.post-toc { position: relative; }
+.post-toc { align-self: stretch; }
 .post-toc-card {
   position: sticky; top: 80px;
   font-family: var(--font-default);
