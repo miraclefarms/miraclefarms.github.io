@@ -2,8 +2,8 @@
 title: vLLM x Mooncake Store：Agentic 推理为什么需要分布式 KV Cache 池
 date: 2026-05-07 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: vLLM 与 Mooncake Store 把 agentic workload 的共享前缀变成跨实例 KV 数据平面；本文结合博客、PR 与源码拆解调度、传输和边界。
 tags: [KV Cache, Disaggregation, Agents, vLLM]
 ---

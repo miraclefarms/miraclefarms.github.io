@@ -2,8 +2,8 @@
 title: Mooncake EP 如何把 MoE 的 Elastic EP 从论文概念变成工程能力
 date: 2026-04-14 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 基于 LMSYS、SGLang 与 Mooncake 官方材料，分析 Elastic EP 为何改变了大规模 MoE 推理的故障模型，以及 Mooncake EP 在其中承担的系统角色。
 tags: [MoE, Disaggregation, Mooncake]
 ---
