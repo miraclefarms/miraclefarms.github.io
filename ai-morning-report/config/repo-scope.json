@@ -10,7 +10,9 @@
     "huggingface/trl",
     "microsoft/DeepSpeed",
     "ray-project/ray",
-    "openclaw/openclaw"
+    "openclaw/openclaw",
+    "ai-dynamo/nixl",
+    "lightseekorg/tokenspeed"
   ],
   "timeWindow": {
     "days": 3,
