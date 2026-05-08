@@ -96,6 +96,14 @@ img { max-width: 100%; border-radius: 6px; }
   .nav-spacer { display: none; }
   .brand-tag { display: none; }
 }
+@media (max-width: 560px) {
+  .topbar-inner { padding: 10px 16px; gap: 10px; }
+  .nav-links { gap: 0; }
+  .nav-links a { padding: 6px 8px; }
+  .nav-links a span { display: none; }
+  .nav-links svg { width: 16px; height: 16px; }
+  .nav-sep { display: none; }
+}
 
 /* ── Page shell ──────────────────────────────────────────────────────── */
 .page {

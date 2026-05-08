@@ -24,7 +24,7 @@ permalink: /essays/
     <span>Essays</span>
   </div>
 
-  <div class="pg-icon" aria-hidden="true">📓</div>
+  <div class="pg-icon" aria-hidden="true">🌾</div>
   <h1 class="pg-title">Essays</h1>
   <p class="pg-sub">长文：AI Infra 的系统性观察与判断。</p>
   <p class="pg-sub-small">

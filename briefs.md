@@ -21,7 +21,7 @@ permalink: /briefs/
     <span>Briefs</span>
   </div>
 
-  <div class="pg-icon" aria-hidden="true">📰</div>
+  <div class="pg-icon" aria-hidden="true">🌱</div>
   <h1 class="pg-title">Briefs</h1>
   <p class="pg-sub">AI Infra 的日常观测与短判断。</p>
   <p class="pg-sub-small">

@@ -22,7 +22,7 @@ permalink: /readings/
     <span>Readings</span>
   </div>
 
-  <div class="pg-icon" aria-hidden="true">📖</div>
+  <div class="pg-icon" aria-hidden="true">🌿</div>
   <h1 class="pg-title">Readings</h1>
   <p class="pg-sub">论文泛读与技术概览。</p>
   <p class="pg-sub-small">
