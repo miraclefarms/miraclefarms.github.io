@@ -3,11 +3,20 @@ layout: default
 title: 404
 permalink: /404.html
 ---
-<section class="section">
-  <div class="section-heading">
-    <p class="eyebrow">404</p>
-    <h2>这块地还没有被开垦</h2>
-  </div>
-  <p>你访问的页面不存在，可能已经迁移，或者还没有播种完成。</p>
-  <p><a class="button button-primary" href="{{ '/' | relative_url }}">返回首页</a></p>
-</section>
+
+<div class="simple-page">
+  <p class="pg-meta" style="padding-top:40px;">
+    <a href="{{ '/' | relative_url }}">MiracleFarms</a>
+    <span class="dot">›</span>
+    <span>404</span>
+  </p>
+  <div class="pg-icon" aria-hidden="true">🌾</div>
+  <h1 class="pg-title" style="font-size:2.4rem;">这块地还没有被开垦</h1>
+  <p class="muted">你访问的页面不存在，可能已经迁移，或者还没有播种完成。</p>
+  <a class="btn-primary" href="{{ '/' | relative_url }}">返回首页</a>
+
+  <footer class="pg-footer" style="margin-top:80px;">
+    <span>Less hype, more systems.</span>
+    <span>© {{ 'now' | date: "%Y" }} MiracleFarms</span>
+  </footer>
+</div>

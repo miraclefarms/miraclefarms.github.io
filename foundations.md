@@ -4,43 +4,59 @@ title: Foundations
 description: MiracleFarms 的站点起源、方法论与基础文本。
 permalink: /foundations/
 ---
-<section class="section archive-hero archive-hero-foundation">
-  <div class="archive-hero-copy">
-    <p class="eyebrow">基础文本栏目</p>
-    <h1>起点与方法</h1>
-    <p class="archive-hero-intro">这里收录 MiracleFarms 的基础文本：站点为何建立、如何写作、长期关注什么，以及这套公开研究型写作方法背后的基本假设。</p>
-  </div>
-  <div class="archive-hero-side">
-    <div class="archive-metric-card">
-      <span>定位</span>
-      <strong>起点 · 方法 · 意图</strong>
-    </div>
-    <div class="archive-metric-card">
-      <span>适合谁看</span>
-      <strong>第一次来到站点，或想理解它为何这样组织内容的读者</strong>
-    </div>
-  </div>
-</section>
 
-<section class="section archive-section">
-  <div class="section-heading">
-    <p class="eyebrow">全部基础文本</p>
-    <h2>基础文本归档</h2>
-    <p class="section-intro">集中查看 MiracleFarms 的起源、写作方法和长期定位说明。</p>
+{% assign founding_notes = site.posts | where: 'kind', 'founding-note' | sort: 'date' | reverse %}
+
+<main class="page">
+  <div class="pg-meta">
+    <a href="{{ '/' | relative_url }}">MiracleFarms</a>
+    <span class="dot">›</span>
+    <span>Foundations</span>
   </div>
 
-  <div class="archive-list">
-    {% assign founding_notes = site.posts | where: 'kind', 'founding-note' %}
+  <div class="pg-icon" aria-hidden="true">🏡</div>
+  <h1 class="pg-title">起点与方法</h1>
+  <p class="pg-sub">MiracleFarms 的站点起源、写作方法与基础文本。</p>
+  <p class="pg-sub-small">
+    这里收录 MiracleFarms 的基础文本：站点为何建立、如何写作、长期关注什么，以及这套公开研究型写作方法背后的基本假设。
+  </p>
+
+  <aside class="callout">
+    <span class="ico" aria-hidden="true">🌾</span>
+    <div>
+      <p>
+        共 <strong>{{ founding_notes.size }}</strong> 篇基础文本 · 适合第一次来到站点，或想理解它为何这样组织内容的读者。
+      </p>
+    </div>
+  </aside>
+
+  {% if founding_notes.size == 0 %}
+  <div class="empty">暂无基础文本。</div>
+  {% else %}
+  <div class="pagelist" role="list">
     {% for post in founding_notes %}
-    <article class="archive-card post-kind-{{ post.kind }}">
-      <div class="post-card-topline">
-        <span class="post-category">{{ post.category | default: 'Founding Note' }}</span>
-        <span class="post-card-meta">{{ post.date | date: "%Y.%m.%d" }}</span>
+    <a class="pagelink" href="{{ post.url | relative_url }}" role="listitem">
+      <span class="pl-handle" aria-hidden="true">⋮⋮</span>
+      <span class="pl-ico" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
+      </span>
+      <div class="pl-body">
+        <div class="pl-title">{{ post.title }}</div>
+        {% if post.intro %}
+        <div class="pl-excerpt">{{ post.intro | truncate: 140 }}</div>
+        {% endif %}
+        <div class="pl-meta">
+          <span class="tag">{{ post.category | default: 'Founding Note' }}</span>
+        </div>
       </div>
-      <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-      <p>{{ post.intro | default: post.excerpt | strip_html | truncate: 170 }}</p>
-      <a class="text-link" href="{{ post.url | relative_url }}">了解起点 →</a>
-    </article>
+      <div class="pl-date">{{ post.date | date: "%Y.%m.%d" }}</div>
+    </a>
     {% endfor %}
   </div>
-</section>
+  {% endif %}
+
+  <footer class="pg-footer">
+    <span>Less hype, more systems. · 公开生长，而不是一次性完成。</span>
+    <span>© {{ 'now' | date: "%Y" }} MiracleFarms</span>
+  </footer>
+</main>

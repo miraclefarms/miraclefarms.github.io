@@ -1,43 +1,63 @@
 <!doctype html>
-<html lang="{{ site.lang | default: 'zh-CN' }}">
+<html lang="{{ site.lang | default: 'zh-CN' }}" data-style="serif">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <title>{% if page.title and page.title != 'Home' %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
     <link rel="icon" type="image/png" href="{{ '/favicon.png' | relative_url }}">
-    <link rel="apple-touch-icon" href="{{ '/assets/icons/apple-touch-icon.png' | relative_url }}">
-    <!-- 引入手写字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
   </head>
   <body>
-    <div class="site-shell">
-      <header class="site-header">
+    <header class="topbar">
+      <div class="topbar-inner">
         <a class="brand" href="{{ '/' | relative_url }}">
-          <img class="brand-mark" src="{{ '/favicon.png' | relative_url }}" alt="MiracleFarms">
-          <span class="brand-copy">
-            <strong>{{ site.title }}</strong>
-            <span>{{ site.description }}</span>
-          </span>
+          <span class="brand-mark">🌾</span>
+          <span class="brand-name">MiracleFarms</span>
+          <span class="brand-tag">— AI Infrastructure in public</span>
         </a>
-        <nav class="site-nav">
-          <a href="{{ '/' | relative_url }}">Home</a>
-          <a href="{{ '/briefs/' | relative_url }}">Briefs</a>
-          <a href="{{ '/essays/' | relative_url }}">Essays</a>
-          <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">GitHub</a>
+        <span class="nav-spacer"></span>
+        <nav class="nav-links" aria-label="主导航">
+          <a href="{{ '/' | relative_url }}" id="nav-home">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+            <span>Home</span>
+          </a>
+          <a href="{{ '/briefs/' | relative_url }}" id="nav-briefs">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+            <span>Briefs</span>
+          </a>
+          <a href="{{ '/essays/' | relative_url }}" id="nav-essays">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
+            <span>Essays</span>
+          </a>
+          <span class="nav-sep" aria-hidden="true"></span>
+          <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener noreferrer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.5-4-2-6-2m12 4v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.3 4.3 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.3 4.3 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+            <span>GitHub</span>
+          </a>
         </nav>
-      </header>
+      </div>
+    </header>
 
-      <main class="site-main">
-        {{ content }}
-      </main>
+    {{ content }}
 
-      <footer class="site-footer">
-        <p>Less hype, more systems. · 公开生长，而不是一次性完成。</p>
-      </footer>
-    </div>
+    <script>
+    (function() {
+      var path = location.pathname.replace(/\/$/, '') || '/';
+      var map = {
+        '/': 'nav-home',
+        '/briefs': 'nav-briefs',
+        '/essays': 'nav-essays'
+      };
+      var id = map[path];
+      if (id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('active');
+      }
+    })();
+    </script>
   </body>
 </html>
