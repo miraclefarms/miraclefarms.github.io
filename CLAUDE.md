@@ -70,6 +70,7 @@ intro: 一句话摘要，不超过 100 字。
 |--------|------------|----------|
 | `brief` | `Brief` | Daily briefs, quick dispatches |
 | `essay` | `Essay` | Deep technical analysis |
+| `reading` | `Reading` | Paper readings and tech overviews |
 | `field-note` | `Field Note` | Research notes |
 | `founding-note` | `Founding Note` | Site philosophy |
 

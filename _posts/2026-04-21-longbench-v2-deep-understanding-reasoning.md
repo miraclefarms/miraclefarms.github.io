@@ -2,8 +2,8 @@
 title: LongBench v2：长上下文评测进入深理解与推理的新阶段
 date: 2026-04-21 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: LongBench v2 以 503 道选择题、8K–2M token 上下文和严格的人工基准，揭示当前最强 LLMs 在直接作答时仅达 50.1%，而 o1-preview 通过延长推理达到 57.7%，超越人类专家 4%。
 tags: [Long Context, Evaluation]
 ---

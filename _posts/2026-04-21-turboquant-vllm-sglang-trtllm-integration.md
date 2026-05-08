@@ -2,8 +2,8 @@
 title: 从论文到实战：vLLM、SGLang、TRT-LLM 的 TurboQuant 集成路线图
 date: 2026-04-21 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 谷歌 TurboQuant 把 KV Cache 压到 3 bit 级别且几乎无损，但这只是算法论文层面的结论。真正把它推进生产环境，vLLM、SGLang、TRT-LLM 三个框架走了三条截然不同的工程路线，各有技术取舍。
 tags: [Quantization, KV Cache, Inference, vLLM, SGLang, TRT-LLM]
 ---

@@ -2,8 +2,8 @@
 title: 主流 Attention 算法全景图：从 Softmax 到 MLA 的分类与对比
 date: 2026-04-20 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: Attention 是 LLM 最核心的计算单元，过去七年围绕它产生了大量变体。本文系统梳理主流 attention 算法的分类、创新点与适用场景，帮助读者建立结构化的理解框架。
 tags: [Attention]
 ---

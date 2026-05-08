@@ -2,8 +2,8 @@
 title: 主流 Attention 算法全景：从全连接到稀疏、线性与 KV 压缩
 date: 2026-04-20 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 把 attention 看成”路由规则”与”成本优化”两条轴，就能读懂从 Transformer 到 MLA 的主流演化。
 tags: [Attention]
 ---

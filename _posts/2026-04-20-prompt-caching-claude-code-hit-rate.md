@@ -2,8 +2,8 @@
 title: 理解 Prompt Caching：从 Claude Code 92% 缓存命中率案例说起
 date: 2026-04-20 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 基于 Avi Chawla 原文整理一篇中文学习版摘要，解释 prompt caching 的工作机制、工程约束与 Claude Code 案例。
 tags: [Inference, Agents]
 ---

@@ -2,8 +2,8 @@
 title: 谷歌 TurboQuant 详解：把大模型 KV Cache 压到 3 bit，为什么还能几乎不掉点？
 date: 2026-03-27 01:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: Google Research 最新提出的 TurboQuant，把大模型 KV Cache 压到 3 bit 级别，在多项长上下文基准上几乎无损，同时把向量检索压缩推向更接近理论下界的方向。
 tags: [Quantization, KV Cache, Long Context]
 ---

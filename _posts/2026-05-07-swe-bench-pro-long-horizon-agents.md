@@ -2,8 +2,8 @@
 title: SWE-Bench Pro：代码智能体的长周期工程门槛
 date: 2026-05-07 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: SWE-Bench Pro 用企业级长周期任务重新划定代码智能体评测边界：公开集仍低于45%，商业集低于20%，瓶颈落在多文件理解、工具使用与验证设计。
 tags: [Agents, Evaluation]
 ---

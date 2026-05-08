@@ -2,8 +2,8 @@
 title: HACK 如何把 KV Cache 压缩推进到算子层
 date: 2026-05-08 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: HACK 将 KV cache 压缩从传输和存储优化推进到 attention 算子内部，试图在分离式推理中同时压低通信、显存访问和反量化开销。
 tags: [KV Cache, Quantization, Disaggregation]
 ---

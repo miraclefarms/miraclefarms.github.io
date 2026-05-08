@@ -2,8 +2,8 @@
 title: SCBench：用一个 KV 生命周期视角，重新理解长上下文方法
 date: 2026-04-21 12:00:00 +0800
 author: Ethan
-kind: essay
-category: Essay
+kind: reading
+category: Reading
 intro: 微软团队推出的 SCBench 将长上下文方法评测从单请求扩展到 KV cache 完整生命周期，发现 sub-O(n) 内存方法在多轮场景下系统性退化，而 O(n) 稀疏注意力和动态稀疏策略才是更稳健的解法。
 tags: [KV Cache, Long Context, Evaluation, Attention]
 ---
