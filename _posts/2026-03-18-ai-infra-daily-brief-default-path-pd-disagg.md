@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM 将 Flashinfer sparse MLA 设为 FP8 KV Cache 默认后端，DeepSeek 系模型 FP8 推理无需手动配置即可受益；SGLang 在 PD 解耦侧完成多处健壮性修复（health check 语义精确化、hicache 配置前置校验、AllReduce 融合回滚）；Ray Serve 修复引入自 2025 年 8 月的 P99 延迟回归根因。AI Infra 框架层正在将"功能堆叠"遗留的欠债以稳步方式偿还。
+tags: [Inference, KV Cache, Disaggregation, vLLM]
 ---
 
 过去 24 小时，AI Infra 框架层的重心不在"新功能"，而在"把已有功能做到最优"。vLLM 将 Flashinfer sparse MLA 立为 FP8 KV Cache 的默认后端，SGLang 集中修复 PD 解耦侧的多处边界问题，Ray Serve 追溯到一个潜伏近 7 个月的 P99 延迟回归根因。这些更新共同指向同一判断：**主流推理框架正在进入"默认行为对齐生产最优"的成熟阶段。**

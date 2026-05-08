@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 低比特、前缀复用和拆分式 serving 正在从"功能展示"转向"默认主路径"。三个变化信号，零废话。
+tags: [Quantization, KV Cache, Inference]
 ---
 
 过去三天我一直在想一件事：AI Infra 这行最怕的不是方向错，而是方向对了但没人当回事——就是那种"技术上早就有，但没人往默认路径里写"的尴尬。

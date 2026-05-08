@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 本周 AI Infra 最重要的事件是 NVIDIA 回滚了 TensorRT-LLM 中 EAGLE3 动态树投机解码支持，表明高级投机解码的生产路径仍不稳定。与此同时，学术界持续产出针对 MoE 和高并发场景的专项优化论文，Speculative Decoding 正在经历理论与工程的深度分化。
+tags: [Speculative Decoding, Inference]
 ---
 
 投机解码（Speculative Decoding）是近两年推理加速最活跃的研究方向，但它的生产化进程本周遭遇了一次重要挫折。NVIDIA 在 4 月 14 日合并了 PR #13006，正式回滚了 TensorRT-LLM 中 EAGLE3 动态树（Dynamic Tree）投机解码支持[[1]](https://github.com/NVIDIA/TensorRT-LLM/pull/13006)。这个功能是 2025 年底才加进去的，不到半年就被撤回，原因是"pre-merge 稳定性问题"——换句话说，动态树结构在生产路径上频繁触发 bug。EAGLE3 现在退回到线性草稿（Linear Draft）模式，动态树的理论加速优势在 TRT-LLM 生产引擎里暂时不可用。

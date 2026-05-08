@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: "从系统架构视角解读 HierarchicalKV 如何以缓存语义重构 GPU 哈希表，用于持续在线 embedding 存储。"
+tags: [KV Cache, Inference]
 ---
 
 本文基于论文 *HierarchicalKV: A GPU Hash Table with Cache Semantics for Continuous Online Embedding Storage* 撰写，尝试**从系统架构师的视角**梳理其问题背景、设计目标、关键机制、实验结果与适用边界。文中论述均以论文原文为依据，图片来自 arXiv HTML 页面原图资源<a href="https://arxiv.org/abs/2603.17168">[1]</a>。

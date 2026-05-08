@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: SGLang v0.5.11 把 CUDA 13 扶正为默认基线，vLLM 路由架构重写，TRT-LLM Blackwell FP4 indexer 落地——三大推理框架在新模型、新硬件、核心架构三条线上同步进入量产冲刺。speculative decoding 正在从实验特性变成新模型首发标配。
+tags: [Inference, Speculative Decoding, Quantization]
 ---
 
 ![题图](/assets/2026-05-08-ai-infra-daily-brief/cover.png)

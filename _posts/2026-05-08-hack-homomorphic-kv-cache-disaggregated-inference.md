@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: HACK 将 KV cache 压缩从传输和存储优化推进到 attention 算子内部，试图在分离式推理中同时压低通信、显存访问和反量化开销。
+tags: [KV Cache, Quantization, Disaggregation]
 ---
 
 HACK 这篇论文给 AI Infra 的一个关键信号是：KV cache 压缩的主战场正在从“少传多少字节”走向“压缩后的状态能否继续停留在执行路径上”。在分离式 LLM 推理里，prefill 和 decode 被放到不同 GPU 实例上，KV cache 从模型内部的临时状态变成了跨节点传输、远端缓存和 decode 访存共同争抢的系统资源。只做压缩当然能减少网络流量，但如果每个 decode step 都要把压缩 KV 还原成 FP16，省下来的带宽会很快被反量化和额外访存吃掉<a href="https://arxiv.org/pdf/2502.03589v1">[1]</a>。

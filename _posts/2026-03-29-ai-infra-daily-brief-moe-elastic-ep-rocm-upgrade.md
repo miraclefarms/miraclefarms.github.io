@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: SGLang v0.5.10rc0 将弹性 Expert Parallelism 正式纳入 release 候选，MoE 部署首次获得无需全量重启的 GPU 故障容忍能力；vLLM 与 SGLang 同日完成 ROCm 7.2.1 全栈升级，AMD 路径加速追平 CUDA 构建节奏；llama.cpp 持续完善 reasoning 格式控制与 WebUI 交互体验；LMCache 新增 Blackwell SM120 轮包与 bench CLI；OpenClaw 以 20 个 PR 收口渠道稳定性与安全边界。
+tags: [MoE, Inference, vLLM, SGLang]
 ---
 
 今天的主线是**可靠性的演进**——不是某个单点的突破，而是分散在多个项目里同步推进的稳定化动作，在大规模生产部署的前夜形成合力。

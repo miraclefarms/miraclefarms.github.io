@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM MRV2 打通 Pipeline Parallelism 下的 CUDA graph，逐片段和全图两种模式均覆盖；SGLang 提升 decode 阶段 CUDA graph 命中率并同步修复 VRAM 泄露；Blackwell/SM120 硬件适配加速，SGLang CUTLASS FP8 GEMM 专项优化落地；Qwen3 MoE 上下文并行与 Ngram 投机解码重构同步推进；OpenClaw 修复多个稳定性与安全问题。
+tags: [Inference, Quantization]
 ---
 
 过去 24 小时的 AI Infra 变化，可以用"边界延伸"三个字来概括——CUDA graph 从单卡向多卡延伸，量化优化从旧架构向 Blackwell 延伸，投机解码从"合并即用"向"架构重构"延伸。这三条线背后有同一个逻辑：推理引擎正在填补从单卡实验到多卡/新硬件生产部署之间的工程缺口。

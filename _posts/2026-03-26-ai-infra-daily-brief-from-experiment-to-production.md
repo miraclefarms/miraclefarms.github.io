@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: Ray Serve LLM API 正式升级 Beta，结束在实验性状态的漫长等待；LMCache 24 小时内集中合并三个 CLI 子命令，运维接口走向体系化；vLLM 集成 FlashInfer NVFP4 CuteDSL MoE 内核，llama.cpp 正式注册 Qwen3 架构；OpenClaw v2026.3.24 正式版完成 Teams 官方 SDK 迁移，并带来 OpenAI 兼容接口与集中安全加固。
+tags: [Inference, Quantization, MoE]
 ---
 
 今天有一条主线贯穿各个项目：从实验到正式。不是新架构的发布，不是论文复现，而是已有的东西被系统性地推到可以承诺的状态。

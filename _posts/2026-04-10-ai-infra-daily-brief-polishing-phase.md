@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，AI Infra 各项目持续迭代深化。推理侧 vLLM 完善量化 MoE 与异构架构，SGLang 新增多模态 diffusion 与 Qwen3-VL EAGLE3 支持；生产部署侧 Mooncake 增加分层存储与 HA 能力；训练侧 TRL 强化 tool calling 训练支持；应用侧 OpenClaw 深化 Memory/Dreaming 记忆系统。本窗口以 A/B 级迭代为主，无 S 级重大发布。
+tags: [Inference, Multimodal, Quantization]
 ---
 
 过去 24 小时，AI Infra 领域呈现持续迭代深化的态势。推理框架侧，vLLM 在量化 MoE 与异构架构支持上取得新进展，SGLang 新增多模态 diffusion 与 Qwen3-VL EAGLE3 支持，llama.cpp 继续优化 SYCL/Vulkan 多后端；生产部署侧，Mooncake 完善分层存储与高可用能力，TensorRT-LLM 推进 disaggregation 部署；训练侧 TRL 强化 tool calling 训练支持；应用侧 OpenClaw 深化 Memory/Dreaming 记忆系统。本窗口属于"打磨迭代期"，无 S 级重大发布。

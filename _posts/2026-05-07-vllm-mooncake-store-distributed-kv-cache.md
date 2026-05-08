@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: vLLM 与 Mooncake Store 把 agentic workload 的共享前缀变成跨实例 KV 数据平面；本文结合博客、PR 与源码拆解调度、传输和边界。
+tags: [KV Cache, Disaggregation, Agents, vLLM]
 ---
 
 > **版本声明**：本文分析基于 vLLM PR #40900 commit `0d5c2e0512e5868580bd77797c6a61b349d98d57`（2026-05-05）与 Mooncake commit `43ce0f8ff5305e48e8fc4b44372dd271f5140c2a`（2026-05-07）。截至 2026-05-07，vLLM 侧 Mooncake Store 接入仍处于 open PR 阶段，接口和默认策略仍可能变化。

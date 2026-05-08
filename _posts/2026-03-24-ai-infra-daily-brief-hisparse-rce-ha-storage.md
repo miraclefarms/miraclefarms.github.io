@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: llama.cpp RPC 路径 RCE 漏洞紧急修复，所有使用 RPC 功能的部署应立即升级；SGLang 引入 HiSparse 层次化稀疏注意力，vLLM 落地零气泡异步调度+投机解码组合；Mooncake 引入 HA 存储后端抽象，LMCache 新增 Device-DAX 近内存持久化；TRL 新增 SDPO 训练器，Megatron-LM 同日合并 Muon μP 缩放与 Mamba GDN 支持。
+tags: [Attention, Inference, KV Cache]
 ---
 
 今天有一条消息需要先说清楚：**llama.cpp 修复了 RPC 路径上的远程代码执行（RCE）漏洞**。RCE 不是普通的崩溃或功能异常——它意味着攻击者可能借助这个入口在你的推理服务器上执行任意代码。如果你的部署用到了 llama.cpp 的 RPC 功能（多机推理、远程模型服务），请优先升级到 b8492 或更高版本[[10]](https://github.com/ggml-org/llama.cpp/releases/tag/b8492)，其他内容可以之后再看。

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM 针对 Qwen3.5 H200 MoE triton 配置实现 9.9% E2E 吞吐提升；TensorRT-LLM fused allreduce+RMSNorm 上线，KV cache 传输超时改为 60s（breaking）；SGLang 修复 DP attention overlap 跨 rank 不一致与 MiniMax M2 KV scale 加载错误；TRL 修复 DPO collator 截断顺序并支持 reward 自定义日志；Mooncake 推进 TENT 集成；OpenClaw 封堵 host exec sandbox env injection 漏洞并默认升级 MiniMax M2.7。
+tags: [MoE, KV Cache, Speculative Decoding]
 ---
 
 过去 24 小时，推理侧呈现两条清晰主线。一是 MoE 模型的推理调优走向精细化——vLLM 针对 Qwen3.5 在 H200 上的 MoE triton 配置实现 9.9% E2E 吞吐提升，TensorRT-LLM 落地 fused allreduce+RMSNorm 算子。二是 KV 缓存链路在多个层面同步收敛——vLLM KV offload 系列持续推进、SGLang 修复 MiniMax M2 KV scale 加载、TensorRT-LLM 将 KV cache 传输超时默认值改为 60s（breaking change）、Mooncake 推进与 TENT 的 PG 集成。训练侧则以 DPO 数据处理修复和 reward 可观测性增强为主。

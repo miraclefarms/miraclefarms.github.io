@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: OpenAI 的 MRC 论文把百 K GPU 训练网络的主线从平均带宽推进到尾延迟治理：让端侧协议主动绕开拥塞和故障，交换机控制面反而变得更静态。
+tags: [Networking, Training]
 ---
 
 OpenAI 这篇 MRC 论文最重要的信号，是大模型训练网络的竞争焦点已经从"能不能把平均带宽堆上去"，转向"能不能在故障常态化时稳住同步训练的尾部"。在十万级 GPU 的 pretraining job 里，一轮 collective 的完成时间由最慢那条 transfer 决定；一个 link flap、一次 ECMP 碰撞、一次交换机灰故障，都可能被同步屏障放大成整批 GPU 的等待。

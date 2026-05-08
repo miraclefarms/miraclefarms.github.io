@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 微软团队推出的 SCBench 将长上下文方法评测从单请求扩展到 KV cache 完整生命周期，发现 sub-O(n) 内存方法在多轮场景下系统性退化，而 O(n) 稀疏注意力和动态稀疏策略才是更稳健的解法。
+tags: [KV Cache, Long Context, Evaluation, Attention]
 ---
 
 长上下文大模型的支持窗口已经从 128K 扩展到 10M token，但评测方式还停留在单次请求。微软团队在 SCBench 中指出了一个关键问题：真实应用里 KV cache 会被跨请求复用——多轮对话、工具调用、共享前缀——而现有 benchmark 全部忽略了这一层。这篇论文的核心判断是：**长上下文方法的真正考验不在单次长输入，而在 KV cache 的完整生命周期里。**

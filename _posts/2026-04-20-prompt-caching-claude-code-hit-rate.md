@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 Avi Chawla 原文整理一篇中文学习版摘要，解释 prompt caching 的工作机制、工程约束与 Claude Code 案例。
+tags: [Inference, Agents]
 ---
 
 > 版权说明：本文基于 Avi Chawla 发表于 Daily Dose of Data Science 的文章《Prompt Caching in LLMs!》整理为中文学习版摘要。原文版权及配图版权归作者所有，本文仅用于技术学习与研究，不构成全文翻译或商业转载；原文与原图请以作者页面为准<a href="https://blog.dailydoseofds.com/p/prompt-caching-in-llms">[1]</a>。

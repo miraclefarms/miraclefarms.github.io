@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: Attention 是 LLM 最核心的计算单元，过去七年围绕它产生了大量变体。本文系统梳理主流 attention 算法的分类、创新点与适用场景，帮助读者建立结构化的理解框架。
+tags: [Attention]
 ---
 
 > **版本声明**：本文系统性梳理截至 2026 年初的主流 attention 算法，以对应论文原始贡献为依据，重点注明创新点与落地情况。

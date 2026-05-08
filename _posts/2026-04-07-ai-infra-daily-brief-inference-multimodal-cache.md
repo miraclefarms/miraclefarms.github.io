@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，AI Infra 呈现三大核心信号：推理框架从"功能可用"转向"默认最优"——SGLang v0.5.10 将 Piecewise CUDA Graph 设为默认、llama.cpp 落地 Q1_0 1-bit 量化；多模态支持从选装走向标配——vLLM 完善 Gemma4 Fast Prefill、llama.cpp 新增 HunyuanOCR 支持；分布式缓存层与推理引擎紧耦合，Mooncake 修复 TE endpoint bug、LMCache CI 完善。整体呈现"推理即基础设施"的成熟特征。
+tags: [Inference, Multimodal, KV Cache, Quantization]
 ---
 
 过去 24 小时，AI Infra 最值得关注的变化是**推理框架从"功能可用"阶段加速进入"默认行为最优"阶段**。SGLang v0.5.10 将 Piecewise CUDA Graph 设为默认执行模式，llama.cpp 落地 Q1_0 1-bit 量化，vLLM 在多条产品线上并行迭代。这些变化的共同指向是：推理引擎不再是"能跑"的代名词，而是"跑得最优"的基础设施。

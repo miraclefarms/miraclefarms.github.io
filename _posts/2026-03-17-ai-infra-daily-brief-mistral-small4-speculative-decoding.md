@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: SGLang 与 llama.cpp 同一天添加 Mistral Small 4 (Pixtral) 多模态支持，SGLang 实现跨 MLA/MHA 架构的 speculative decoding KV cache transfer，DeepSpeed 新增 Universal Checkpoint autotp 支持，TRL 实现 Async GRPO 异步训练优化。AI Infra 呈现"新模型支持 + 深度优化"双轨并行格局。
+tags: [Speculative Decoding, Multimodal, Inference, SGLang, llama.cpp]
 ---
 
 过去 24 小时，AI Infra 呈现"新模型支持 + 深度优化"双轨并行的格局。SGLang 与 llama.cpp 同一天添加 Mistral Small 4 (Pixtral) 多模态支持，SGLang 在 speculative decoding 架构下实现跨 MLA/MHA 的 KV cache transfer，DeepSpeed 推出 Universal Checkpoint autotp 自动化支持，TRL 实现 Async GRPO 异步训练优化。这些进展表明：主流框架正在从"功能补全"转向"深度优化"，新模型的密集支持与底层技术的持续迭代正在共同推动 AI 推理与训练效率的边界。

@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 这篇论文真正重要的地方，不是又发明了一套调度器，而是指出 hybrid attention 已经把 KVCache 的网络成本压到一个新拐点，让跨数据中心的 prefill 开始成为可计算的工程问题。
+tags: [Disaggregation, KV Cache, Inference]
 ---
 
 分布式系统过去几十年有一条很朴素的规律：只要状态太大，它就不会被轻易搬来搬去。数据库如此，搜索索引如此，LLM 推理里的 KVCache 也是如此。也正因为这样，prefill-decode disaggregation 虽然已经成了主流部署范式，真实的部署边界却始终停在单个数据中心里。你可以把 prefill 和 decode 分开，但很难把它们分到两个松耦合的网络域里去。

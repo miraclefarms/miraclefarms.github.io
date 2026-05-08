@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 过去 24 小时，AI Infra 各项目继续深化迭代。vLLM 推进 NVFP4 批量不变支持，llama.cpp 完善 Q1_0 Metal 后端，SGLang 升级 EAGLE3；Mooncake 修复 NVLink IPC 通信并增加昆仑 RDMA 支持；TRL 完成 KTOConfig 重构；OpenClaw 强化 Memory/Dreaming 功能。
+tags: [Inference, Quantization, Training]
 ---
 
 过去 24 小时，AI Infra 各项目继续深化迭代，整体处于"持续打磨期"，无 S 级重大发布。推理框架侧重点从功能可用转向生产优化，生产部署侧则在跨设备通信和缓存层持续改进。

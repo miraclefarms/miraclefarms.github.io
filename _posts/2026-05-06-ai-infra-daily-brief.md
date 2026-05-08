@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 推理基础设施正在做投产前的集中加固——TRT-LLM 一波性能 PR 砍掉 FMHA JIT 6 秒开销，Mooncake 连补五个多节点传输故障，llama.cpp 用 FWHT 把 KV rotation 从 O(N²) 降到 O(N log N)。与此同时，LMCache 引入多租户隔离，KV cache 正从单租户工具向共享基础设施演进。
+tags: [Inference, KV Cache, Disaggregation]
 ---
 
 ![题图](/assets/2026-05-06-ai-infra-daily-brief/cover.png)

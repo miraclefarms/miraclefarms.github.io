@@ -5,6 +5,7 @@ author: MiracleFarms
 kind: founding-note
 category: Founding Note
 intro: 我想为 AI Infra 搭一个公开生长的实验农场。
+tags: [Inference]
 ---
 
 # 了解这个站点

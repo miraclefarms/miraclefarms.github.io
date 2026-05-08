@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM ModelRunnerV2 补全投机解码 rejection sampler 全路径，TensorRT-LLM 将投机解码接入 TrtllmGen 高性能后端；KV 内存管理多线升级——TRT-LLM 约束式分区、Mooncake 连接器抽象、LMCache 非连续分配；训练侧 TRL 引入实验性 DPPO，Megatron-LM 实现 RL forced lag 机制。
+tags: [Speculative Decoding, KV Cache]
 ---
 
 过去 24 小时，AI Infra 有两条主线同步推进。一是**投机采样在主流推理引擎中走向工程标配**：两大引擎在同一窗口各自补完了关键缺口，不再是实验特性。二是**KV 内存管理的抽象层正在系统性重建**：TRT-LLM、Mooncake、LMCache 三个项目几乎在同一天各自推进了 KV 内存的架构升级，方向都是"从一块显存变成有接口的基础设施组件"。

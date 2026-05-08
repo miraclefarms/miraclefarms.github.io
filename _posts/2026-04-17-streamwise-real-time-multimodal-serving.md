@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 StreamWise 论文，分析多模态工作流为何不能照搬 LLM serving 范式，以及其实时化背后的系统抽象与成本边界。
+tags: [Multimodal, Inference]
 ---
 
 为什么今天的多模态生成系统普遍“能生成但不够实时”？这篇论文给出的答案很系统：瓶颈不在单个模型，而在跨模态 DAG 的关键路径；只优化某个模型吞吐，几乎不会自然变成端到端低延迟<a href="https://arxiv.org/html/2603.05800v1">[1]</a>。

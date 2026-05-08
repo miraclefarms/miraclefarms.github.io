@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: 基于 vLLM 当前主线源码，系统梳理 KV cache 的真实存储本体、block/page 抽象、调度接口、prefix cache 与执行映射之间的关系。
+tags: [KV Cache, Inference, vLLM]
 ---
 
 很多人第一次理解 vLLM，都会先记住一个关键词：**PagedAttention**。这当然没错。vLLM 之所以能在大模型推理系统里建立辨识度，一个重要原因就是它没有沿用“每个请求持有一段连续 KV cache”的传统思路，而是把 KV 存储拆成了按 block/page 管理的布局。但如果只把 vLLM 理解成一种 attention 访存优化，实际上会错过它在当前主线里更重要的一层：**KV cache 已经不再只是 attention 的附属缓存，而是被实现为一个由 scheduler、KV manager、block pool 和 worker metadata 共同维护的运行时资源层。**

@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM 修复高并发 sporadic stalls，Ray Serve 修补冷启动 autoscaling 放大问题，llama.cpp 继续深耕 CPU/GPU 底层性能优化，AI Infra 竞争正从功能迭代转向稳定性治理。
+tags: [Inference, KV Cache, vLLM]
 ---
 
 过去 24 小时内，AI Infra 主流项目从"功能迭代"转向"稳定性治理"——vLLM 修复高并发场景下的 sporadic stalls，Ray Serve 修补冷启动期间的 autoscaling 放大问题，llama.cpp 在 CPU/GPU 层面继续深耕性能优化。这些变化共同指向一个趋势：**生产级推理部署的边界场景正在被系统性收敛**。

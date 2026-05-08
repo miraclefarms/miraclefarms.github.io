@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM v0.20.1 与 SGLang v0.5.11 同天发布，前者收拢 DeepSeek V4 稳定化补丁，后者将 CUDA 13.0 与 PyTorch 2.11 设为默认；与此同时，分离部署路径上的 RDMA 错误边界被 SGLang 与 Mooncake 集中补建，四个漏洞都是多节点真实部署才会触发的那种。
+tags: [Inference, Disaggregation, Quantization]
 ---
 
 今天的 AI Infra 动态，本质上是一次集中的升级决策窗口开启。**vLLM v0.20.1 与 SGLang v0.5.11 同天发布**，方向各自清晰：前者收拢 DeepSeek V4 的稳定化补丁，后者把硬件栈基线整体上移——CUDA 13.0 成为默认，PyTorch 从 2.9 升至 2.11。两框架同步推进 DeepSeek 支持，生产用户这周同时面对两张升级决策单，需要主动判断要不要一并跟进。

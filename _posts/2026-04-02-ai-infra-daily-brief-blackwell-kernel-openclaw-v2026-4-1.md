@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 今天的主线是内核层：llama.cpp 合入 NVFP4 MMQ 通用矩阵乘内核并连发三个构建；SGLang 将 TRT-LLM 稀疏 MLA 内核接入 DSA 预填充路径，并通过 JIT 编译 RMSNorm 减少归一化开销；TRT-LLM 版本号推至 rc11，Mamba2 MTP SSM 缓存 CUDA 内核同期合入。应用侧，OpenClaw 发布 v2026.4.1，是今年功能覆盖最广的一次：任务看板、SearXNG、Bedrock Guardrails、Provider 插件化回放钩子，以及 exec 审批耐久化修复一并上线。
+tags: [Quantization, Attention, Inference, SGLang]
 ---
 
 上一周期密集的版本发布已经收尾——TRL v1.0.0、vLLM v0.18.1、DeepSpeed v0.18.9 都在过去两天完成了各自的里程碑落地。今天进入的，是内核和协议层的精度打磨阶段：多个项目同日推进 Blackwell（NVFP4）量化支持，投机解码路径补入 SSM 专属内核，Ray Serve 修复了一个在高并发流式推理中才会暴露的协议细节，OpenClaw 用一次大版本把过去几个月积压的架构欠账一并清偿。

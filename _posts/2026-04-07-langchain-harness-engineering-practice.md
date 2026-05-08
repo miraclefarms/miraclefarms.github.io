@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: LangChain 通过 harness 工程将其 coding agent 从 Top 30 提升至 Top 5，仅通过改动 harness（而非模型）将 Terminal Bench 2.0 得分从 52.8 提升至 66.5。本文深入分析其核心方法论，并与 Meta-Harness 的自动化思路形成对话。
+tags: [Agents, Evaluation]
 ---
 
 在前一篇关于 Meta-Harness 的文章中，我们讨论了**让 LLM 自动搜索并优化整个 Harness** 的思路——用 Harness Optimizer 替代人工调优，在搜索效率上取得了显著提升（4 次评估匹配其他方法 40 次的性能）。

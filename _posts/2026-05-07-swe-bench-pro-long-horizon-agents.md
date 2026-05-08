@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: SWE-Bench Pro 用企业级长周期任务重新划定代码智能体评测边界：公开集仍低于45%，商业集低于20%，瓶颈落在多文件理解、工具使用与验证设计。
+tags: [Agents, Evaluation]
 ---
 
 代码智能体评测正在进入一个更接近真实工程的阶段。SWE-Bench Pro 的核心价值，是把“修一个 GitHub issue”推进到“在陌生代码库里完成长周期、多文件、可验证的工程变更”<a href="https://arxiv.org/pdf/2509.16941v2">[1]</a>。这个变化会同时拷问模型能力、agent scaffold、测试环境和数据污染控制。

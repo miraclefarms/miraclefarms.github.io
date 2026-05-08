@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: TensorRT-LLM v1.2.0 同时推进 Blackwell 默认支持、Disaggregated Serving 增强与 Helix Parallelism，引发推理基础设施竞争从单点性能优化转向全栈可配置与生产就绪能力的比拼。
+tags: [Inference, Disaggregation, Speculative Decoding, TRT-LLM, vLLM]
 ---
 
 过去 24 小时里，AI Infra 的主要信号并不来自单一算子或单条 bugfix，而是来自推理框架在**硬件支持边界、部署架构灵活性与并行策略可配置性**上的同步推进。最典型的是 TensorRT-LLM v1.2.0：它不仅把 Blackwell 架构的支持从“可试用”推向了“默认可用”，还把 Disaggregated Serving 和 Helix Parallelism 这两条本来更偏工程实现层面的能力，进一步拉到了架构选型层面。对做线上推理服务的人来说，这意味着接下来真正的分水岭，不再只是某个 benchmark 上多快几个百分点，而是整条服务链路到底能不能在复杂硬件与复杂部署结构下稳定、清晰、可管理地跑起来。

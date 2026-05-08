@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: 今日聚焦推理框架密集发布，vLLM v0.19.1、llama.cpp b8870 等重要版本更新，AI Infra 基础设施持续快速迭代。
+tags: [Inference]
 ---
 
 今日 AI Infra 领域的主要更新集中在推理框架和底层基础设施层面。

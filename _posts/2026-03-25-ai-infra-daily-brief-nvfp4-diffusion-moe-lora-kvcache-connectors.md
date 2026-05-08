@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: SGLang 为 Flux.2 带来 NVFP4 量化推理，TRT-LLM 同日支持 Qwen3.5 NVFP4，量化格式从 LLM 向扩散模型蔓延；SGLang MoE LoRA 支持 TP，打通 MoE 微调到部署全路径；LMCache 一天内合并 Valkey 集群/TLS 和原生文件系统两个连接器；TRL 集中重构 SFT/DPO 截断逻辑；llama.cpp 支持原生 HF 缓存目录；TRT-LLM log probs 归一化行为变更需关注。
+tags: [Quantization, MoE, Multimodal]
 ---
 
 今天有两条主线值得单独梳理，背后各自藏着一个方向性信号。

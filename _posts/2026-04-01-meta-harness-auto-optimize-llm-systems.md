@@ -5,6 +5,7 @@ author: Ethan
 kind: essay
 category: Essay
 intro: Stanford/MIT 最新研究 Meta-Harness，用 LLM 自动搜索并优化围绕 LLM 的整个系统框架（Harness），仅 4 次评估匹配其他方法 40 次的性能，并在 TerminalBench-2 上击败所有人工设计的同模型系统。
+tags: [Agents, Evaluation]
 ---
 
 > **版本声明**：本文基于 Meta-Harness 论文首页海报及项目页面 [yoonholee.com/meta-harness](https://yoonholee.com/meta-harness/) 的公开信息。完整论文尚未公开全文，技术细节分析中标注为推测的部分仅代表作者理解。

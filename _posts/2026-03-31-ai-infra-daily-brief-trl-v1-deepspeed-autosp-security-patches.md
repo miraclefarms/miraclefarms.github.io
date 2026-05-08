@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: TRL v1.0 正式发布，VESPO/DPPO 和 vLLM 自蒸馏推理路径一并落地；DeepSpeed v0.18.9 将 AutoSP compiler-based 序列并行和 Muon ZeRO3 支持打包入主干。vLLM 修补 batch runner SSRF 漏洞和 RTX50/DGX Spark NVFP4 崩溃，OpenClaw 补上 exec 审批 shell carrier 绕过并推进 flow registry 架构。里程碑落地与安全债收尾并行，架构层在安静打地基。
+tags: [Training, Inference, Quantization]
 ---
 
 今天是一个里程碑落地与安全补丁并行的工作日。训练侧有两件值得记录的事：TRL 完成 v1.0 正式版合并，DeepSpeed 发布 v0.18.9 并将 AutoSP 合入主干。推理侧以安全修复为主，vLLM 修补了一个潜藏已久的 SSRF 漏洞，并解决了新一代 NVIDIA GPU 上的 NVFP4 崩溃问题。应用侧，OpenClaw 补上 exec 审批机制的一个 shell carrier 绕过漏洞，同日开始搭建任务编排的 flow registry 架构层。

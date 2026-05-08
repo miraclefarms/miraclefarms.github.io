@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM 和 SGLang 同日各回滚一个激进内核合并（NVFP4 CuteDSL MoE 与 FlashMLA），CI 质量门在高速合并窗口有效拦截；LMCache 24 小时内完成 block-id MP 内核、HND 格式、AMD hipFile GPU-direct 三路扩张；DeepSpeed 将 Muon 优化器推进至 ZeRO Stage 3；OpenClaw 单日落地 14+ 渠道认证/授权安全补丁。
+tags: [KV Cache, Inference, MoE]
 ---
 
 今天最值得先讲的，是两条回滚。vLLM 把昨天刚合并的 FlashInfer NVFP4 CuteDSL MoE 内核撤回来了，SGLang 把 FlashMLA 回滚到旧版本。两件事同日发生，不是巧合，也不是退步——这是高速合并节奏下 CI 质量门正常运转的标志。内核合进主干，发现 CI 失败，当天回滚，找到根因，下次再来。这个循环在两个项目里同时跑，说明工程纪律在。
