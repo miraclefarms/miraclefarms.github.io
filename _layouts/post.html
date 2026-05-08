@@ -79,19 +79,6 @@ layout: default
       .replace(/-+/g, '-');
   };
 
-  var tocCard  = document.querySelector('.post-toc-card');
-  var tocLabel = document.querySelector('.post-toc-label');
-  var collapsed = true;
-  if (tocLabel && nav) {
-    nav.style.display = 'none';
-    tocLabel.textContent = '▶ 展开目录';
-    tocLabel.addEventListener('click', function() {
-      collapsed = !collapsed;
-      nav.style.display = collapsed ? 'none' : 'flex';
-      tocLabel.textContent = collapsed ? '▶ 展开目录' : '▲ 收起目录';
-    });
-  }
-
   headings.forEach(function(h, i) {
     if (!h.id) h.id = slugify(h.textContent) || ('section-' + (i + 1));
     var link = document.createElement('a');
