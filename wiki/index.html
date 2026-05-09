@@ -117,13 +117,12 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
         <span>Essays</span>
       </a>
-      <span class="mf-nav-sep" aria-hidden="true"></span>
       <a href="https://miraclefarms.github.io/wiki/" class="mf-active">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         <span>Wiki</span>
       </a>
       <span class="mf-nav-sep" aria-hidden="true"></span>
-      <a href="https://github.com/miraclefarms" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/lycheenice" target="_blank" rel="noopener noreferrer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.5-4-2-6-2m12 4v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.3 4.3 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.3 4.3 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
         <span>GitHub</span>
       </a>
@@ -885,41 +884,75 @@
 
 
 
+<section class="wiki-hero">
+<p class="wiki-kicker">AI Infra Knowledge Base</p>
+<div aria-hidden="true" class="wiki-hero-mark">🌿</div>
 <h1 id="miracle-farms-wiki">Miracle Farms Wiki<a class="headerlink" href="#miracle-farms-wiki" title="Permanent link">&para;</a></h1>
 <p>这里是 <a href="https://miraclefarms.github.io">Miracle Farms</a> 的技术知识库，用于沉淀 AI Infra、LLM Systems 和 Distributed Inference 领域的系统性知识。</p>
 <p>与博客文章的"时间线"视角不同，Wiki 提供的是<strong>主题维度的结构化参考</strong>：每个主题从基础概念到系统实现，构成一条完整的知识路径。</p>
+<div class="wiki-action-row">
+<p><a class="wiki-action wiki-action-primary" href="kvcache/">进入 KVCache</a>
+<a class="wiki-action" href="https://miraclefarms.github.io">返回主站</a></p>
+</div>
+</section>
+<aside class="wiki-callout">
+<p><span class="wiki-callout-icon" aria-hidden="true">▧</span></p>
+<div>
+<p><strong>Wiki 负责长期结构，博客负责时间线判断。</strong> 这里会把同一主题下的概念、运行时设计、工程取舍和参考资料拆成可持续维护的知识路径。</p>
+</div>
+</aside>
 <h2 id="_1">当前主题<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>主题</th>
-<th>状态</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="kvcache/">KVCache</a></td>
-<td>持续更新中</td>
-<td>LLM 推理引擎中的核心运行时状态：管理、优化与系统影响</td>
-</tr>
-</tbody>
-</table>
+<div class="wiki-topic-grid">
+  <a class="wiki-topic-card wiki-topic-card-primary" href="kvcache/">
+    <span class="wiki-topic-icon" aria-hidden="true">KV</span>
+    <span class="wiki-topic-body">
+      <span class="wiki-topic-kicker">持续更新中</span>
+      <span class="wiki-topic-title">KVCache</span>
+      <span class="wiki-topic-desc">LLM 推理引擎中的核心运行时状态：管理、优化与系统影响。</span>
+    </span>
+    <span class="wiki-topic-arrow" aria-hidden="true">→</span>
+  </a>
+</div>
+
 <h2 id="_2">即将开放<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>以下主题正在规划或起草中：</p>
-<ul>
-<li><strong>PD Disaggregation</strong> — Prefill/Decode 分离的系统架构与权衡</li>
-<li><strong>Inference Engine</strong> — 主流推理引擎的架构对比与设计取舍</li>
-<li><strong>GPU Communication</strong> — 推理集群中的通信拓扑与带宽瓶颈</li>
-<li><strong>Scheduler</strong> — 推理请求调度：批次构建、抢占、优先级</li>
-</ul>
+<div class="wiki-roadmap">
+  <div class="wiki-roadmap-item">
+    <span class="wiki-roadmap-dot" aria-hidden="true"></span>
+    <div>
+      <strong>PD Disaggregation</strong>
+      <p>Prefill/Decode 分离的系统架构与权衡。</p>
+    </div>
+  </div>
+  <div class="wiki-roadmap-item">
+    <span class="wiki-roadmap-dot" aria-hidden="true"></span>
+    <div>
+      <strong>Inference Engine</strong>
+      <p>主流推理引擎的架构对比与设计取舍。</p>
+    </div>
+  </div>
+  <div class="wiki-roadmap-item">
+    <span class="wiki-roadmap-dot" aria-hidden="true"></span>
+    <div>
+      <strong>GPU Communication</strong>
+      <p>推理集群中的通信拓扑与带宽瓶颈。</p>
+    </div>
+  </div>
+  <div class="wiki-roadmap-item">
+    <span class="wiki-roadmap-dot" aria-hidden="true"></span>
+    <div>
+      <strong>Scheduler</strong>
+      <p>推理请求调度：批次构建、抢占、优先级。</p>
+    </div>
+  </div>
+</div>
+
 <h2 id="miracle-farms">关于 Miracle Farms<a class="headerlink" href="#miracle-farms" title="Permanent link">&para;</a></h2>
 <p>Miracle Farms 是一个专注于 AI Infra 系统研究的写作项目，发布形式包括每日早报（Brief）和深度技术文章（Essay）。Wiki 是其知识沉淀的第三种形式，补充那些不适合单篇文章表达的结构性知识。</p>
-<ul>
-<li><a href="https://miraclefarms.github.io">主站首页</a></li>
-<li><a href="https://miraclefarms.github.io/essays">博客文章</a></li>
-<li><a href="https://miraclefarms.github.io/briefs">AI Infra 早报</a></li>
-</ul>
+<div class="wiki-link-list">
+<p><a href="https://miraclefarms.github.io">主站首页</a>
+<a href="https://miraclefarms.github.io/essays/">博客文章</a>
+<a href="https://miraclefarms.github.io/briefs/">AI Infra 早报</a></p>
+</div>
 
 
 
