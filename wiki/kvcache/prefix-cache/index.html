@@ -1695,7 +1695,7 @@
 <p>Prefix Cache 的核心目标是：<strong>对于具有相同前缀的多个请求，避免重复计算其 KVCache</strong>。</p>
 <p>在许多生产场景中，大量请求共享相同的前缀——最典型的是 System Prompt。例如，一个 API 服务的系统提示词可能有数百乃至数千 token，如果每个请求都从头 Prefill 这段文本，将消耗大量计算资源和首 token 延迟。Prefix Cache 让这段共享前缀的 KV 只需计算一次，之后可以被所有后续请求直接读取复用。</p>
 <h2 id="_2">为什么前缀可以复用<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Transformer Attention 是因果的（causal）：每个 token 的 K/V 只取决于它自身及其之前的 token，与之后的 token 无关。因此，如果两个请求的前 $n$ 个 token 完全相同，它们在每一层产生的前 $n$ 个 token 的 K/V 张量也完全相同。</p>
+<p>Transformer Attention 是因果的（causal）：每个 token 的 K/V 只取决于它自身及其之前的 token，与之后的 token 无关。因此，如果两个请求的前 <span class="arithmatex">\(n\)</span> 个 token 完全相同，它们在每一层产生的前 <span class="arithmatex">\(n\)</span> 个 token 的 K/V 张量也完全相同。</p>
 <p>这个性质允许引擎将这些 K/V Block 存储在共享的物理 Block 中，多个 Sequence 的 Block Table 可以指向相同的物理 Block（只读引用，引用计数管理）。</p>
 <h2 id="_3">精确前缀匹配<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>当前主流引擎（vLLM、SGLang 等）实现的 Prefix Cache 基于<strong>精确前缀匹配</strong>：</p>
@@ -1834,6 +1834,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

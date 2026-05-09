@@ -1708,7 +1708,7 @@
 </tbody>
 </table>
 <h2 id="2-tptensor-parallelism-kv">2. TP（Tensor Parallelism）下的 KV<a class="headerlink" href="#2-tptensor-parallelism-kv" title="Permanent link">&para;</a></h2>
-<p><strong>怎么切</strong>：每张 GPU 持有 $H_{kv}/N$ 个 KV head（$N$ 是 TP size）。
+<p><strong>怎么切</strong>：每张 GPU 持有 <span class="arithmatex">\(H_{kv}/N\)</span> 个 KV head（<span class="arithmatex">\(N\)</span> 是 TP size）。
 - TP=8 + GQA(8) → 每卡 1 个 KV head
 - TP=4 + MHA(64) → 每卡 16 个 KV head</p>
 <p><strong>对系统的影响</strong>：</p>
@@ -1717,9 +1717,9 @@
 <li>decode 时每卡只算自己负责 head 的 attention，不需要跨卡通信 KV 本身（但有 q/o 张量的 All-Reduce）</li>
 <li>prefix cache 可以<strong>逐卡独立维护</strong>：每卡的 KV 段是自己负责 head 的，互不干扰</li>
 </ul>
-<p><strong>与 GQA 的边界</strong>：当 $\text{TP size} &gt; H_{kv}$ 时，每卡分不到一个完整 head——必须复制 KV head 或调整 TP/GQA 配比。例如 GQA(8) 模型不能跑 TP=16（除非用其他切分方式辅助）。</p>
+<p><strong>与 GQA 的边界</strong>：当 <span class="arithmatex">\(\text{TP size} &gt; H_{kv}\)</span> 时，每卡分不到一个完整 head——必须复制 KV head 或调整 TP/GQA 配比。例如 GQA(8) 模型不能跑 TP=16（除非用其他切分方式辅助）。</p>
 <h2 id="3-pppipeline-parallelism-kv">3. PP（Pipeline Parallelism）下的 KV<a class="headerlink" href="#3-pppipeline-parallelism-kv" title="Permanent link">&para;</a></h2>
-<p><strong>怎么切</strong>：模型沿 layer 维度被切到 $S$ 个 stage，每个 stage 持有自己 stage 的 KV。</p>
+<p><strong>怎么切</strong>：模型沿 layer 维度被切到 <span class="arithmatex">\(S\)</span> 个 stage，每个 stage 持有自己 stage 的 KV。</p>
 <p><strong>对系统的影响</strong>：</p>
 <ul>
 <li>每个 stage 的 KV 是<strong>完整 token 序列在该 stage 几层的 K/V</strong></li>
@@ -1733,7 +1733,7 @@
 <li>decode 阶段通常退回 TP</li>
 </ul>
 <h2 id="4-sp-cpsequence-context-parallelism-kv">4. SP / CP（Sequence / Context Parallelism）下的 KV<a class="headerlink" href="#4-sp-cpsequence-context-parallelism-kv" title="Permanent link">&para;</a></h2>
-<p><strong>怎么切</strong>：序列被切成 $C$ 段，每张卡负责一段 token 的 K/V。</p>
+<p><strong>怎么切</strong>：序列被切成 <span class="arithmatex">\(C\)</span> 段，每张卡负责一段 token 的 K/V。</p>
 <p><strong>典型场景</strong>：长上下文（128K+），单卡 KV 装不下时强制开启。</p>
 <p><strong>两种主流实现</strong>：</p>
 <table>
@@ -1946,6 +1946,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

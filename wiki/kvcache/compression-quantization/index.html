@@ -1819,7 +1819,7 @@
 <p>与 <a href="../sparsity/">稀疏化</a> 的差别：稀疏是"丢掉一些 K/V"，本章是"K/V 都还在，但每个变小了"。两者经常组合使用。</p>
 <h2 id="a">A. 压缩<a class="headerlink" href="#a" title="Permanent link">&para;</a></h2>
 <h3 id="1-svd">1. 低秩分解 / SVD 类<a class="headerlink" href="#1-svd" title="Permanent link">&para;</a></h3>
-<p>策略：把 KVCache 张量沿 head 或 channel 维度做 SVD，只保留 top-$r$ 个奇异值与对应向量。</p>
+<p>策略：把 KVCache 张量沿 head 或 channel 维度做 SVD，只保留 top-<span class="arithmatex">\(r\)</span> 个奇异值与对应向量。</p>
 <ul>
 <li>离线 SVD：用校准集决定分解矩阵，推理时缓存的是低秩因子</li>
 <li>在线 SVD：随生成动态调整，质量更稳但计算开销大</li>
@@ -2059,6 +2059,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

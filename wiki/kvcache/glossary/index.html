@@ -1829,7 +1829,7 @@
 <p><strong>Attention Kernel</strong>
 实现 Attention 计算的 GPU kernel。在分页 KV 场景下，需要支持非连续 KVCache 的间接寻址访问。常见实现包括 FlashAttention、FlashInfer、Triton 自定义 kernel。</p>
 <p><strong>Attention Sink</strong>
-StreamingLLM 提出的现象：模型在前几个 token 上集中了大量 attention 概率。简单丢弃这些 token 会破坏 attention 分布，因此实践中始终保留前 $k$ 个 token 的 K/V。</p>
+StreamingLLM 提出的现象：模型在前几个 token 上集中了大量 attention 概率。简单丢弃这些 token 会破坏 attention 分布，因此实践中始终保留前 <span class="arithmatex">\(k\)</span> 个 token 的 K/V。</p>
 <p><strong>Autoregressive Decoding（自回归解码）</strong>
 LLM 生成文本的基本方式：每次生成一个 token，将其追加到上下文后再生成下一个，直到结束符或达到长度限制。KVCache 是高效自回归解码的前提条件。</p>
 <hr />
@@ -1979,7 +1979,7 @@ SGLang 提出的 Prefix Cache 实现方案，使用 Radix Tree 组织 KV Block�
 <p><strong>Session Affinity（会话粘性）</strong>
 路由层把同一 session 的所有请求送到同一副本，以最大化跨轮次 prefix cache 命中。</p>
 <p><strong>Sliding Window Attention（SWA）</strong>
-每个 token 只关注最近 $w$ 个 token，KVCache 总量有上界。Mistral / Gemma 系列采用。</p>
+每个 token 只关注最近 <span class="arithmatex">\(w\)</span> 个 token，KVCache 总量有上界。Mistral / Gemma 系列采用。</p>
 <p><strong>Slot</strong>
 Block 内的最小存储单元，对应一个 token 的 K/V 数据。</p>
 <p><strong>SnapKV</strong>
@@ -1989,7 +1989,7 @@ Prefill 完成时利用末端 token 的 attention 模式预测重要 token，丢
 <p><strong>Splitwise</strong>
 PD 分离的早期代表论文，强调 Prefill 和 Decode 计算特征不同因此应分开部署。</p>
 <p><strong>StreamingLLM</strong>
-保留前 $k$ 个 attention sink token + 滑动窗口的稀疏化方案，让模型可以处理无限长流式输入。</p>
+保留前 <span class="arithmatex">\(k\)</span> 个 attention sink token + 滑动窗口的稀疏化方案，让模型可以处理无限长流式输入。</p>
 <p><strong>Swap（换入/换出）</strong>
 将 KVCache Block 在 GPU HBM 和 CPU DRAM 之间移动。换出（Swap-out）释放 GPU 显存，换入（Swap-in）恢复 Sequence 的 Decode 所需 KV。</p>
 <hr />
@@ -2067,6 +2067,10 @@ PD 分离的早期代表论文，强调 Prefill 和 Decode 计算特征不同因
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

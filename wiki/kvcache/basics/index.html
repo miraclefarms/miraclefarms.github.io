@@ -1630,7 +1630,7 @@
 <h2 id="kvcache">什么是 KVCache<a class="headerlink" href="#kvcache" title="Permanent link">&para;</a></h2>
 <p>KVCache（Key-Value Cache）是 Transformer 模型在<strong>自回归解码（autoregressive decoding）</strong>过程中，对已计算的 Attention Key 和 Value 张量进行缓存的机制。</p>
 <p>Transformer 的 Attention 计算公式为：</p>
-<p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+<div class="arithmatex">\[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]</div>
 <p>在解码阶段，每生成一个新 token，都需要用新 token 的 Query 去关注<strong>所有之前的 Key 和 Value</strong>（包括 Prompt 以及之前生成的 token）。如果不做缓存，每步都要重新对整个上下文做矩阵运算，复杂度随序列长度平方增长。KVCache 将这些 K/V 张量存下来，每步只需计算当前 token 的 Q，然后与缓存中的 K/V 做 attention，将每步复杂度降为线性。</p>
 <h2 id="prefill-decode">Prefill 与 Decode 中的角色<a class="headerlink" href="#prefill-decode" title="Permanent link">&para;</a></h2>
 <p>LLM 推理分为两个阶段，KVCache 在两个阶段中的角色完全不同：</p>
@@ -1647,13 +1647,13 @@
 </ol>
 <p>Decode 是<strong>memory-bound</strong>：每步计算量小，但需要大量显存带宽来读取 KVCache。这也是为什么 KVCache 的大小和访问效率对解码吞吐影响巨大。</p>
 <h2 id="kvcache_1">KVCache 的数据结构<a class="headerlink" href="#kvcache_1" title="Permanent link">&para;</a></h2>
-<p>对于一个层数为 $L$、KV head 数为 $H_{kv}$、head 维度为 $d$、数据类型为 dtype 的模型，处理长度为 $T$ 的序列产生的 KVCache 大小为：</p>
+<p>对于一个层数为 <span class="arithmatex">\(L\)</span>、KV head 数为 <span class="arithmatex">\(H_{kv}\)</span>、head 维度为 <span class="arithmatex">\(d\)</span>、数据类型为 dtype 的模型，处理长度为 <span class="arithmatex">\(T\)</span> 的序列产生的 KVCache 大小为：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>KVCache 大小 = 2 × L × H_kv × d × T × sizeof(dtype)
 </code></pre></div>
 <ul>
 <li>系数 <code>2</code>：K 和 V 各一份</li>
-<li>对于使用 GQA（Grouped-Query Attention）的模型，$H_{kv}$ 小于 $H_q$（Query head 数），显著减少 KVCache 大小</li>
-<li>对于 MQA（Multi-Query Attention），$H_{kv} = 1$</li>
+<li>对于使用 GQA（Grouped-Query Attention）的模型，<span class="arithmatex">\(H_{kv}\)</span> 小于 <span class="arithmatex">\(H_q\)</span>（Query head 数），显著减少 KVCache 大小</li>
+<li>对于 MQA（Multi-Query Attention），<span class="arithmatex">\(H_{kv} = 1\)</span></li>
 </ul>
 <h3 id="_2">典型规模<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <table>
@@ -1763,6 +1763,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

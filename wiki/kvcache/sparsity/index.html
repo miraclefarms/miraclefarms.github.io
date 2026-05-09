@@ -1787,8 +1787,8 @@
 </table>
 <h2 id="2-token">2. Token 级稀疏<a class="headerlink" href="#2-token" title="Permanent link">&para;</a></h2>
 <h3 id="attention-sink-streamingllm">Attention sink + 滑动窗口（StreamingLLM）<a class="headerlink" href="#attention-sink-streamingllm" title="Permanent link">&para;</a></h3>
-<p>观察：模型在前 $k$ 个 token（"attention sink"）上集中了大量 attention 概率，简单丢弃会让分布塌陷。</p>
-<p>策略：<strong>永久保留前 $k$ 个 token + 滑动窗口最近 $w$ 个 token</strong>，中间的全部丢掉。
+<p>观察：模型在前 <span class="arithmatex">\(k\)</span> 个 token（"attention sink"）上集中了大量 attention 概率，简单丢弃会让分布塌陷。</p>
+<p>策略：<strong>永久保留前 <span class="arithmatex">\(k\)</span> 个 token + 滑动窗口最近 <span class="arithmatex">\(w\)</span> 个 token</strong>，中间的全部丢掉。
 代价：长程依赖可能丢失，适合"短期局部依赖为主"的对话场景。</p>
 <h3 id="h2o-heavy-hitter-oracle">重要性评分驱动（H2O / Heavy-Hitter Oracle）<a class="headerlink" href="#h2o-heavy-hitter-oracle" title="Permanent link">&para;</a></h3>
 <p>观察：少数 token（"heavy hitters"）在 attention 中被频繁高分关注，它们的 K/V 不能丢。</p>
@@ -1827,11 +1827,11 @@
 <p>每个 decode 步：</p>
 <ol>
 <li>把 KV 划成块，为每块计算一个紧凑的"摘要"（min/max/平均向量）</li>
-<li>用 query 与摘要做粗筛，选出 top-$k$ 个块</li>
+<li>用 query 与摘要做粗筛，选出 top-<span class="arithmatex">\(k\)</span> 个块</li>
 <li>只对选中的块做完整 attention</li>
 </ol>
-<p>效果：每步只读 $k$ 个块的 K/V，HBM 带宽压力大幅下降。
-难点：摘要质量、top-$k$ 阈值、块大小选择。</p>
+<p>效果：每步只读 <span class="arithmatex">\(k\)</span> 个块的 K/V，HBM 带宽压力大幅下降。
+难点：摘要质量、top-<span class="arithmatex">\(k\)</span> 阈值、块大小选择。</p>
 <p>代表论文：<a href="https://arxiv.org/abs/2406.10774">Quest (2024)</a>、<a href="https://arxiv.org/abs/2406.02542">Loki</a>、<a href="https://arxiv.org/abs/2409.10516">RetrievalAttention</a>。</p>
 <h2 id="6">6. 稀疏化在系统层面的代价<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
 <p>理论上稀疏可以让 KV 变小，但工程上有几个常见陷阱：</p>
@@ -1927,6 +1927,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

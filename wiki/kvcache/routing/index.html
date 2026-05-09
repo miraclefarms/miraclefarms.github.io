@@ -1705,9 +1705,9 @@
 <p><strong>部署维度之三</strong>：在多副本部署里，把哪个请求送给哪个副本——这个看似 LB 的问题，在 KVCache 视角下是<strong>最大化 prefix 命中</strong>与<strong>避免热点</strong>的权衡。</p>
 </blockquote>
 <h2 id="1">1. 问题描述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
-<p>假设有 $N$ 个 Decode 副本，每个副本各自维护 prefix cache。一个新请求到来，路由器有两类策略：</p>
+<p>假设有 <span class="arithmatex">\(N\)</span> 个 Decode 副本，每个副本各自维护 prefix cache。一个新请求到来，路由器有两类策略：</p>
 <ul>
-<li><strong>Random / Round-robin</strong>：均匀分布请求，负载平均，但 prefix 命中率约等于 $1/N$（同一前缀只命中"碰巧路由到的那个"副本上）</li>
+<li><strong>Random / Round-robin</strong>：均匀分布请求，负载平均，但 prefix 命中率约等于 <span class="arithmatex">\(1/N\)</span>（同一前缀只命中"碰巧路由到的那个"副本上）</li>
 <li><strong>Cache-Aware</strong>：根据请求前缀路由到"最可能命中"的副本，命中率高，但会引入热点</li>
 </ul>
 <p>KVCache 视角下的核心矛盾：<strong>亲和性（hit rate）vs 负载均衡（utilization）</strong>。</p>
@@ -1932,6 +1932,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

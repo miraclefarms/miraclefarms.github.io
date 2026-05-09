@@ -1773,10 +1773,10 @@
 <p>单位时间内系统生成的 token 总数。在长输出场景中比请求吞吐更有代表性。</p>
 <h3 id="kvcache_1">KVCache 效率类指标<a class="headerlink" href="#kvcache_1" title="Permanent link">&para;</a></h3>
 <p><strong>Cache Hit Rate（缓存命中率）</strong></p>
-<p>$$\text{Hit Rate} = \frac{\text{命中的 KV token 数（无需 Prefill）}}{\text{总请求 Prompt token 数}}$$</p>
+<div class="arithmatex">\[\text{Hit Rate} = \frac{\text{命中的 KV token 数（无需 Prefill）}}{\text{总请求 Prompt token 数}}\]</div>
 <p>对于开启 Prefix Cache 的系统，命中率直接反映系统对 Workload 的适配效果。高命中率 → 低 TTFT + 低计算开销。</p>
 <p><strong>KVCache Memory Utilization（显存利用率）</strong></p>
-<p>$$\text{Utilization} = \frac{\text{已分配的 KV Block 数}}{\text{总 KV Block 数}}$$</p>
+<div class="arithmatex">\[\text{Utilization} = \frac{\text{已分配的 KV Block 数}}{\text{总 KV Block 数}}\]</div>
 <p>高利用率不等于好事：如果利用率长期 100%，说明 KVCache 已成瓶颈，新请求可能需要等待或触发抢占。</p>
 <p><strong>Block Fragmentation Rate</strong></p>
 <p>内部碎片（最后一个 Block 的未使用 Slot 比例）的均值。理论上，block_size 越小，碎片率越低，但调度开销上升。</p>
@@ -1925,6 +1925,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

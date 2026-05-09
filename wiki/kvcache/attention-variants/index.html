@@ -1607,11 +1607,11 @@
 <p>KVCache 的体积、读带宽、是否还存在"可缓存"语义，几乎完全由 attention 结构决定。本章梳理对 KV 影响最大的几条算法路线。</p>
 <h2 id="1-mha-mqa-gqakv">1. MHA → MQA → GQA：KV 头数的压缩谱<a class="headerlink" href="#1-mha-mqa-gqakv" title="Permanent link">&para;</a></h2>
 <p><strong>Multi-Head Attention（MHA）</strong>——每个 Q head 配独立的 K/V head。
-$\text{KV size} \propto H_q$，KVCache 最大。</p>
+<span class="arithmatex">\(\text{KV size} \propto H_q\)</span>，KVCache 最大。</p>
 <p><strong>Multi-Query Attention（MQA）</strong>——所有 Q head 共享单组 K/V。
-$\text{KV size} \propto 1$，KVCache 最小。代价：表达力下降，长上下文质量受影响。</p>
-<p><strong>Grouped-Query Attention（GQA）</strong>——折中方案，把 Q head 分成 $G$ 组，每组共享一组 K/V。
-$\text{KV size} \propto G$。</p>
+<span class="arithmatex">\(\text{KV size} \propto 1\)</span>，KVCache 最小。代价：表达力下降，长上下文质量受影响。</p>
+<p><strong>Grouped-Query Attention（GQA）</strong>——折中方案，把 Q head 分成 <span class="arithmatex">\(G\)</span> 组，每组共享一组 K/V。
+<span class="arithmatex">\(\text{KV size} \propto G\)</span>。</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>MHA:  Q1 Q2 Q3 Q4 ... Qn        ← n 个 K/V head
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>MQA:  Q1 Q2 Q3 Q4 ... Qn        ← 1 个 K/V head
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>GQA:  [Q1 Q2 Q3 Q4][...][...]   ← G 个 K/V head（如 LLaMA-3 70B 用 8）
@@ -1627,7 +1627,7 @@ $\text{KV size} \propto G$。</p>
 <p>DeepSeek-V2/V3 的路线：将 K/V 投影到一个<strong>低秩潜空间</strong>存储，attention 计算时再"解压"。</p>
 <p>核心机制：</p>
 <ul>
-<li>缓存的不是 K/V 本身，而是一个低维 latent 向量 $c \in \mathbb{R}^{d_c}$（$d_c$ 远小于 $H_{kv} \times d$）</li>
+<li>缓存的不是 K/V 本身，而是一个低维 latent 向量 <span class="arithmatex">\(c \in \mathbb{R}^{d_c}\)</span>（<span class="arithmatex">\(d_c\)</span> 远小于 <span class="arithmatex">\(H_{kv} \times d\)</span>）</li>
 <li>计算时通过两个 down/up projection 恢复出有效 K/V</li>
 <li>配合 RoPE 的 decoupled 设计避免位置编码干扰潜空间</li>
 </ul>
@@ -1674,14 +1674,14 @@ $\text{KV size} \propto G$。</p>
 </ul>
 <p>注意：这些方案在工业部署上还远不主流，主要原因是质量和兼容性（与现有 attention 优化栈、speculative decoding 等的协作）。</p>
 <h2 id="4">4. 滑动窗口 / 局部注意力<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
-<p><strong>Sliding Window Attention（SWA）</strong>——每个 token 只关注最近的 $w$ 个 token，超出窗口的 K/V 可丢弃。</p>
+<p><strong>Sliding Window Attention（SWA）</strong>——每个 token 只关注最近的 <span class="arithmatex">\(w\)</span> 个 token，超出窗口的 K/V 可丢弃。</p>
 <p>代表：Mistral、Gemma、Phi 系列。</p>
 <p><strong>对 KVCache 的影响</strong>：</p>
 <ul>
-<li>KV 总量有上界 $O(w)$，与上下文长度解耦</li>
+<li>KV 总量有上界 <span class="arithmatex">\(O(w)\)</span>，与上下文长度解耦</li>
 <li>但"窗口外的 token 完全不可见"过于激进，许多模型采用<strong>全局-局部混合</strong>：少数几层 full attention 维持全局信息，其余层 SWA</li>
 </ul>
-<p><strong>Attention sink</strong> 的发现（<a href="https://arxiv.org/abs/2309.17453">StreamingLLM</a>）补上了 SWA 的一个工程问题：模型在前几个 token 上集中了大量 attention 概率，简单丢弃会破坏分布。实践方案是<strong>始终保留前 $k$ 个 token 的 K/V + 滑动窗口</strong>。</p>
+<p><strong>Attention sink</strong> 的发现（<a href="https://arxiv.org/abs/2309.17453">StreamingLLM</a>）补上了 SWA 的一个工程问题：模型在前几个 token 上集中了大量 attention 概率，简单丢弃会破坏分布。实践方案是<strong>始终保留前 <span class="arithmatex">\(k\)</span> 个 token 的 K/V + 滑动窗口</strong>。</p>
 <h2 id="5">5. 混合架构<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
 <p>更激进的做法：<strong>部分层用全局 attention、部分层用线性 / 局部注意力</strong>。</p>
 <p>代表：</p>
@@ -1826,6 +1826,10 @@ $\text{KV size} \propto G$。</p>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

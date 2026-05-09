@@ -1783,7 +1783,7 @@
 <li>短或孤立 block：重建便宜，可以先丢</li>
 <li>量化后的 KV：占用小但精度恢复成本高</li>
 </ul>
-<p>公式形式：$\text{score} = w_1 \cdot \text{recency} + w_2 \cdot \text{rebuild_cost} + w_3 \cdot \text{hit_rate}$。</p>
+<p>公式形式：<span class="arithmatex">\(\text{score} = w_1 \cdot \text{recency} + w_2 \cdot \text{rebuild\_cost} + w_3 \cdot \text{hit\_rate}\)</span>。</p>
 <p>工业实现里 SGLang RadixAttention、LMCache 等都引入了类似 cost-aware 的考量。</p>
 <h3 id="_2">引擎实践对比<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
 <table>
@@ -1959,6 +1959,10 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
