@@ -74,8 +74,8 @@ body {
 
 /* ── Typography ──────────────────────────────────────────────────────────── */
 .md-typeset {
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-size: 0.9375rem;
+  line-height: 1.75;
   color: var(--mf-ink);
 }
 
@@ -91,20 +91,29 @@ body {
 }
 
 .md-typeset h1 {
-  font-size: 2.1em;
-  line-height: 1.18;
+  font-size: 1.8em;
+  line-height: 1.2;
   letter-spacing: -0.012em;
-  margin-bottom: .5em;
+  margin: .2em 0 .8em;
+  padding-bottom: .35em;
+  border-bottom: 1px solid var(--mf-rule-soft);
 }
 
 .md-typeset h2 {
-  font-size: 1.45em;
+  font-size: 1.32em;
+  line-height: 1.35;
   border-bottom: none;
   padding-bottom: 0;
   margin-top: 2.2em;
+  margin-bottom: .7em;
 }
 
-.md-typeset h3 { font-size: 1.15em; margin-top: 1.6em; }
+.md-typeset h3 { font-size: 1.1em; margin-top: 1.7em; margin-bottom: .5em; }
+.md-typeset h4 { font-size: 1em; margin-top: 1.4em; }
+
+.md-typeset p,
+.md-typeset li { color: var(--mf-ink); }
+.md-typeset li { margin-bottom: .25em; }
 
 .md-typeset a {
   color: var(--mf-accent);
@@ -116,6 +125,19 @@ body {
   text-decoration-color: var(--mf-accent);
   background: transparent;
 }
+
+/* Hide the pilcrow (¶) permalink that appears next to headings */
+.md-typeset .headerlink {
+  opacity: 0;
+  margin-left: .35em;
+  transition: opacity .15s ease;
+  text-decoration: none;
+}
+.md-typeset h1:hover .headerlink,
+.md-typeset h2:hover .headerlink,
+.md-typeset h3:hover .headerlink,
+.md-typeset h4:hover .headerlink { opacity: .35; }
+.md-typeset .headerlink:hover { opacity: 1 !important; }
 
 /* ── Header (custom topbar) ──────────────────────────────────────────────── */
 .md-header {
@@ -210,54 +232,142 @@ body {
 /* Hamburger: only on mobile */
 .mf-hamburger { display: none; }
 
-/* ── Navigation tabs (wiki sections) ────────────────────────────────────── */
-.md-tabs {
-  background: var(--mf-bg-soft);
-  border-bottom: 1px solid var(--mf-rule-soft);
-}
-.md-tabs__link {
-  color: var(--mf-ink-soft);
-  font-family: var(--md-text-font);
-  font-size: 13px;
-  opacity: 1;
-}
-.md-tabs__link:hover { color: var(--mf-ink); }
-.md-tabs__link--active { color: var(--mf-accent) !important; font-weight: 500; }
-.md-tabs__indicator { background: var(--mf-accent); }
+/* ── Navigation tabs ─────────────────────────────────────────────────────── */
+/* The Material `navigation.tabs` band duplicates the breadcrumb (md-path)
+   directly below it, so hide the band entirely for a clean hero. */
+.md-tabs { display: none !important; }
 
-/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+/* ── Breadcrumb (page hero) ──────────────────────────────────────────────── */
+.md-path {
+  font-size: 12px;
+  color: var(--mf-ink-faint);
+  border-bottom: 1px solid var(--mf-rule-soft);
+  padding: 0 0 .9em;
+  margin: -.4em 0 1.6em;
+  letter-spacing: 0.01em;
+}
+.md-path__list { display: flex; flex-wrap: wrap; gap: .35em .5em; align-items: center; }
+.md-path__item { display: inline-flex; align-items: center; }
+.md-path__item + .md-path__item::before {
+  content: "›";
+  margin-right: .55em;
+  color: var(--mf-ink-faint);
+}
+.md-path__link {
+  color: var(--mf-ink-soft);
+  text-decoration: none;
+  font-size: 12px;
+}
+.md-path__link:hover { color: var(--mf-accent); }
+
+/* ── Sidebar (primary, left) ─────────────────────────────────────────────── */
 .md-sidebar {
   background: var(--mf-bg);
 }
 .md-sidebar--primary {
-  border-right: 1px solid var(--mf-rule-soft);
+  border-right: 1px solid var(--mf-rule);
 }
 .md-sidebar__scrollwrap { background: var(--mf-bg); }
 
-.md-nav__title {
-  background: var(--mf-bg-soft) !important;
-  color: var(--mf-ink-soft);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 500;
-}
+.md-nav { font-size: 13.5px; }
 .md-nav__item { border: 0; }
+.md-nav__list { padding: 0; }
+
+/* Section title labels inside the drawer (hidden on desktop) */
+.md-nav--primary > .md-nav__title {
+  background: transparent !important;
+  color: var(--mf-ink);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  height: auto;
+  line-height: 1.4;
+  padding: .8em 0 .6em;
+  box-shadow: none;
+}
+
+/* Generic link rows */
 .md-nav__link {
   color: var(--mf-ink-soft);
-  font-size: 14px;
-  border-radius: 4px;
+  font-size: 13.5px;
+  border-radius: 3px;
+  padding: .35em .55em;
+  margin: 1px 0;
+  line-height: 1.5;
 }
 .md-nav__link:hover { color: var(--mf-ink); background: var(--mf-bg-soft); }
 .md-nav__link--active,
 .md-nav__link--active:hover {
   color: var(--mf-accent) !important;
+  font-weight: 600;
+  background: rgba(58,90,64,0.06);
+}
+
+/* Top-level section parent (e.g. "KVCache"): heading-style row */
+.md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__container > .md-nav__link {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mf-ink);
+  letter-spacing: -0.005em;
+  padding: .35em .25em;
+  margin-top: .6em;
+  text-transform: none;
+}
+
+/* Children of a section: indent + slightly smaller */
+.md-nav--primary .md-nav[data-md-level="1"] > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 1em;
+  font-size: 13px;
+}
+
+/* Nested level title inside the drawer (mobile only) */
+.md-nav--primary .md-nav .md-nav__title {
+  background: transparent !important;
+  color: var(--mf-ink-faint);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   font-weight: 500;
 }
 
-/* ── Table of contents ───────────────────────────────────────────────────── */
-.md-nav--secondary .md-nav__link { font-size: 13px; }
-.md-nav--secondary .md-nav__link--active { color: var(--mf-accent) !important; }
+/* ── Table of contents (right sidebar) ──────────────────────────────────── */
+.md-sidebar--secondary {
+  border-left: 1px solid var(--mf-rule-soft);
+}
+
+.md-nav--secondary > .md-nav__title {
+  background: transparent !important;
+  color: var(--mf-ink-faint);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: .25em 0 .55em;
+  margin-bottom: .35em;
+  border-bottom: 1px solid var(--mf-rule-soft);
+  box-shadow: none;
+  height: auto;
+  line-height: 1.4;
+}
+.md-nav--secondary > .md-nav__title .md-nav__icon { display: none; }
+
+.md-nav--secondary .md-nav__link {
+  font-size: 12.5px;
+  color: var(--mf-ink-soft);
+  padding: .2em .5em;
+  line-height: 1.55;
+}
+.md-nav--secondary .md-nav__link--active,
+.md-nav--secondary .md-nav__link--active:hover {
+  color: var(--mf-accent) !important;
+  background: transparent;
+  font-weight: 600;
+}
+/* Indent nested TOC items */
+.md-nav--secondary .md-nav .md-nav__link { padding-left: 1.4em; font-size: 12px; }
 
 /* ── Code ────────────────────────────────────────────────────────────────── */
 .md-typeset code {
