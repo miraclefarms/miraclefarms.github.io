@@ -1,7 +1,7 @@
 ---
 name: miraclefarms-writer
 description: >
-  为 miraclefarms.github.io 撰写或修改润色可发布的技术文章（brief 日报 或 essay 深度分析），并直接输出到 _posts/ 目录。
+  为 miraclefarms.github.io 撰写或修改润色可发布的技术文章（brief 日报 或 reading 文章阅读 或 essay 深度分析），并直接输出到 _posts/ 目录。
   触发条件：用户提供主题 + 参考链接，想生成博客文章；用户说"写一篇关于 X 的文章"并给出引用材料；
   用户有调研材料（PR、论文、博客）想整理成带格式的文章；用户提供已有文章并要求修改润色；
   任何需要输出 miraclefarms.github.io _posts/ 文章的请求——
