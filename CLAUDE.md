@@ -64,6 +64,17 @@ intro: 一句话摘要，不超过 100 字。
 
 **Required fields:** `title`, `date`, `author`, `kind`, `category`, `intro`
 
+**Optional field — `updated` (essay / reading only):**
+
+```yaml
+updated: 2026-05-09   # date only (YYYY-MM-DD), no time/timezone needed
+```
+
+- Only set on `essay` and `reading` posts that have been substantively revised after first publication.
+- Do **not** add to `brief` posts — briefs are dated snapshots and are never updated.
+- When set, the Essays index page sorts this post by `updated` instead of `date`, and the post header displays "Updated YYYY.MM.DD" alongside the original publish date.
+- The filename and permalink always reflect the original `date`; `updated` only affects display and sort order.
+
 `kind` / `category` must match:
 
 | `kind` | `category` | Use case |
@@ -107,7 +118,7 @@ Conventional publish times:
 - Required ending: `---` separator then `## 参考来源` with numbered references
 
 **Essay:**
-- Optional version declaration blockquote
+- Optional version history blockquote (use version table for essays that have been revised; see Essay 版本管理 section in the writer skill)
 - Opening paragraph (no H2): pose the core question
 - H2 sections with Chinese numerals
 - No `## 参考来源` section needed

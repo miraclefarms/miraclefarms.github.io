@@ -101,6 +101,14 @@ Essay 的生命周期比 Brief 长，随着技术演进需要定期修订。每�
 **（v1.1 新增）** 2026 年 4 月，LMSYS 发布了两项……
 ```
 
+**`updated` 字段**：更新 essay 时，同步在 front matter 里写入或更新 `updated` 字段（日期当天，格式 `YYYY-MM-DD`）：
+
+```yaml
+updated: 2026-05-09   # YYYY-MM-DD，无需时间和时区
+```
+
+这个字段驱动 Essays 列表页的排序——有 `updated` 的 essay 按 `updated` 日期排到最前，没有 `updated` 的按 `date` 排序；文章头部也会同步显示 "Updated YYYY.MM.DD"。
+
 **commit 消息**：包含版本号和核心变更摘要：
 
 ```
@@ -375,4 +383,5 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 - [ ] 如果是新建 essay，版本声明 blockquote 是否已写入（单行格式，注明 commit 或日期）？
 - [ ] 如果是更新已有 essay，是否把版本声明升级为版本历史表格，并追加了新版本行？
 - [ ] 正文中新增的整节或修订的段落，是否在开头标注了 `**（vX.X 新增）**` 或 `**（vX.X 更新）**`？
+- [ ] 如果是更新已有 essay，front matter 里的 `updated` 字段是否已写入或更新为今天日期（`YYYY-MM-DD`）？
 - [ ] commit 消息是否包含版本号和一句话变更摘要？

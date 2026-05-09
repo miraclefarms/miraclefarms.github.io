@@ -67,27 +67,12 @@ permalink: /essays/
   </div>
 
   <div id="essays-list-view">
-    {% assign prev_year = "" %}
+    <div class="pagelist" role="list">
     {% for post in all_posts %}
-      {% assign yr = post.date | date: "%Y" %}
-      {% if yr != prev_year %}
-        {% unless forloop.first %}</div></section>{% endunless %}
-        {% assign yr_count = 0 %}
-        {% for p in all_posts %}
-          {% assign pyr = p.date | date: "%Y" %}
-          {% if pyr == yr %}{% assign yr_count = yr_count | plus: 1 %}{% endif %}
-        {% endfor %}
-        <section class="essay-year-group" data-year="{{ yr }}">
-        <div class="year-row">
-          <span class="yr">{{ yr }}</span>
-          <span class="ln"></span>
-          <span class="yr-count" data-total="{{ yr_count }}">{{ yr_count }} 篇</span>
-        </div>
-        <div class="pagelist" role="list">
-        {% assign prev_year = yr %}
-      {% endif %}
+      {% assign sort_ts = post.updated | default: post.date | date: '%s' %}
       <a class="pagelink essay-item" href="{{ post.url | relative_url }}" role="listitem"
-         data-tags="{{ post.tags | join: ',' }}">
+         data-tags="{{ post.tags | join: ',' }}"
+         data-sortdate="{{ sort_ts }}">
         <span class="pl-handle" aria-hidden="true">⋮⋮</span>
         <span class="pl-ico" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
@@ -104,20 +89,31 @@ permalink: /essays/
             {% endfor %}
           </div>
         </div>
-        <div class="pl-date">{{ post.date | date: "%Y.%m.%d" }}</div>
+        <div class="pl-date{% if post.updated %} pl-date-updated{% endif %}">
+          {% if post.updated %}
+            {{ post.updated | date: "%Y.%m.%d" }}<span class="pl-date-pip" title="Updated">↑</span>
+          {% else %}
+            {{ post.date | date: "%Y.%m.%d" }}
+          {% endif %}
+        </div>
       </a>
     {% endfor %}
-    </div></section>
+    </div>
   </div>
 
   <div id="essays-table-view" style="display:none">
     <table class="ntable" role="table">
       <thead>
         <tr>
-          <th class="col-date" style="width:120px">
+          <th class="col-date" style="width:110px">
             <span class="col-ico">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-            </span>Date
+            </span>Published
+          </th>
+          <th class="col-date col-updated" style="width:110px">
+            <span class="col-ico">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v7l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+            </span>Updated
           </th>
           <th class="col-title">
             <span class="col-ico">
@@ -133,8 +129,12 @@ permalink: /essays/
       </thead>
       <tbody>
         {% for post in all_posts %}
-        <tr class="essay-table-row" data-tags="{{ post.tags | join: ',' }}">
+        {% assign sort_ts = post.updated | default: post.date | date: '%s' %}
+        <tr class="essay-table-row" data-tags="{{ post.tags | join: ',' }}" data-sortdate="{{ sort_ts }}">
           <td class="col-date">{{ post.date | date: "%Y.%m.%d" }}</td>
+          <td class="col-date col-updated">
+            {% if post.updated %}{{ post.updated | date: "%Y.%m.%d" }}{% else %}<span style="color:var(--ink-faint)">—</span>{% endif %}
+          </td>
           <td class="col-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></td>
           <td class="col-tags">
             {% for tag in post.tags %}
@@ -173,6 +173,17 @@ permalink: /essays/
   var activeTag  = '';
   var activeView = 'list';
 
+  // Sort list and table by effective date (updated ?? date) descending on load
+  function sortByEffectiveDate(container, selector) {
+    var items = Array.from(container.querySelectorAll(selector));
+    items.sort(function(a, b) {
+      return parseInt(b.dataset.sortdate || '0') - parseInt(a.dataset.sortdate || '0');
+    });
+    items.forEach(function(item) { container.appendChild(item); });
+  }
+  sortByEffectiveDate(listView.querySelector('.pagelist'), '.essay-item');
+  sortByEffectiveDate(tableView.querySelector('tbody'), '.essay-table-row');
+
   function matchesTag(el) {
     if (!activeTag) return true;
     var tags = el.dataset.tags ? el.dataset.tags.split(',') : [];
@@ -180,11 +191,9 @@ permalink: /essays/
   }
 
   function applyFilter() {
-    var listItems  = listView.querySelectorAll('.essay-item');
-    var tableRows  = tableView.querySelectorAll('.essay-table-row');
-    var yearGroups = listView.querySelectorAll('.essay-year-group');
+    var listItems = listView.querySelectorAll('.essay-item');
+    var tableRows = tableView.querySelectorAll('.essay-table-row');
     var visible = 0;
-
     listItems.forEach(function(el) {
       var show = matchesTag(el);
       el.style.display = show ? '' : 'none';
@@ -192,18 +201,6 @@ permalink: /essays/
     });
     tableRows.forEach(function(el) {
       el.style.display = matchesTag(el) ? '' : 'none';
-    });
-    yearGroups.forEach(function(group) {
-      var groupItems = Array.from(group.querySelectorAll('.essay-item'));
-      var groupVisible = groupItems.filter(function(el) { return el.style.display !== 'none'; });
-      group.style.display = groupVisible.length > 0 ? '' : 'none';
-      var countEl = group.querySelector('.yr-count');
-      if (countEl) {
-        var total = countEl.dataset.total;
-        countEl.textContent = activeTag
-          ? groupVisible.length + ' / ' + total + ' 篇'
-          : total + ' 篇';
-      }
     });
     emptyMsg.style.display = visible === 0 ? '' : 'none';
   }

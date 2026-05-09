@@ -34,6 +34,9 @@ layout: default
 
       <div class="post-meta-row">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
+        {% if page.updated %}
+        <span class="post-updated-chip">Updated {{ page.updated | date: "%Y.%m.%d" }}</span>
+        {% endif %}
         <span>{{ page.author | default: site.author.name }}</span>
         {% if page.series %}
         <span class="series-chip">{{ page.series }}</span>

@@ -5,6 +5,7 @@ author: Lychee & Ethan
 kind: essay
 category: Essay
 intro: 基于 LMSYS 系列博客、SGLang 文档与源码，深入分析 SGLang 如何用 RadixAttention 组织共享前缀，及其向 HiCache 分层缓存、HiSparse 稀疏注意力卸载与 ShadowRadix 混合架构前缀缓存的演进路线。
+updated: 2026-05-09
 tags: [KV Cache, SGLang, Inference]
 ---
 
