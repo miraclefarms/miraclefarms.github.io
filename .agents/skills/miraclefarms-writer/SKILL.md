@@ -66,8 +66,10 @@ description: >
 - **博客 / 官方文档**：读取全文，提炼核心观点和数据。
 - **本地 _posts/ 文章**：直接 read 文件，作为背景参考。
 
-**同时提取候选图片**（如果有）：
+**同时提取候选图片**：
 
+- **Reading / Essay 必须主动找图**——不是"如果碰到就记录"，而是在每个参考资料中主动寻找系统架构图、运行原理图、实验分析图、概念信息图。
+- **Brief 遇到可用图片时记录**，不需要主动寻找。
 - 记录图片 URL、所在段落 / figure caption、它支持的是哪一个论点。
 - 只保留和核心判断直接相关、能帮助读者理解机制 / 架构 / 实验结果的图。
 - 忽略 logo、作者头像、装饰性 banner、营销海报、与正文无关的界面截图。
@@ -231,7 +233,8 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 - **Brief** -> 读 `references/brief-format.md`（frontmatter 模板、引用格式、完整结构模板）
 - **Essay** -> 读 `references/essay-format.md`（frontmatter 模板、引用格式、完整结构模板）
 - **Reading** -> 读 `references/essay-format.md`（格式与 Essay 完全一致；注意 `kind: reading`、`category: Reading`、`author: Ethan`）
-- **如果参考资料含有可用图片** -> 再读 `references/image-handling.md`（候选图筛选、原图抓取、失败回退、落盘命名）
+- **Reading / Essay** -> 默认读 `references/image-handling.md`（候选图筛选、原图抓取、失败回退、落盘命名），主动从参考资料中寻找可用图片
+- **Brief 如果参考资料含有可用图片** -> 再读 `references/image-handling.md`
 - **如果用户要求微信公众号版本** -> 再读 `references/wechat-format.md`（公众号改写规则、参考资料链接保留、输出路径）
 - **如果用户要求的是 essay 的微信公众号技术长文** -> 把它当成独立长文路径处理，不要沿用 brief 的默认配图与配色假设
 
@@ -241,9 +244,12 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 
 ## 第六步：处理图片
 
-- Brief 和 Essay 都可以插图，但必须克制选择：
-  - Brief：通常 0-2 张；只有在它能明显解释当天最重要的一条或两条更新时才插。
-  - Essay：通常 1-4 张；优先选择架构图、方法流程图、关键实验图。
+- **Reading / Essay：尽量插图**，通常 2-4 张。调研阶段应主动从参考资料中寻找可用图片，优先选择以下四类：
+  - 系统架构图（模块关系、数据流、分层结构）
+  - 运行原理图（算法流程、状态机、调度路径）
+  - 实验分析图（性能对比、Pareto 曲线、ablation 结果）
+  - 概念信息图（对比表、timeline、分类矩阵）
+- **Brief：可以插图**，通常 0-2 张；只有在它能明显解释当天最重要的一条或两条更新时才插。
 - 按 `references/image-handling.md` 的顺序优先尝试抓取原图：
   - repo / GitHub：优先 raw 文件、user-attachments、README 中的原始资源链接
   - blog：优先正文 figure / picture / srcset 中的最大可用原图
