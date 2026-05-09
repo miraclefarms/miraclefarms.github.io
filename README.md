@@ -17,6 +17,41 @@ bundle exec jekyll serve
 
 ---
 
+## Wiki
+
+站点在 `/wiki/` 子路径下提供一个独立的技术知识库，使用 MkDocs Material 构建。
+
+- **Wiki 入口**：`https://miraclefarms.github.io/wiki/`
+- **源码目录**：`wiki-src/`（MkDocs 源码，不被 Jekyll 处理）
+- **构建产物**：`wiki/`（已提交到仓库，被 Jekyll 原样服务）
+
+### 当前主题
+
+| 主题 | 路径 | 说明 |
+|------|------|------|
+| KVCache | `wiki-src/docs/kvcache/` | 10 个页面：基础概念、运行时架构、Prefix Cache、Paged KV、Offload、PD 分离、评估、框架对比、术语表、参考资料 |
+
+### Wiki 更新流程
+
+编辑 `wiki-src/docs/` 下的 Markdown 文件，push 到 `main`，GitHub Actions（`build-wiki.yml`）自动构建并将产物写回 `wiki/`，随后 `pages.yml` 重新部署整站。
+
+### Wiki 本地预览
+
+```bash
+cd wiki-src
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+mkdocs serve          # http://127.0.0.1:8000/
+```
+
+### 新增 Wiki 主题
+
+1. 在 `wiki-src/docs/` 下新建主题目录（如 `pd-disaggregation/`）
+2. 在 `wiki-src/mkdocs.yml` 的 `nav:` 中追加该主题的条目
+3. Push 到 `main`，Actions 自动构建
+
+---
+
 ## 发文规范与格式守则
 
 本节是发文的权威参考，适用于 agent 和作者。以往出现的问题主要集中在**时区错误、引用格式混用、标题格式不一致**三类，本节逐一给出规则。
