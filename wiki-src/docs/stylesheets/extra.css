@@ -63,6 +63,11 @@
   --md-code-font:     "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+/* ── Scroll offset for sticky header ────────────────────────────────────────── */
+html {
+  scroll-padding-top: 72px;
+}
+
 /* ── Base ────────────────────────────────────────────────────────────────── */
 body {
   background: var(--mf-bg);
@@ -142,6 +147,10 @@ body {
 .md-typeset .headerlink:hover { opacity: 1 !important; }
 
 /* ── Page shell ──────────────────────────────────────────────────────────── */
+.md-grid {
+  max-width: 54rem;
+}
+
 .md-main {
   background:
     radial-gradient(circle at 50% -120px, rgba(220,232,116,0.32), transparent 340px),
@@ -155,7 +164,7 @@ body {
   padding-bottom: 4rem;
 }
 .md-content__inner::before {
-  height: 0;
+  height: 0.4rem;
 }
 
 /* ── Wiki home ───────────────────────────────────────────────────────────── */
@@ -526,7 +535,7 @@ body {
   color: var(--mf-ink-faint);
   border-bottom: 1px solid var(--mf-rule-soft);
   padding: 0 0 .9em;
-  margin: -.4em 0 1.6em;
+  margin: 0.1em 0 1.6em;
   letter-spacing: 0.01em;
 }
 .md-path__list { display: flex; flex-wrap: wrap; gap: .35em .5em; align-items: center; }
@@ -604,6 +613,28 @@ body {
 .md-nav--primary .md-nav[data-md-level="1"] > .md-nav__list > .md-nav__item > .md-nav__link {
   padding-left: 1em;
   font-size: 13px;
+}
+
+/* Nested section labels (算法维度, 系统维度, etc.) — sub-heading style */
+.md-nav--primary .md-nav[data-md-level="1"] .md-nav__item--section > label.md-nav__link {
+  color: var(--mf-ink-faint);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.55em 1em 0.1em;
+  margin-top: 0.4em;
+  cursor: pointer;
+}
+.md-nav--primary .md-nav[data-md-level="1"] .md-nav__item--section > label.md-nav__link:hover {
+  color: var(--mf-ink-soft);
+  background: transparent;
+}
+
+/* Deeper indentation for nested section children (level 2) */
+.md-nav--primary .md-nav[data-md-level="2"] > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 2.2em;
+  font-size: 12.5px;
 }
 
 /* Nested level title inside the drawer (mobile only) */
