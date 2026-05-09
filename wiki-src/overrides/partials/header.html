@@ -1,0 +1,64 @@
+<!-- MiracleFarms custom header — replaces Material's default with main-site topbar -->
+<header class="md-header" data-md-component="header">
+  <nav class="mf-header-inner" aria-label="页眉">
+
+    <!-- Brand (links back to main site) -->
+    <a class="mf-brand" href="https://miraclefarms.github.io/" title="MiracleFarms 主站">
+      <span class="mf-brand-mark">🌾</span>
+      <span class="mf-brand-name">MiracleFarms</span>
+      <span class="mf-brand-tag">— AI Infrastructure in public</span>
+    </a>
+
+    <span class="mf-nav-spacer"></span>
+
+    <!-- Main-site nav links -->
+    <nav class="mf-nav-links" aria-label="主导航">
+      <a href="https://miraclefarms.github.io/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="https://miraclefarms.github.io/briefs/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+        <span>Briefs</span>
+      </a>
+      <a href="https://miraclefarms.github.io/readings/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        <span>Readings</span>
+      </a>
+      <a href="https://miraclefarms.github.io/essays/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
+        <span>Essays</span>
+      </a>
+      <span class="mf-nav-sep" aria-hidden="true"></span>
+      <a href="https://miraclefarms.github.io/wiki/" class="mf-active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        <span>Wiki</span>
+      </a>
+      <span class="mf-nav-sep" aria-hidden="true"></span>
+      <a href="https://github.com/miraclefarms" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4 1.5-4-2-6-2m12 4v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.3 4.3 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.3 4.3 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+        <span>GitHub</span>
+      </a>
+    </nav>
+
+    <!-- Search toggle (always visible) -->
+    <label class="md-header__button md-icon mf-icon-btn" for="__search" aria-label="{{ lang.t('search.open') }}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+    </label>
+
+    <!-- Search component (Material requirement) -->
+    {% include "partials/search.html" %}
+
+    <!-- Hamburger — mobile sidebar toggle -->
+    <label class="md-header__button md-icon mf-icon-btn mf-hamburger" for="__drawer" aria-label="{{ lang.t('nav.open') }}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+
+  </nav>
+
+  <!-- Navigation tabs (wiki sections) — keep for in-wiki navigation -->
+  {% if "navigation.tabs" in features %}
+    {% include "partials/tabs.html" %}
+  {% endif %}
+
+</header>
