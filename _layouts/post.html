@@ -41,6 +41,9 @@ layout: default
         {% if page.series %}
         <span class="series-chip">{{ page.series }}</span>
         {% endif %}
+        {% if page.kind == 'essay' or page.kind == 'reading' %}
+        <span id="post-word-count" class="post-word-count-chip"></span>
+        {% endif %}
       </div>
     </header>
 
@@ -62,6 +65,20 @@ layout: default
 </div>
 
 <script>
+(function () {
+  var wcEl = document.getElementById('post-word-count');
+  if (wcEl) {
+    var wcBody = document.getElementById('post-body-content');
+    var text = wcBody ? wcBody.innerText : '';
+    var cjk  = (text.match(/[一-鿿㐀-䶿]/g) || []).length;
+    var eng  = (text.replace(/[一-鿿㐀-䶿]/g, ' ')
+                     .match(/\b[a-zA-Z0-9]+\b/g) || []).length;
+    var mins = Math.max(1, Math.round(cjk / 400 + eng / 150));
+    var total = cjk + eng;
+    if (total > 0) wcEl.textContent = '约 ' + total.toLocaleString('zh-CN') + ' 字 · ' + mins + ' 分钟';
+  }
+})();
+
 (function () {
   var body = document.getElementById('post-body-content');
   var nav  = document.getElementById('post-toc-nav');

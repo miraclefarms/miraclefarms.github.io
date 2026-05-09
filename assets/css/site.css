@@ -466,6 +466,11 @@ details.toggle > .toggle-body p { color: var(--ink-soft); margin: 6px 0; }
   background: var(--tag-bg); color: var(--ink-soft);
   font-size: 11px; font-family: var(--font-default);
 }
+.post-word-count-chip {
+  display: inline-flex; align-items: center;
+  color: var(--ink-faint);
+  font-size: 13px; font-family: var(--font-default);
+}
 .pl-date-updated { color: var(--ink-soft); }
 .pl-date-pip { font-size: 9px; margin-left: 3px; opacity: 0.6; }
 
