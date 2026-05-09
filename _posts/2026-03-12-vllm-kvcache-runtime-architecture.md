@@ -1,16 +1,26 @@
 ---
 title: vLLM 如何管理 KV Cache：从 Block Pool 到调度器的运行时资源层
-date: 2026-03-12 13:15:00 -0400
+date: 2026-03-12 13:15:00 +0800
+updated: 2026-05-09
 author: Lychee & Ethan
 kind: essay
 category: Essay
-intro: 基于 vLLM 当前主线源码，系统梳理 KV cache 的真实存储本体、block/page 抽象、调度接口、prefix cache 与执行映射之间的关系。
-tags: [KV Cache, Inference, vLLM]
+intro: 从 vLLM 本地 block runtime 出发，更新分析 Mooncake Store、LMCache 与 Mooncake 社区如何把 KV cache 推向跨实例资源层。
+tags: [KV Cache, Disaggregation, vLLM, Mooncake]
 ---
+
+> **版本历史**
+>
+> | 版本 | 日期 | 说明 |
+> |------|------|------|
+> | v1.0 | 2026-03-12 | 初稿，基于 vLLM commit `48e376a007173910330a8c83f53474b21e4279c0`（2026-03-05），梳理本地 Block Pool、KVCacheManager、调度器和 worker metadata |
+> | v1.1 | 2026-05-09 | 修订更新：纳入 vLLM x Mooncake Store、LMCache 多租户隔离与 Mooncake Transfer Engine / Store 的生产化进展 |
 
 很多人第一次理解 vLLM，都会先记住一个关键词：**PagedAttention**。这当然没错。vLLM 之所以能在大模型推理系统里建立辨识度，一个重要原因就是它没有沿用“每个请求持有一段连续 KV cache”的传统思路，而是把 KV 存储拆成了按 block/page 管理的布局。但如果只把 vLLM 理解成一种 attention 访存优化，实际上会错过它在当前主线里更重要的一层：**KV cache 已经不再只是 attention 的附属缓存，而是被实现为一个由 scheduler、KV manager、block pool 和 worker metadata 共同维护的运行时资源层。**
 
-这也是今天重新理解 vLLM 的必要性所在。在线推理系统面对的早已不是“要不要缓存 K/V”这种问题，而是：在变长请求、持续 decode、前缀复用、甚至远端 KV 回填的场景下，系统如何决定哪些请求可以继续推进，哪些 block 应该被复用，哪些 block 应该被释放，以及这些逻辑如何最终落到 attention backend 的执行路径上。基于当前 vLLM v1 主线源码来看，PagedAttention 当然仍然重要，但它更像是这套 runtime 抽象成立的前提，而不是终点。
+**（v1.1 更新）** 2026 年 5 月之后，这个判断变得更明显了。vLLM 官方发布的 Mooncake Store 集成把远端 KV 从“connector 接口上的可能性”推进到面向 agentic workload 的跨实例缓存池：在 610 条 Codex / SWE-bench Pro traces 上，官方报告缓存命中率从 1.7% 提升到 92.2%，吞吐提升 3.8 倍，P50 TTFT 降低 46 倍<a href="https://vllm.ai/blog/mooncake-store">[23]</a>。这组数字把问题讲得很直接：KV cache 的作用已经越过单个 engine 内部的热路径优化，成为多实例 serving 系统承接长上下文、多轮 agent 请求时必须管理的资源层。
+
+这也是今天重新理解 vLLM 的必要性所在。在线推理系统面对的早已不是“要不要缓存 K/V”这种问题，而是：在变长请求、持续 decode、前缀复用、远端 KV 回填和跨实例迁移的场景下，系统如何决定哪些请求可以继续推进，哪些 block 应该被复用，哪些 block 应该被释放，以及这些逻辑如何最终落到 attention backend 的执行路径上。基于当前 vLLM v1 主线源码来看，PagedAttention 当然仍然重要，但它更像是这套 runtime 抽象成立的前提，而不是终点。
 
 本文尝试基于当前主线源码，把这套 KV cache 管理机制拆开来看。本文分析基于本地对齐的 vLLM 仓库主线版本：`main@48e376a007173910330a8c83f53474b21e4279c0`（本地最新提交时间：2026-03-05）。核心判断很简单：**vLLM 的关键创新，不只是把 KV cache 做成分页访问，而是把 KV cache 真正纳入了推理 runtime 的资源管理主链路。**
 
@@ -225,27 +235,57 @@ NIXL 对 KV cache 的“注册”则发生在这个显存分配之后。`GPUMode
 
 因此，真正值得强调的不是“vLLM 支持 prefix caching”，而是：**当前 vLLM 主线通过 prefix caching 引入了共享 block 生命周期，并开始把这层共享关系继续传导到 batch 级执行优化。** 一旦从这个视角出发，ref count、common prefix blocks、cache commit 时机等设计就不再是零散技巧，而会显得内在连贯。
 
-## 十三、当前主线的边界：本地 block runtime 已经成型，但不是终点
+## 十三、远端 KV 已经从接口痕迹变成跨实例缓存池
 
-尽管当前 vLLM 主线已经把单机本地的 KV cache 管理做成了一套系统级 runtime，但这并不意味着问题已经被彻底解决。更准确的说法是：**vLLM 已经把“本地显存中的 block 级 KV 管理”系统化了，但更复杂的跨介质和远端管理仍在继续演进。**
+**（v1.1 新增）** 三月初写这篇文章时，`num_external_computed_tokens`、connector、remote KV、异步接收这些接口更像是 vLLM 本地 block runtime 向外延展的“痕迹”。到了 5 月，这条线已经被 vLLM、LMCache 和 Mooncake 社区一起推进成了更明确的系统形态：本地 BlockPool 仍然是单个 engine 的执行基础，但跨实例 prefix reuse 开始需要一个可查询、可传输、可隔离、可恢复的外部 KV 层。
+
+vLLM x Mooncake Store 官方博客给出的 workload 很有代表性。Codex / SWE-bench Pro trace 一共有 610 条，median 33 turns；到第 30 轮时，上下文大约增长到 80K tokens，最长超过 180K tokens，但每轮真正新增的输入通常只有几百到几千 token，平均 input/output token ratio 约为 131:1<a href="https://vllm.ai/blog/mooncake-store">[23]</a>。这类 agent 任务里，单机 prefix cache 的难点在 serving 层：router 很难保证下一轮还落在同一个实例上；一旦为了负载均衡把 session 迁到另一台机器，原来的本地 KV 就变成了孤岛。
+
+Mooncake Store 的设计正是把这个孤岛打通。vLLM 实例嵌入 Mooncake client，共享一个由 Mooncake master 管理的集群级 KV store；master 管理 KV block hash、大小、服务发现和 client 健康状态，worker 则把 GPU KV cache memory 注册成 RDMA buffer，通过 Mooncake Transfer Engine 在 GPU HBM 和分布式 DRAM / SSD pool 之间搬运 KV blocks<a href="https://vllm.ai/blog/mooncake-store">[23]</a><a href="https://github.com/vllm-project/vllm/pull/40900">[24]</a>。
+
+![vLLM Mooncake Store 跨实例 KV cache pool 架构](/assets/vllm-kvcache-runtime-architecture/fig-1-mooncake-store-architecture.svg)
+
+*图 1：Mooncake Store 把多个 vLLM 实例接入同一个集群级 KV pool；scheduler 侧做 block-hash lookup，worker 侧通过 RDMA 在 GPU HBM 与分布式 DRAM / SSD pool 之间移动 KV blocks。来源：vLLM 官方博客。*
+
+这张图补上了原文里只讲到“connector 注册 KV memory region”的另一半：connector 的职责从 prefill 和 decode 两端之间的传输通道，扩到跨实例 cache discovery 和异步存取。PR #40900 里的 `MooncakeStoreConnector` 把 scheduler / worker 进一步分开：scheduler 侧通过 ZMQ IPC 查询外部 prefix cache hits，并构建本轮 load / save metadata；worker 侧注册 GPU KV buffers，启动后台 send / recv threads，支持 FlashAttention 和 FlashInfer 两类 KV cache layout 的 stride 检测<a href="https://github.com/vllm-project/vllm/pull/40900">[24]</a>。这套分工延续了原文分析的 runtime 逻辑：scheduler 决定哪些外部 KV 可纳入本轮资源视图，worker 负责把这种视图落成真实数据传输。
+
+MultiConnector 让这条路径和 P/D disaggregation 叠在一起。官方博客里的流程是：prefill instance 一边把 KV blocks 交给 PD connector，一边通过 store connector 写入分布式 KV pool；命中时，vLLM 可以从 Mooncake Store connector 恢复匹配前缀；decode 侧目前写入 pool 后会让 prefill 侧负责读取，再通过 PD connector 转发给 decode<a href="https://vllm.ai/blog/mooncake-store">[23]</a>。这个限制本身很有信息量：社区已经在把“多路径 KV loading”列为下一步，也就是同时从 prefill instance 和分布式 pool 拉 KV，以吃满更多网络带宽。KV runtime 的瓶颈正在从“怎么在本地 page 化”转向“怎么在多条数据路径之间调度同一组 block”。
+
+![Mooncake Store 在 agentic traces 上的性能结果](/assets/vllm-kvcache-runtime-architecture/fig-2-mooncake-store-agentic-benchmark.png)
+
+*图 2：在 1P1D、12 张 GB200 的 Codex agentic trace 实验里，Mooncake Store 把 cache hit rate 从 1.7% 拉到 92.2%，对应吞吐 3.8 倍、P50 TTFT 46 倍和端到端延迟 8.6 倍改善。来源：vLLM 官方博客。*
+
+LMCache 最近的变化从另一个方向补齐了这件事：外部 KV 层一旦变成共享基础设施，就必须有租户边界和恢复语义。vLLM 先在 #39837 把 `request.cache_salt` 透传到 LMCache MP connector<a href="https://github.com/vllm-project/vllm/pull/39837">[25]</a>，LMCache 随后把 `cache_salt` 写入 ObjectKey 并在 #3137 引入 `IsolatedLRU`：每个 `cache_salt` 有独立 LRU list，配额通过 HTTP 动态配置，某个用户超额时只驱逐自己的 KV blocks<a href="https://github.com/LMCache/LMCache/pull/3042">[26]</a><a href="https://github.com/LMCache/LMCache/pull/3137">[27]</a>。如果说本地 BlockPool 的 ref count 解决的是“多个 request 如何共享同一批 block”，那么 `cache_salt` 解决的是“共享基础设施里哪些 block 本来就不该互相命中、互相驱逐”。
+
+LMCache 的 MP 路径也在变得更像一个可独立运维的服务。#3208 让 vLLM 侧 adapter 在 LMCache MP server 重启后自动重新注册 KV caches，不再要求重启 vLLM 才能恢复 STORE / RETRIEVE<a href="https://github.com/LMCache/LMCache/pull/3208">[28]</a>；#3172 给 Mooncake L2 adapter 加 batch operations，#3018 则提前注册 RDMA L1 memory 以服务 MooncakeStore L2 adapter<a href="https://github.com/LMCache/LMCache/pull/3172">[29]</a><a href="https://github.com/LMCache/LMCache/pull/3018">[30]</a>。这些改动看起来不像论文里的“大设计”，但它们决定了外部 KV 层能不能在真实服务里持续运行：重启能恢复，批量读写能摊薄开销，内存注册不再卡在请求热路径上。
+
+Mooncake 社区最近合并的一组 PR 则说明数据面已经进入生产加固期。EFA 传输路径把 libfabric API 请求从 1.14 提到 1.18，让 p5 / p5e 这类 Nitro v4 EFA 硬件默认启用 device RDMA；PR 描述里的复现数据显示，补丁后同一 cross-node run 在不设置额外环境变量时稳定到 377.93 GB/s，和显式 `FI_EFA_USE_DEVICE_RDMA=1` 的 377.74 GB/s 基本一致<a href="https://github.com/kvcache-ai/Mooncake/pull/2041">[31]</a>。同一窗口里，Mooncake 还修了 dmabuf 注册必须使用 allocation base address、注册前初始化 CUDA primary context、RDMA QP 并发销毁导致 `ibv_post_send` UAF、连接建立环形死锁等问题<a href="https://github.com/kvcache-ai/Mooncake/pull/2035">[32]</a><a href="https://github.com/kvcache-ai/Mooncake/pull/2034">[33]</a><a href="https://github.com/kvcache-ai/Mooncake/pull/1903">[34]</a><a href="https://github.com/kvcache-ai/Mooncake/pull/1959">[35]</a>。这些修复没有改变 KV cache 的抽象，却决定了“把 block 放到远端”是否能在多节点网络里稳定发生。
+
+5 月 9 日合并的 #2004 更值得放在这篇文章里看。它修复了 Mooncake Store disk-backed replicas 读回 GPU KV cache 时全部返回 `INVALID_PARAMS` 的问题：`LOCAL_DISK` 现在可以把 on-disk blob 通过 RDMA scatter 到用户 GPU slices，`DISK` 则通过注册 CPU 临时 buffer staging 后再 H2D scatter；验证里 2500 个 prompts 全部完成，GPU KV cache 持续 99.8% 到 100%，external prefix cache hit rate 从 1.4% 增长到 3.1%<a href="https://github.com/kvcache-ai/Mooncake/pull/2004">[36]</a>。这个数字不夸张，但它说明一个更实际的问题：分布式 KV pool 真正进入 SSD 层后，系统要处理的不只是“有没有更大容量”，还包括 GPU 指针、host staging、replica 类型选择、scatter/gather 语义和错误路径。
+
+把这三条线放回 vLLM 本地 runtime，就能看出原文分析为什么仍然成立。远端 KV 并没有绕开 BlockPool、block hash、block table 和 slot mapping；它只是把这些本地抽象的生命周期拉长了。scheduler 仍然要判断本轮哪些 token 已经 computed，worker 仍然要把逻辑 block 映射到物理 KV slots，connector 只是让一部分 computed blocks 可以来自另一个实例、另一层 DRAM，甚至另一块 SSD。换言之，本地 block runtime 是跨实例 KV cache pool 的语言；没有这套语言，Mooncake Store 和 LMCache 都很难和 vLLM 的执行热路径对齐。
+
+## 十四、当前主线的边界：本地 block runtime 已经成型，跨实例资源层正在接上来
+
+**（v1.1 更新）** 当前 vLLM 主线已经把单机本地的 KV cache 管理做成了一套系统级 runtime；2026 年 5 月的社区进展则说明，下一层工作正在把这套 runtime 接到跨实例、跨介质的资源层上。更准确的说法是：**vLLM 已经把“本地显存中的 block 级 KV 管理”系统化了，Mooncake Store 和 LMCache 正在把这些 block 的生命周期扩展到集群级共享空间。**
 
 一方面，这套设计本身就带来了额外复杂度。比如，系统需要维护 block hash、free queue、引用计数、公共前缀统计，还要让 backend 理解 block table 和 slot mapping。这些都是为了换取动态请求下更好的复用与调度能力，但它们也意味着实现不再是一个简单的 contiguous KV buffer。
 
-另一方面，当前主线其实已经显式暴露出向更复杂 KV 体系延展的接口痕迹。`allocate_slots(...)` 里存在 `num_external_computed_tokens`、`delay_cache_blocks` 等参数；scheduler 中也存在 connector、remote KV、异步接收完成后再更新 request 状态的逻辑。这说明 vLLM 的 KV 管理抽象已经不再局限于“本地 GPU prefix cache”，而是在逐步吸纳远端已计算 KV、异步传输、offload 等更大范围的资源流动。
+另一方面，当前主线已经显式吸纳更复杂 KV 体系。`allocate_slots(...)` 里存在 `num_external_computed_tokens`、`delay_cache_blocks` 等参数；scheduler 中也存在 connector、remote KV、异步接收完成后再更新 request 状态的逻辑。Mooncake Store、LMCache MP 和 Mooncake disk replica 修复把这些接口从“预留能力”推向真实部署路径：远端已计算 KV、异步传输、offload、重启恢复和租户隔离都开始进入同一条资源链路。
 
-但对这篇文章来说，最重要的是不要把这些边界问题和主线混为一谈。当前最值得讲透的，仍然是本地 block/page runtime：scheduler 如何依赖 KV manager 判断可执行性，block pool 如何统一管理复用与回收，worker 如何把 block ids 转成执行 metadata。至于更远端的 KV offload 或跨节点复用，那更适合作为下一篇文章展开。
+边界也很清楚。MooncakeStoreConnector 在 2026-05-09 仍是开放 PR，官方博客公布的是当前实现和实验结果，而非已经完全稳定的 release API<a href="https://github.com/vllm-project/vllm/pull/40900">[24]</a>。此外，decode 侧目前还不是直接从分布式 pool 读取所有命中 KV，多路径加载、cache-aware routing、hybrid model offloading 和分布式 disk offloading 都还在后续计划里<a href="https://vllm.ai/blog/mooncake-store">[23]</a>。因此，这篇文章的主线仍然应该从本地 block/page runtime 读起；跨实例 KV pool 是它的延展，而不是替代。
 
-## 结语：vLLM 的重要性，在于它把 KV cache 推进到了 runtime 中枢
+## 十五、结语：vLLM 的重要性，在于它把 KV cache 推进到了 runtime 中枢
 
 如果只把 vLLM 看成一种 PagedAttention 实现，那么它的意义主要停留在 attention 访存和显存利用率层面。但从当前主线源码来看，这个理解已经过于狭窄。vLLM 真正更有代表性的地方在于，它把 KV cache 从“模型执行中的中间状态”推进成了**推理 runtime 的中枢资源之一**。
 
 在这套系统里，scheduler 不再只管谁先跑，而必须理解哪些请求在当前 KV 资源约束下可执行；KVCacheManager 不再只是缓存封装，而是调度器的资源接口；BlockPool 不只负责分配显存块，还统一维护了 block 的缓存、共享和回收生命周期；worker 则通过 block table 和 slot mapping，把这种分页式资源抽象真正落到了 attention backend 的执行面上。
 
-换句话说，当前 vLLM 主线给出的最重要答案，不是“如何用 page 存 KV”，而是“如何把 KV cache 纳入一个面向动态请求、前缀复用和调度约束的运行时系统”。如果说早期人们把 KV cache 看成 Transformer 推理中的必要副产物，那么 vLLM 至少在当前主线里，已经把它明确提升成了推理系统设计必须正面处理的核心对象。
+**（v1.1 更新）** 5 月这批进展让这个结论更向前走了一步。当前 vLLM 主线给出的最重要答案已经扩展为：如何把 KV cache 纳入一个面向动态请求、前缀复用、调度约束和跨实例共享的运行时系统。如果说早期人们把 KV cache 看成 Transformer 推理中的必要副产物，那么 vLLM、LMCache 和 Mooncake 社区正在把它推进成推理系统设计必须正面处理的核心对象：它有本地生命周期，也有远端所有权；有性能路径，也有租户边界；有显存布局，也有网络和存储数据面。
 
 ---
 
-## 参考来源
+## 参考资料
 
 ### 版本对齐信息
 
@@ -347,3 +387,33 @@ GitHub：[nixl_connector.py](https://github.com/vllm-project/vllm/blob/48e376a00
 [22] `Inside vLLM’s New KV Offloading Connector: Smarter Memory Transfer for Maximizing Inference Throughput`：vLLM 官方对 KV offloading connector 的原文说明  
 链接：[KV Offloading Connector](https://vllm.ai/blog/kv-offloading-connector)  
 这篇官方博客重点讨论 CPU KV offloading、异步 connector API、`cudaMemcpyAsync` / DMA 路径与吞吐优化，是理解“KV data 如何通过 connector API 在不同介质间搬运”的第一手材料。本文对 NIXL register / zero-copy 的讨论则进一步补充了另一条以已注册 device memory region 为中心的 KV transfer 路径。
+
+### 2026-05 v1.1 更新材料
+
+[23] [Serving Agentic Workloads at Scale with vLLM x Mooncake](https://vllm.ai/blog/mooncake-store)
+
+[24] [vLLM PR #40900: Add MooncakeStoreConnector for KV cache offloading via Mooncake distributed store](https://github.com/vllm-project/vllm/pull/40900)
+
+[25] [vLLM PR #39837: Propagate cache_salt through LMCache MP connector for per-user cache isolation](https://github.com/vllm-project/vllm/pull/39837)
+
+[26] [LMCache PR #3042: Add cache_salt to ObjectKey for cache isolation](https://github.com/LMCache/LMCache/pull/3042)
+
+[27] [LMCache PR #3137: Add IsolatedLRU eviction policy and per-cache_salt quotas](https://github.com/LMCache/LMCache/pull/3137)
+
+[28] [LMCache PR #3208: Make vLLM reconnect after LMCache restarts](https://github.com/LMCache/LMCache/pull/3208)
+
+[29] [LMCache PR #3172: Add batch operations to Mooncake L2 adapter](https://github.com/LMCache/LMCache/pull/3172)
+
+[30] [LMCache PR #3018: Add RDMA L1 memory preregistration support for MooncakeStore L2 adapter](https://github.com/LMCache/LMCache/pull/3018)
+
+[31] [Mooncake PR #2041: Request libfabric API 1.18 so device RDMA is the default on all EFA generations](https://github.com/kvcache-ai/Mooncake/pull/2041)
+
+[32] [Mooncake PR #2035: Use allocation base addr for dmabuf-based mem registration](https://github.com/kvcache-ai/Mooncake/pull/2035)
+
+[33] [Mooncake PR #2034: Init CUDA primary context before dmabuf-based mem registration](https://github.com/kvcache-ai/Mooncake/pull/2034)
+
+[34] [Mooncake PR #1903: Fix RDMA use-after-free crash in ibv_post_send](https://github.com/kvcache-ai/Mooncake/pull/1903)
+
+[35] [Mooncake PR #1959: Fix possible deadlock in RDMA transport connection setup](https://github.com/kvcache-ai/Mooncake/pull/1959)
+
+[36] [Mooncake PR #2004: Fix disk replica read paths for GPU KV cache](https://github.com/kvcache-ai/Mooncake/pull/2004)
