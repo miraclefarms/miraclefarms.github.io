@@ -8,3 +8,4 @@ vendor/
 wechat-publish.log
 node_modules/
 .claude/worktrees/
+wiki-src/.venv/

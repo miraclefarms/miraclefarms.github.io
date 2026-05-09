@@ -30,3 +30,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - docs
+  - wiki-src
+  - wiki-src/.venv
+  - wiki-src/mkdocs.yml
+  - wiki-src/requirements.txt

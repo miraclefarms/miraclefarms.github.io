@@ -1,0 +1,70 @@
+site_name: Miracle Farms Wiki
+site_url: https://miraclefarms.github.io/wiki/
+site_description: AI Infra 和 LLM Systems 技术知识库
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: 切换到亮色模式
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到亮色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.path
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+nav:
+  - 首页: index.md
+  - KVCache:
+      - 主题首页: kvcache/index.md
+      - 基础概念: kvcache/basics.md
+      - 运行时架构: kvcache/runtime-architecture.md
+      - Prefix Cache: kvcache/prefix-cache.md
+      - Paged KV: kvcache/paged-kv.md
+      - KV Offload: kvcache/offload.md
+      - PD 分离中的 KVCache: kvcache/pd-disaggregation.md
+      - 评估方法: kvcache/evaluation.md
+      - 框架对比: kvcache/frameworks.md
+      - 术语表: kvcache/glossary.md
+      - 参考资料: kvcache/references.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+plugins:
+  - search:
+      lang: zh
