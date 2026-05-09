@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/paged-kv/">
+        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/attention-variants/">
       
       
-        <link rel="prev" href="../storage-hierarchy/">
+        <link rel="prev" href="../basics/">
       
       
-        <link rel="next" href="../prefix-cache/">
+        <link rel="next" href="../sparsity/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Paged KV - Miracle Farms Wiki</title>
+        <title>Attention 变体 - Miracle Farms Wiki</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#paged-kv" class="md-skip">
+        <a href="#attention" class="md-skip">
           跳转至
         </a>
       
@@ -504,6 +504,8 @@
                 
   
   
+    
+  
   
   
     
@@ -527,11 +529,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
         
           
           <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
@@ -552,7 +554,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -567,10 +569,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../attention-variants/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attention 变体
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -586,6 +615,103 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-mha-mqa-gqakv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. MHA → MQA → GQA：KV 头数的压缩谱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mlamulti-head-latent-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. MLA（Multi-head Latent Attention）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 线性注意力 / 状态空间模型：从"长 KV"到"恒定状态"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 滑动窗口 / 局部注意力
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 混合架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 算法维度的统一视角
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -659,8 +785,6 @@
                 
   
   
-    
-  
   
   
     
@@ -690,11 +814,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
         
           
           <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="">
@@ -715,7 +839,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -786,37 +910,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Paged KV
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../paged-kv/" class="md-nav__link">
         
   
   
@@ -832,170 +929,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        问题背景：连续显存分配的困境
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PagedAttention 的直觉
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        实现原理
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="实现原理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        初始化阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1508,143 +1441,76 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#1-mha-mqa-gqakv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. MHA → MQA → GQA：KV 头数的压缩谱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mlamulti-head-latent-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. MLA（Multi-head Latent Attention）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 线性注意力 / 状态空间模型：从"长 KV"到"恒定状态"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 滑动窗口 / 局部注意力
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 混合架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 算法维度的统一视角
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        问题背景：连续显存分配的困境
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PagedAttention 的直觉
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        实现原理
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="实现原理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        初始化阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
+        关联章节
       
     </span>
   </a>
@@ -1712,10 +1578,10 @@
     
     
       <li class="md-path__item">
-        <a href="../runtime-architecture/" class="md-path__link">
+        <a href="./" class="md-path__link">
           
   <span class="md-ellipsis">
-    系统维度（纵向）
+    算法维度（横向）
   </span>
 
         </a>
@@ -1734,91 +1600,173 @@
 
 
 
-<h1 id="paged-kv">Paged KV<a class="headerlink" href="#paged-kv" title="Permanent link">&para;</a></h1>
-<h2 id="_1">问题背景：连续显存分配的困境<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>在 PagedAttention 出现之前，主流推理系统为每个 Sequence 预分配<strong>连续的显存块</strong>，大小等于最大序列长度对应的 KVCache。这带来了严重的显存浪费：</p>
+<h1 id="attention">Attention 变体<a class="headerlink" href="#attention" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>算法维度（横向）之一</strong>：KV 张量本身的形状如何被 attention 结构改写。</p>
+</blockquote>
+<p>KVCache 的体积、读带宽、是否还存在"可缓存"语义，几乎完全由 attention 结构决定。本章梳理对 KV 影响最大的几条算法路线。</p>
+<h2 id="1-mha-mqa-gqakv">1. MHA → MQA → GQA：KV 头数的压缩谱<a class="headerlink" href="#1-mha-mqa-gqakv" title="Permanent link">&para;</a></h2>
+<p><strong>Multi-Head Attention（MHA）</strong>——每个 Q head 配独立的 K/V head。
+$\text{KV size} \propto H_q$，KVCache 最大。</p>
+<p><strong>Multi-Query Attention（MQA）</strong>——所有 Q head 共享单组 K/V。
+$\text{KV size} \propto 1$，KVCache 最小。代价：表达力下降，长上下文质量受影响。</p>
+<p><strong>Grouped-Query Attention（GQA）</strong>——折中方案，把 Q head 分成 $G$ 组，每组共享一组 K/V。
+$\text{KV size} \propto G$。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>MHA:  Q1 Q2 Q3 Q4 ... Qn        ← n 个 K/V head
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>MQA:  Q1 Q2 Q3 Q4 ... Qn        ← 1 个 K/V head
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>GQA:  [Q1 Q2 Q3 Q4][...][...]   ← G 个 K/V head（如 LLaMA-3 70B 用 8）
+</code></pre></div>
+<p><strong>对系统的影响</strong>：</p>
 <ul>
-<li><strong>内部碎片（Internal Fragmentation）</strong>：实际生成长度通常远小于预分配的最大长度，多余的显存无法被其他请求使用</li>
-<li><strong>外部碎片（External Fragmentation）</strong>：连续显存的分配和释放产生不规则的空洞，无法被需要连续块的新请求填入</li>
-<li><strong>过度保守</strong>：为避免显存不足，系统必须提前按最差情况估算显存需求，进一步压低了实际并发数</li>
+<li>KVCache 体积按倍数下降，可服务的并发请求数同比例上升</li>
+<li>Decode 阶段 HBM 读带宽压力等比例下降</li>
+<li>LLaMA-3、Mistral、Qwen 等主流开源模型已普遍采用 GQA(8)</li>
 </ul>
-<p>实测数据表明，在这种方案下，真正用于 KVCache 存储的显存利用率可能低至 20-40%，其余都是各种形式的浪费。</p>
-<h2 id="pagedattention">PagedAttention 的直觉<a class="headerlink" href="#pagedattention" title="Permanent link">&para;</a></h2>
-<p>PagedAttention 的思想直接借鉴自<strong>操作系统虚拟内存分页（Virtual Memory Paging）</strong>：</p>
+<p>代表论文：<a href="https://arxiv.org/abs/2305.13245">GQA (2023)</a>、<a href="https://arxiv.org/abs/1911.02150">MQA (2019)</a>。</p>
+<h2 id="2-mlamulti-head-latent-attention">2. MLA（Multi-head Latent Attention）<a class="headerlink" href="#2-mlamulti-head-latent-attention" title="Permanent link">&para;</a></h2>
+<p>DeepSeek-V2/V3 的路线：将 K/V 投影到一个<strong>低秩潜空间</strong>存储，attention 计算时再"解压"。</p>
+<p>核心机制：</p>
+<ul>
+<li>缓存的不是 K/V 本身，而是一个低维 latent 向量 $c \in \mathbb{R}^{d_c}$（$d_c$ 远小于 $H_{kv} \times d$）</li>
+<li>计算时通过两个 down/up projection 恢复出有效 K/V</li>
+<li>配合 RoPE 的 decoupled 设计避免位置编码干扰潜空间</li>
+</ul>
+<p><strong>对 KVCache 的影响</strong>：</p>
+<ul>
+<li>KV 体积可压缩到 GQA 的 1/4 ~ 1/10</li>
+<li>但 attention kernel 必须改写——传统的 paged attention 直接读写 K/V，MLA 要在读取时插入解压计算</li>
+<li><strong>prefix cache 的语义还在不在</strong>？理论上 latent 向量也可以按 token 序列哈希复用，但具体引擎支持参差不齐</li>
+</ul>
+<p>代表论文：<a href="https://arxiv.org/abs/2405.04434">DeepSeek-V2 (2024)</a>。</p>
+<h2 id="3-kv">3. 线性注意力 / 状态空间模型：从"长 KV"到"恒定状态"<a class="headerlink" href="#3-kv" title="Permanent link">&para;</a></h2>
+<p>这一类的共同特征：<strong>没有传统意义上的 KVCache</strong>，取而代之的是一个固定大小的状态向量。</p>
 <table>
 <thead>
 <tr>
-<th>OS 分页</th>
-<th>PagedAttention</th>
+<th>模型族</th>
+<th>代表</th>
+<th>关键性质</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>物理内存 → 固定大小的页帧</td>
-<td>HBM → 固定大小的 KV Block</td>
+<td>线性注意力</td>
+<td>RetNet、RWKV</td>
+<td>softmax 替换为可拆分的核函数，状态可递推</td>
 </tr>
 <tr>
-<td>虚拟地址 → 页表 → 物理地址</td>
-<td>逻辑 Block 序号 → Block Table → 物理 Block 地址</td>
+<td>状态空间模型</td>
+<td>Mamba、Mamba2</td>
+<td>用 SSM 离散化建模序列，状态恒定大小</td>
 </tr>
 <tr>
-<td>进程按需申请页帧</td>
-<td>Sequence 按需申请 KV Block</td>
-</tr>
-<tr>
-<td>不同进程共享只读页帧（COW）</td>
-<td>不同 Sequence 共享前缀 Block（Prefix Cache）</td>
+<td>混合 RNN</td>
+<td>Hyena、StripedHyena</td>
+<td>长序列友好的全局算子</td>
 </tr>
 </tbody>
 </table>
-<p>核心区别：OS 的分页针对 CPU 缓存层次和 DRAM 访问，而 PagedAttention 针对的是 GPU HBM 上的大块显存分配问题，其"页面调度"单位（block_size）远大于 OS 页（OS 页通常 4KB，KV Block 可能几十 KB 到几 MB）。</p>
-<h2 id="_2">实现原理<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="_3">初始化阶段<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
-<p>引擎启动时，Block Manager 将 GPU 可用于 KVCache 的 HBM（扣除模型权重后剩余）划分为 $N$ 个大小相等的物理 Block：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>每个 Block 存储:
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  shape = [block_size, num_kv_heads, head_dim]  × 2（K 和 V）× num_layers
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  bytes = block_size × num_kv_heads × head_dim × 2 × num_layers × dtype_bytes
-</code></pre></div>
-<p>这些物理 Block 的地址被记录在<strong>空闲 Block 池</strong>中。</p>
-<h3 id="_4">运行阶段<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>每个 Sequence 维护一张 Block Table：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Block Table:  [ phy_blk_0, phy_blk_1, phy_blk_2, ... ]
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>逻辑 Block:       0           1           2
-</code></pre></div>
+<p><strong>对系统的影响</strong>：</p>
 <ul>
-<li>Prefill 时：按顺序申请物理 Block，填入对应 K/V</li>
-<li>每完成一个 Block（block_size tokens）后，如果开启 Prefix Cache，对该 Block 进行哈希存储</li>
-<li>Decode 时：每新生成一个 token，写入当前活跃 Block 的下一个 Slot；当 Block 满时申请新 Block</li>
+<li>推理时显存占用与序列长度<strong>无关</strong>，长上下文场景显著友好</li>
+<li>但 prefix cache、跨请求复用等基于"K/V 是关于 token 序列的可拼接结果"的假设全部失效</li>
+<li>decode 不再 memory-bound 于 KV 读取，瓶颈转移到状态更新本身</li>
 </ul>
-<h3 id="attention-kernel">Attention Kernel 的适配<a class="headerlink" href="#attention-kernel" title="Permanent link">&para;</a></h3>
-<p>传统 Attention kernel 假设 K/V 存储在连续内存中。PagedAttention 需要改写 kernel：</p>
+<p>注意：这些方案在工业部署上还远不主流，主要原因是质量和兼容性（与现有 attention 优化栈、speculative decoding 等的协作）。</p>
+<h2 id="4">4. 滑动窗口 / 局部注意力<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p><strong>Sliding Window Attention（SWA）</strong>——每个 token 只关注最近的 $w$ 个 token，超出窗口的 K/V 可丢弃。</p>
+<p>代表：Mistral、Gemma、Phi 系列。</p>
+<p><strong>对 KVCache 的影响</strong>：</p>
 <ul>
-<li>输入额外的 Block Table 和 block_size 参数</li>
-<li>Kernel 内部根据 Block Table 做间接寻址，逐 Block 读取 K/V 进行 Attention 计算</li>
-<li>间接寻址带来一定的访存效率损失，但实际测试中往往被更高并发带来的吞吐提升所覆盖</li>
+<li>KV 总量有上界 $O(w)$，与上下文长度解耦</li>
+<li>但"窗口外的 token 完全不可见"过于激进，许多模型采用<strong>全局-局部混合</strong>：少数几层 full attention 维持全局信息，其余层 SWA</li>
 </ul>
-<h2 id="_5">收益分析<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="_6">显存利用率提升<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
-<p>分页后，内部碎片上界为每个 Sequence <code>block_size - 1</code> 个 token 的 KV，通常可以忽略不计。外部碎片归零（Block 池统一分配，无碎片）。</p>
-<p>在高并发场景下，显存利用率通常可以从连续分配的 20-40% 提升至 90%+。</p>
-<h3 id="_7">并发数提升<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<p>同等显存下，分页管理可以服务更多并发请求：</p>
+<p><strong>Attention sink</strong> 的发现（<a href="https://arxiv.org/abs/2309.17453">StreamingLLM</a>）补上了 SWA 的一个工程问题：模型在前几个 token 上集中了大量 attention 概率，简单丢弃会破坏分布。实践方案是<strong>始终保留前 $k$ 个 token 的 K/V + 滑动窗口</strong>。</p>
+<h2 id="5">5. 混合架构<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>更激进的做法：<strong>部分层用全局 attention、部分层用线性 / 局部注意力</strong>。</p>
+<p>代表：</p>
 <ul>
-<li>短序列不再占据为长序列准备的连续大块</li>
-<li>空闲 Block 可立即复用，无需等待连续空间出现</li>
+<li><strong>Jamba</strong>——Transformer + Mamba 混合</li>
+<li><strong>Hymba / MiniMax-Text-01</strong>——分层混合，KVCache 只在部分层产生</li>
+<li><strong>Gemma 3</strong>——SWA 与 full attention 交替</li>
 </ul>
-<h3 id="prefix-cache">支持 Prefix Cache<a class="headerlink" href="#prefix-cache" title="Permanent link">&para;</a></h3>
-<p>Block 粒度的管理天然支持多 Sequence 共享物理 Block（只读引用），是实现 Prefix Cache 的基础。详见 <a href="../prefix-cache/">Prefix Cache</a>。</p>
-<h2 id="_8">局限性<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p><strong>对系统的影响</strong>：</p>
 <ul>
-<li><strong>Block Table 间接层</strong>：额外的显存访问（虽然 Block Table 通常很小）</li>
-<li><strong>Attention kernel 复杂性</strong>：需要为分页访问模式定制 kernel，与 FlashAttention 等标准实现的集成需要额外工作</li>
-<li><strong>block_size 选择</strong>：过大 → 内部碎片增加；过小 → Block Table 变大，间接层开销增加</li>
-<li><strong>KV 量化与 block_size 的交互</strong>：部分量化方案（如 KV FP8 with scaling per block）要求 block_size 是特定值的倍数</li>
+<li>KVCache 总量按"全局层数"计而非"总层数"，可下降 70%+</li>
+<li>但调度器需要<strong>层级感知</strong>：哪些层有 KV、哪些没有，块管理逻辑更复杂</li>
+<li>与 PD 分离、跨节点 KV 传输的协议都要适配新的 KV 形态</li>
 </ul>
-<h2 id="flashattention">与 FlashAttention 的关系<a class="headerlink" href="#flashattention" title="Permanent link">&para;</a></h2>
-<p>FlashAttention 本身不直接处理分页 KV 存储——它优化的是 Attention 计算的 SRAM 使用效率（减少 HBM 读写次数）。PagedAttention 则处理 HBM 上的 KV 存储布局。</p>
-<p>两者可以结合：FlashAttention 的 block-wise 计算思路与 PagedAttention 的 block-wise 存储可以协同，但需要专门的 kernel 实现（如 vLLM 的 FlashInfer 集成、SGLang 的 triton kernel 等）。</p>
+<h2 id="6">6. 算法维度的统一视角<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<p>把上面的所有变体抽象一下，attention 维度对 KVCache 做的事可以归为三类：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>操作</th>
+<th>代表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>改形状</strong></td>
+<td>把 KV 张量本身的维度改小</td>
+<td>MQA、GQA、MLA</td>
+</tr>
+<tr>
+<td><strong>减条目</strong></td>
+<td>在 token 维度上去掉一些 K/V</td>
+<td>SWA、StreamingLLM</td>
+</tr>
+<tr>
+<td><strong>改语义</strong></td>
+<td>把"K/V 序列"换成另一种状态</td>
+<td>Mamba、RWKV</td>
+</tr>
+</tbody>
+</table>
+<p>它们在系统层面的共同效应是：<strong>减少 KV 的"有效字节数"</strong>——但代价分布不同：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>精度风险</th>
+<th>kernel 兼容性</th>
+<th>prefix cache 友好度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GQA</td>
+<td>低</td>
+<td>高（与现有 paged attention 直接兼容）</td>
+<td>高</td>
+</tr>
+<tr>
+<td>MLA</td>
+<td>中（解压精度）</td>
+<td>低（需要专门 kernel）</td>
+<td>中（需要适配）</td>
+</tr>
+<tr>
+<td>SWA</td>
+<td>中（长程信息）</td>
+<td>中</td>
+<td>低（窗口滑动破坏 prefix）</td>
+</tr>
+<tr>
+<td>Mamba</td>
+<td>高（与 Transformer 行为差异大）</td>
+<td>不兼容</td>
+<td>不适用</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_1">关联章节<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>与稀疏化（<a href="../sparsity/">Sparsity</a>）的边界：本章是"模型本身就这样设计"，稀疏化是"训练好的模型在推理时丢一部分 KV"</li>
+<li>与压缩量化（<a href="../compression-quantization/">Compression &amp; Quantization</a>）的边界：本章改 KV 的"形状/语义"，压缩量化改 KV 的"位宽/秩"</li>
+<li>在 <a href="../crossings/">维度交叉 §3.1</a> 中讨论 attention 变体与 paged 内存管理、prefix cache 的兼容性</li>
+</ul>
 
 
 

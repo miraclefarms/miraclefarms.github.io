@@ -16,7 +16,7 @@
   Vaswani et al., 2017. Transformer 和 Multi-Head Attention 的原始论文。
   [arXiv:1706.03762](https://arxiv.org/abs/1706.03762)
 
-### Attention 变体与 KVCache 压缩
+### Attention 变体与架构
 
 - **GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints**
   Ainslie et al., 2023. GQA（Grouped-Query Attention）的提出，显著减小 KVCache 体积。
@@ -30,11 +30,77 @@
   DeepSeek, 2024. 包含 MLA（Multi-head Latent Attention）的详细描述。
   [arXiv:2405.04434](https://arxiv.org/abs/2405.04434)
 
+- **Mamba: Linear-Time Sequence Modeling with Selective State Spaces**
+  Gu & Dao, 2023. 状态空间模型路线，恒定大小状态替代 KVCache。
+  [arXiv:2312.00752](https://arxiv.org/abs/2312.00752)
+
+- **RWKV: Reinventing RNNs for the Transformer Era**
+  Peng et al., 2023.
+  [arXiv:2305.13048](https://arxiv.org/abs/2305.13048)
+
+### KV 稀疏化
+
+- **Efficient Streaming Language Models with Attention Sinks（StreamingLLM）**
+  Xiao et al., 2023. 发现并利用 attention sink，构造滑动窗口 + sink 的无限长上下文方案。
+  [arXiv:2309.17453](https://arxiv.org/abs/2309.17453)
+
+- **H2O: Heavy-Hitter Oracle for Efficient Generative Inference of LLMs**
+  Zhang et al., 2023. token 级重要性评分驱动的 KV 剪枝。
+  [arXiv:2306.14048](https://arxiv.org/abs/2306.14048)
+
+- **SnapKV: LLM Knows What You are Looking for Before Generation**
+  Li et al., 2024. Prefill 末端预测重要 token，一次性丢弃次要 K/V。
+  [arXiv:2404.14469](https://arxiv.org/abs/2404.14469)
+
+- **Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference**
+  Tang et al., 2024. 基于 query 的动态稀疏 attention。
+  [arXiv:2406.10774](https://arxiv.org/abs/2406.10774)
+
+- **YOCO: You Only Cache Once**
+  Sun et al., 2024. 跨层共享 KV，KVCache 体积大幅下降。
+  [arXiv:2405.05254](https://arxiv.org/abs/2405.05254)
+
+- **Ada-KV: Optimizing KV Cache Eviction by Adaptive Budget Allocation**
+  Feng et al., 2024. head 级自适应 KV 剪枝。
+  [arXiv:2407.11550](https://arxiv.org/abs/2407.11550)
+
+### KV 量化
+
+- **KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache**
+  Liu et al., 2024. K per-channel + V per-token 的极致 2-bit 量化。
+  [arXiv:2402.02750](https://arxiv.org/abs/2402.02750)
+
+- **KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization**
+  Hooper et al., 2024. 4-bit 量化 + RoPE 对齐。
+  [arXiv:2401.18079](https://arxiv.org/abs/2401.18079)
+
+- **Atom: Low-bit Quantization for Efficient and Accurate LLM Serving**
+  Zhao et al., 2023. 推理全栈低比特化。
+  [arXiv:2310.19102](https://arxiv.org/abs/2310.19102)
+
+- **QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM Serving**
+  Lin et al., 2024.
+  [arXiv:2405.04532](https://arxiv.org/abs/2405.04532)
+
 ### Prefix Cache 与 KV 复用
 
 - ⭐ **SGLang: Efficient Execution of Structured Language Model Programs**
   Zheng et al., 2024. 包含 RadixAttention 的描述。
   [arXiv:2312.07104](https://arxiv.org/abs/2312.07104)
+
+- **Prompt Cache: Modular Attention Reuse for Low-Latency Inference**
+  Gim et al., 2023. 位置无关 prefix cache 的早期探索。
+  [arXiv:2311.04934](https://arxiv.org/abs/2311.04934)
+
+- **CacheBlend: Fast Large Language Model Serving for RAG with Cached Knowledge Fusion**
+  Yao et al., 2024. RAG 场景下文档块级 KV 复用。
+  [arXiv:2405.16444](https://arxiv.org/abs/2405.16444)
+
+### 长上下文与序列并行
+
+- **Ring Attention with Blockwise Transformers for Near-Infinite Context**
+  Liu et al., 2023. 长上下文 SP 的代表实现。
+  [arXiv:2310.01889](https://arxiv.org/abs/2310.01889)
 
 ### PD 分离
 
@@ -53,7 +119,8 @@
 ### KV Offload 与多级存储
 
 - **InfiniGen: Efficient Generative Inference of Large Language Models with Dynamic KV Cache Management**
-  TODO：待补充。
+  Lee et al., 2024. KV offload + 动态管理。
+  [arXiv:2406.19707](https://arxiv.org/abs/2406.19707)
 
 - **CacheGen: KV Cache Compression and Streaming for Fast LLM Serving**
   Liu et al., 2024.
@@ -97,6 +164,8 @@
 - [LMCache](https://github.com/LMCache/LMCache) — 多级 KVCache 分层存储
 - [Mooncake](https://github.com/kvcache-ai/Mooncake) — KVCache-centric 调度系统
 - [FlashInfer](https://github.com/flashinfer-ai/flashinfer) — 分页 KVCache 的高效 Attention kernel 库
+- [AIBrix](https://github.com/vllm-project/aibrix) — vLLM 生态下的 K8s 原生推理基础设施，含 cache-aware autoscaler
+- [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) — NVIDIA 推出的分布式推理基础设施
 
 ---
 

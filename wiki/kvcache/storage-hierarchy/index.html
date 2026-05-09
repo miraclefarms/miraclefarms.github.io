@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/paged-kv/">
+        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/storage-hierarchy/">
       
       
-        <link rel="prev" href="../storage-hierarchy/">
+        <link rel="prev" href="../runtime-architecture/">
       
       
-        <link rel="next" href="../prefix-cache/">
+        <link rel="next" href="../paged-kv/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Paged KV - Miracle Farms Wiki</title>
+        <title>存储层级 - Miracle Farms Wiki</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#paged-kv" class="md-skip">
+        <a href="#_1" class="md-skip">
           跳转至
         </a>
       
@@ -758,34 +758,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../storage-hierarchy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    存储层级
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -805,7 +777,7 @@
   <span class="md-ellipsis">
     
   
-    Paged KV
+    存储层级
   
 
     
@@ -823,7 +795,7 @@
   <span class="md-ellipsis">
     
   
-    Paged KV
+    存储层级
   
 
     
@@ -849,10 +821,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        问题背景：连续显存分配的困境
+        1. 四级层次
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 四级层次">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#l1-gpu-hbm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L1 — GPU HBM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l2-cpu-dram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L2 — CPU DRAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l3-nvme-ssd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L3 — 本地 NVMe / SSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L4 — 远端存储 / 分布式 KV 池
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 量级对比速查表
       
     </span>
   </a>
@@ -860,10 +893,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
+  <a href="#3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PagedAttention 的直觉
+        3. 介质特性对设计的影响
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 不要忽略的隐藏成本
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 通道与协议
       
     </span>
   </a>
@@ -874,118 +929,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        实现原理
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="实现原理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        初始化阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
+        关联章节
       
     </span>
   </a>
@@ -996,6 +940,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paged-kv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paged KV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1508,10 +1480,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        问题背景：连续显存分配的困境
+        1. 四级层次
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 四级层次">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#l1-gpu-hbm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L1 — GPU HBM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l2-cpu-dram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L2 — CPU DRAM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l3-nvme-ssd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L3 — 本地 NVMe / SSD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L4 — 远端存储 / 分布式 KV 池
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 量级对比速查表
       
     </span>
   </a>
@@ -1519,10 +1552,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
+  <a href="#3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PagedAttention 的直觉
+        3. 介质特性对设计的影响
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 不要忽略的隐藏成本
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 通道与协议
       
     </span>
   </a>
@@ -1533,118 +1588,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        实现原理
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="实现原理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        初始化阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
+        关联章节
       
     </span>
   </a>
@@ -1734,91 +1678,206 @@
 
 
 
-<h1 id="paged-kv">Paged KV<a class="headerlink" href="#paged-kv" title="Permanent link">&para;</a></h1>
-<h2 id="_1">问题背景：连续显存分配的困境<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>在 PagedAttention 出现之前，主流推理系统为每个 Sequence 预分配<strong>连续的显存块</strong>，大小等于最大序列长度对应的 KVCache。这带来了严重的显存浪费：</p>
+<h1 id="_1">存储层级<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>系统维度（纵向）之一</strong>：KV 在哪里存、各级介质的容量/带宽/延迟/成本量级。</p>
+</blockquote>
+<p>KVCache 不是一个"放在显存里"的同质对象，而是横跨多级存储的分布式状态。理解层级结构是理解 <a href="../offload/">Offload</a>、<a href="../pd-disaggregation/">PD 分离</a>、跨实例 Prefix Cache 等所有"搬运型"问题的前提。</p>
+<h2 id="1">1. 四级层次<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>L1 — GPU HBM           最快 / 最贵 / 最稀缺
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>L2 — CPU DRAM          快 / 容量中等 / 经 PCIe 连接
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>L3 — 本地 NVMe / SSD   中速 / 大容量 / 持久化
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>L4 — 远端 / 分布式 KV 池  慢 / 极大容量 / 跨节点共享
+</code></pre></div>
+<h3 id="l1-gpu-hbm">L1 — GPU HBM<a class="headerlink" href="#l1-gpu-hbm" title="Permanent link">&para;</a></h3>
+<p>最快的层，决定<strong>在线请求的并发上限</strong>。</p>
 <ul>
-<li><strong>内部碎片（Internal Fragmentation）</strong>：实际生成长度通常远小于预分配的最大长度，多余的显存无法被其他请求使用</li>
-<li><strong>外部碎片（External Fragmentation）</strong>：连续显存的分配和释放产生不规则的空洞，无法被需要连续块的新请求填入</li>
-<li><strong>过度保守</strong>：为避免显存不足，系统必须提前按最差情况估算显存需求，进一步压低了实际并发数</li>
+<li>典型容量：H100 80GB / H200 141GB / B200 192GB</li>
+<li>典型带宽：HBM3 ≈ 3.35 TB/s，HBM3e ≈ 4.8 TB/s</li>
+<li>与权重共享：模型权重占用一部分，剩余才是 KV 可用区</li>
+<li>典型 KV 可用：8B 模型在 H100 上 ~50GB；70B 模型 ~10–20GB</li>
 </ul>
-<p>实测数据表明，在这种方案下，真正用于 KVCache 存储的显存利用率可能低至 20-40%，其余都是各种形式的浪费。</p>
-<h2 id="pagedattention">PagedAttention 的直觉<a class="headerlink" href="#pagedattention" title="Permanent link">&para;</a></h2>
-<p>PagedAttention 的思想直接借鉴自<strong>操作系统虚拟内存分页（Virtual Memory Paging）</strong>：</p>
+<p>L1 的特征是<strong>算力侧"零延迟"访问</strong>——attention kernel 直接读写。所有其他层都通过"搬到 L1 来"才能参与计算。</p>
+<h3 id="l2-cpu-dram">L2 — CPU DRAM<a class="headerlink" href="#l2-cpu-dram" title="Permanent link">&para;</a></h3>
+<p>第一站 offload 目标，<a href="../offload/">KV Offload</a> 的最常见落点。</p>
+<ul>
+<li>典型容量：单机 512GB ~ 2TB（DDR5 服务器配置）</li>
+<li>带宽限制：实际吞吐受 <strong>PCIe</strong> 限制<ul>
+<li>PCIe 4.0 x16：单向 ~32 GB/s，双向 ~64 GB/s</li>
+<li>PCIe 5.0 x16：单向 ~64 GB/s，双向 ~128 GB/s</li>
+</ul>
+</li>
+<li>延迟：μs 级（PCIe 传输 + 内存访问）</li>
+</ul>
+<p>注意：DRAM 自身带宽（DDR5 ~100-200 GB/s）远高于 PCIe，所以 GPU 与 CPU 之间的 KV 搬运瓶颈<strong>几乎总是 PCIe</strong>。</p>
+<h3 id="l3-nvme-ssd">L3 — 本地 NVMe / SSD<a class="headerlink" href="#l3-nvme-ssd" title="Permanent link">&para;</a></h3>
+<p>单机大容量持久化层，主要用于：</p>
+<ul>
+<li>极长上下文场景（百万级 token）的部分 KV 落盘</li>
+<li>离线批量推理的 KV 复用（跨任务、跨次运行）</li>
+<li>故障恢复的 checkpoint</li>
+</ul>
+<p>典型参数：</p>
+<ul>
+<li>容量：单盘 4–16 TB，RAID 后可达数十 TB</li>
+<li>带宽：PCIe 5.0 NVMe ~14 GB/s，单机多盘聚合可上 50+ GB/s</li>
+<li>延迟：~100 μs 量级</li>
+</ul>
+<p><strong>GPUDirect Storage（GDS）</strong> 让 GPU 可以零拷贝直接读 NVMe，绕过 CPU DRAM；在批量推理场景有意义。</p>
+<h3 id="l4-kv">L4 — 远端存储 / 分布式 KV 池<a class="headerlink" href="#l4-kv" title="Permanent link">&para;</a></h3>
+<p>跨节点共享的"KV 数据湖"，典型形态：</p>
+<ul>
+<li><strong>专用 KV 池</strong>：Mooncake Store、LMCache 远端层</li>
+<li><strong>对象存储</strong>：S3 / Ceph 类（成本最低，延迟最差）</li>
+<li><strong>远端内存池</strong>：通过 RDMA/InfiniBand 直接访问其他节点的 DRAM</li>
+</ul>
+<p>带宽参考：</p>
+<ul>
+<li>InfiniBand HDR：200 Gbps ≈ 25 GB/s</li>
+<li>InfiniBand NDR：400 Gbps ≈ 50 GB/s</li>
+<li>NVLink-C2C / NVSwitch（同一机柜内）：900 GB/s+</li>
+</ul>
+<p>L4 是支持<strong>跨实例 Prefix Cache</strong>和<strong>PD 分离 KV Transfer</strong>的物理基础。</p>
+<h2 id="2">2. 量级对比速查表<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>OS 分页</th>
-<th>PagedAttention</th>
+<th>层级</th>
+<th>典型容量</th>
+<th>带宽（顺序读）</th>
+<th>延迟</th>
+<th>成本量级</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>物理内存 → 固定大小的页帧</td>
-<td>HBM → 固定大小的 KV Block</td>
+<td>L1 HBM</td>
+<td>几十~百多 GB</td>
+<td>3–5 TB/s</td>
+<td>ns</td>
+<td>极高</td>
 </tr>
 <tr>
-<td>虚拟地址 → 页表 → 物理地址</td>
-<td>逻辑 Block 序号 → Block Table → 物理 Block 地址</td>
+<td>L2 DRAM</td>
+<td>TB 量级</td>
+<td>PCIe 限制 ~32–128 GB/s</td>
+<td>μs</td>
+<td>中</td>
 </tr>
 <tr>
-<td>进程按需申请页帧</td>
-<td>Sequence 按需申请 KV Block</td>
+<td>L3 NVMe</td>
+<td>10+ TB</td>
+<td>10–20 GB/s/盘</td>
+<td>~100 μs</td>
+<td>低</td>
 </tr>
 <tr>
-<td>不同进程共享只读页帧（COW）</td>
-<td>不同 Sequence 共享前缀 Block（Prefix Cache）</td>
+<td>L4 远端 DRAM (RDMA)</td>
+<td>集群 TB+</td>
+<td>25–50 GB/s/链路</td>
+<td>μs–ms</td>
+<td>中（看带宽配额）</td>
+</tr>
+<tr>
+<td>L4 远端对象存储</td>
+<td>PB</td>
+<td>网络限制</td>
+<td>10+ ms</td>
+<td>极低</td>
 </tr>
 </tbody>
 </table>
-<p>核心区别：OS 的分页针对 CPU 缓存层次和 DRAM 访问，而 PagedAttention 针对的是 GPU HBM 上的大块显存分配问题，其"页面调度"单位（block_size）远大于 OS 页（OS 页通常 4KB，KV Block 可能几十 KB 到几 MB）。</p>
-<h2 id="_2">实现原理<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="_3">初始化阶段<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
-<p>引擎启动时，Block Manager 将 GPU 可用于 KVCache 的 HBM（扣除模型权重后剩余）划分为 $N$ 个大小相等的物理 Block：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>每个 Block 存储:
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  shape = [block_size, num_kv_heads, head_dim]  × 2（K 和 V）× num_layers
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  bytes = block_size × num_kv_heads × head_dim × 2 × num_layers × dtype_bytes
-</code></pre></div>
-<p>这些物理 Block 的地址被记录在<strong>空闲 Block 池</strong>中。</p>
-<h3 id="_4">运行阶段<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>每个 Sequence 维护一张 Block Table：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Block Table:  [ phy_blk_0, phy_blk_1, phy_blk_2, ... ]
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>逻辑 Block:       0           1           2
-</code></pre></div>
+<blockquote>
+<p>数值会随硬件代际变化（H100 → H200 → B200，PCIe 4 → 5 → 6，IB HDR → NDR → XDR），具体部署时以实际链路实测为准。</p>
+</blockquote>
+<h2 id="3">3. 介质特性对设计的影响<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>不同层级的"性格"决定了它适合承担的角色：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>适合的层级</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在线请求的活跃 KV</td>
+<td>L1</td>
+<td>只有 HBM 能跟上 attention kernel</td>
+</tr>
+<tr>
+<td>暂时换出的会话 KV</td>
+<td>L2</td>
+<td>容量足够、PCIe 带宽尚可</td>
+</tr>
+<tr>
+<td>长上下文的"冷"历史</td>
+<td>L3</td>
+<td>容量大、不在乎 ms 级延迟</td>
+</tr>
+<tr>
+<td>跨实例共享 prefix</td>
+<td>L4</td>
+<td>跨节点访问的唯一选项</td>
+</tr>
+<tr>
+<td>离线批量预计算 KV</td>
+<td>L3 / L4</td>
+<td>持久化 + 高吞吐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. 不要忽略的隐藏成本<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p>在做层级搬运决策时，常被忽略但影响显著的因素：</p>
 <ul>
-<li>Prefill 时：按顺序申请物理 Block，填入对应 K/V</li>
-<li>每完成一个 Block（block_size tokens）后，如果开启 Prefix Cache，对该 Block 进行哈希存储</li>
-<li>Decode 时：每新生成一个 token，写入当前活跃 Block 的下一个 Slot；当 Block 满时申请新 Block</li>
+<li><strong>PCIe 在多 GPU 间共享</strong>：8 卡服务器总 PCIe 带宽要分配给 8 个 GPU，单卡可用带宽常远低于理论值</li>
+<li><strong>NUMA 不亲和</strong>：CPU DRAM 跨 socket 访问带宽腰斩</li>
+<li><strong>小块传输的 startup latency</strong>：每次 RDMA / PCIe 发起都有固定开销，KV 太碎反而吃亏</li>
+<li><strong>量化对带宽的实质性放大</strong>：FP8 KV 在 PCIe 上等效带宽是 BF16 的 2×</li>
 </ul>
-<h3 id="attention-kernel">Attention Kernel 的适配<a class="headerlink" href="#attention-kernel" title="Permanent link">&para;</a></h3>
-<p>传统 Attention kernel 假设 K/V 存储在连续内存中。PagedAttention 需要改写 kernel：</p>
+<h2 id="5">5. 通道与协议<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>不同层级间的<strong>搬运通道</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>通道</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PCIe</td>
+<td>L1 ↔ L2，L1 ↔ L3（GDS）</td>
+</tr>
+<tr>
+<td>NVLink / NVSwitch</td>
+<td>同机柜内 GPU ↔ GPU</td>
+</tr>
+<tr>
+<td>RDMA over InfiniBand</td>
+<td>跨节点 L4</td>
+</tr>
+<tr>
+<td>RDMA over Ethernet (RoCE)</td>
+<td>数据中心通用网络</td>
+</tr>
+<tr>
+<td>TCP/IP</td>
+<td>兼容性场景，性能最差</td>
+</tr>
+<tr>
+<td><strong>CXL（前瞻）</strong></td>
+<td>内存语义跨设备共享，可能重塑 L2/L3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">关联章节<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ul>
-<li>输入额外的 Block Table 和 block_size 参数</li>
-<li>Kernel 内部根据 Block Table 做间接寻址，逐 Block 读取 K/V 进行 Attention 计算</li>
-<li>间接寻址带来一定的访存效率损失，但实际测试中往往被更高并发带来的吞吐提升所覆盖</li>
+<li>跨层级搬运的具体机制：<a href="../offload/">KV Offload</a></li>
+<li>跨节点 KV 传输的部署侧讨论：<a href="../pd-disaggregation/">PD 分离</a></li>
+<li>L4 远端 KV 池的产品化前瞻：<a href="../future/">未来方向</a></li>
 </ul>
-<h2 id="_5">收益分析<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="_6">显存利用率提升<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
-<p>分页后，内部碎片上界为每个 Sequence <code>block_size - 1</code> 个 token 的 KV，通常可以忽略不计。外部碎片归零（Block 池统一分配，无碎片）。</p>
-<p>在高并发场景下，显存利用率通常可以从连续分配的 20-40% 提升至 90%+。</p>
-<h3 id="_7">并发数提升<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<p>同等显存下，分页管理可以服务更多并发请求：</p>
-<ul>
-<li>短序列不再占据为长序列准备的连续大块</li>
-<li>空闲 Block 可立即复用，无需等待连续空间出现</li>
-</ul>
-<h3 id="prefix-cache">支持 Prefix Cache<a class="headerlink" href="#prefix-cache" title="Permanent link">&para;</a></h3>
-<p>Block 粒度的管理天然支持多 Sequence 共享物理 Block（只读引用），是实现 Prefix Cache 的基础。详见 <a href="../prefix-cache/">Prefix Cache</a>。</p>
-<h2 id="_8">局限性<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Block Table 间接层</strong>：额外的显存访问（虽然 Block Table 通常很小）</li>
-<li><strong>Attention kernel 复杂性</strong>：需要为分页访问模式定制 kernel，与 FlashAttention 等标准实现的集成需要额外工作</li>
-<li><strong>block_size 选择</strong>：过大 → 内部碎片增加；过小 → Block Table 变大，间接层开销增加</li>
-<li><strong>KV 量化与 block_size 的交互</strong>：部分量化方案（如 KV FP8 with scaling per block）要求 block_size 是特定值的倍数</li>
-</ul>
-<h2 id="flashattention">与 FlashAttention 的关系<a class="headerlink" href="#flashattention" title="Permanent link">&para;</a></h2>
-<p>FlashAttention 本身不直接处理分页 KV 存储——它优化的是 Attention 计算的 SRAM 使用效率（减少 HBM 读写次数）。PagedAttention 则处理 HBM 上的 KV 存储布局。</p>
-<p>两者可以结合：FlashAttention 的 block-wise 计算思路与 PagedAttention 的 block-wise 存储可以协同，但需要专门的 kernel 实现（如 vLLM 的 FlashInfer 集成、SGLang 的 triton kernel 等）。</p>
 
 
 

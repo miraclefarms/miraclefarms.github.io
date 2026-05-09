@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/paged-kv/">
+        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/crossings/">
       
       
-        <link rel="prev" href="../storage-hierarchy/">
+        <link rel="prev" href="../workloads/">
       
       
-        <link rel="next" href="../prefix-cache/">
+        <link rel="next" href="../evaluation/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Paged KV - Miracle Farms Wiki</title>
+        <title>维度交叉 - Miracle Farms Wiki</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#paged-kv" class="md-skip">
+        <a href="#_1" class="md-skip">
           跳转至
         </a>
       
@@ -659,8 +659,6 @@
                 
   
   
-    
-  
   
   
     
@@ -690,11 +688,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
         
           
           <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="">
@@ -715,7 +713,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -786,37 +784,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Paged KV
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../paged-kv/" class="md-nav__link">
         
   
   
@@ -832,170 +803,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        问题背景：连续显存分配的困境
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PagedAttention 的直觉
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        实现原理
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="实现原理">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        初始化阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1310,10 +1117,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../crossings/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    维度交叉
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1329,6 +1163,298 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 算法 × 系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 算法 × 系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kv-offload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV 量化在 offload / 跨节点传输中的角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-paged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        稀疏 KV 与 Paged 内存管理的兼容性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mla-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLA / 线性注意力下的 prefix cache 语义
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 系统 × 部署
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 系统 × 部署">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pd-prefix-cache-p-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PD 分离下 prefix cache 应该归 P 还是归 D
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-l4-cachel1l2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-aware-routing-paged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache-aware routing 与 paged 内存管理的协同
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 部署 × 工作负载
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 部署 × 工作负载">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agent-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 场景与 PD 分离的契合度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coding-sp-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding 长上下文下 SP 与 prefix cache 的取舍
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reasoning-decode-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reasoning 长 decode 场景是否还需要 PD 分离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 算法 × 工作负载
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 算法 × 工作负载">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多轮对话适合哪类稀疏
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rag-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAG 场景下位置不变性压缩 / 块级 KV 的可行性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coding-kv-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding 场景下增量 KV 与跨层共享 KV 的组合
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 四维联动的真实落地范式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 四维联动的真实落地范式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mooncake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mooncake 范式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sglang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SGLang 范式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vLLM 生态范式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        其他范式（待补充）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1508,143 +1634,271 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#31" class="md-nav__link">
     <span class="md-ellipsis">
       
-        问题背景：连续显存分配的困境
+        3.1 算法 × 系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 算法 × 系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kv-offload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV 量化在 offload / 跨节点传输中的角色
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#pagedattention" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#kv-paged" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PagedAttention 的直觉
+        稀疏 KV 与 Paged 内存管理的兼容性
       
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#mla-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLA / 线性注意力下的 prefix cache 语义
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 系统 × 部署
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 系统 × 部署">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pd-prefix-cache-p-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PD 分离下 prefix cache 应该归 P 还是归 D
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kv-l4-cachel1l2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-aware-routing-paged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache-aware routing 与 paged 内存管理的协同
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 部署 × 工作负载
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 部署 × 工作负载">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agent-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 场景与 PD 分离的契合度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coding-sp-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding 长上下文下 SP 与 prefix cache 的取舍
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reasoning-decode-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reasoning 长 decode 场景是否还需要 PD 分离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 算法 × 工作负载
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 算法 × 工作负载">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        实现原理
+        多轮对话适合哪类稀疏
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="实现原理">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rag-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAG 场景下位置不变性压缩 / 块级 KV 的可行性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coding-kv-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding 场景下增量 KV 与跨层共享 KV 的组合
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 四维联动的真实落地范式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 四维联动的真实落地范式">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mooncake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mooncake 范式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sglang" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SGLang 范式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vLLM 生态范式
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        初始化阶段
+        其他范式（待补充）
       
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        运行阶段
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#attention-kernel" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attention Kernel 的适配
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        收益分析
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="收益分析">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        显存利用率提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        并发数提升
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        支持 Prefix Cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        局限性
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flashattention" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与 FlashAttention 的关系
+        关联章节
       
     </span>
   </a>
@@ -1706,24 +1960,6 @@
   
 
       
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="../runtime-architecture/" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    系统维度（纵向）
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
     </ol>
   </nav>
 
@@ -1734,91 +1970,165 @@
 
 
 
-<h1 id="paged-kv">Paged KV<a class="headerlink" href="#paged-kv" title="Permanent link">&para;</a></h1>
-<h2 id="_1">问题背景：连续显存分配的困境<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>在 PagedAttention 出现之前，主流推理系统为每个 Sequence 预分配<strong>连续的显存块</strong>，大小等于最大序列长度对应的 KVCache。这带来了严重的显存浪费：</p>
+<h1 id="_1">维度交叉<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>真实生产系统不在任何单一维度内闭合，而是四维空间里的一个点。本章列出最重要的交叉问题，作为深入调研的"高价值地带"。</p>
+</blockquote>
+<p>四个维度（<a href="../attention-variants/">算法</a> × <a href="../storage-hierarchy/">系统</a> × <a href="../pd-disaggregation/">部署</a> × <a href="../workloads/">工作负载</a>）两两交叉，得到六组组合。下面挑出每组里最值得关注的几个具体问题。</p>
+<h2 id="31">3.1 算法 × 系统<a class="headerlink" href="#31" title="Permanent link">&para;</a></h2>
+<h3 id="kv-offload">KV 量化在 offload / 跨节点传输中的角色<a class="headerlink" href="#kv-offload" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>内部碎片（Internal Fragmentation）</strong>：实际生成长度通常远小于预分配的最大长度，多余的显存无法被其他请求使用</li>
-<li><strong>外部碎片（External Fragmentation）</strong>：连续显存的分配和释放产生不规则的空洞，无法被需要连续块的新请求填入</li>
-<li><strong>过度保守</strong>：为避免显存不足，系统必须提前按最差情况估算显存需求，进一步压低了实际并发数</li>
+<li>量化后的 KV 在 PCIe / RDMA 上等效带宽变大（FP8 = BF16 的 2×）</li>
+<li>但接收端的 attention kernel 必须支持量化 KV，否则要 dequantize 浪费收益</li>
+<li><strong>干净的设计</strong>：传输路径与计算路径都用同一套量化格式</li>
+<li>实践陷阱：<a href="../lifecycle/">量化方案版本号必须纳入 cache key</a>，否则换方案后字节内容不匹配</li>
 </ul>
-<p>实测数据表明，在这种方案下，真正用于 KVCache 存储的显存利用率可能低至 20-40%，其余都是各种形式的浪费。</p>
-<h2 id="pagedattention">PagedAttention 的直觉<a class="headerlink" href="#pagedattention" title="Permanent link">&para;</a></h2>
-<p>PagedAttention 的思想直接借鉴自<strong>操作系统虚拟内存分页（Virtual Memory Paging）</strong>：</p>
+<h3 id="kv-paged">稀疏 KV 与 Paged 内存管理的兼容性<a class="headerlink" href="#kv-paged" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../paged-kv/">Paged</a> 的核心假设：每 block 的 token 是连续的、固定大小的</li>
+<li>大多数稀疏方案（<a href="../sparsity/">H2O</a>、SnapKV）剪掉的是序列中<strong>任意位置</strong>的 token，剪完之后 block 内有"空洞"</li>
+<li>三种应对：<ol>
+<li><strong>保留空洞</strong>：浪费 slot，碎片增加</li>
+<li><strong>压实</strong>：把幸存 token 移到 block 头部，但要更新 block table 的 token-id 映射</li>
+<li><strong>稀疏感知 kernel</strong>：接受 block 内非连续，靠 mask 过滤——增加 kernel 复杂度</li>
+</ol>
+</li>
+<li>工业上目前 SWA + attention sink 是最容易兼容的稀疏方案，token 级重要性剪枝部署时多用方案 2 或 3</li>
+</ul>
+<h3 id="mla-prefix-cache">MLA / 线性注意力下的 prefix cache 语义<a class="headerlink" href="#mla-prefix-cache" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="../attention-variants/">MLA</a> 缓存的是 latent 向量而非原 K/V——理论上仍可按 token 序列哈希复用</li>
+<li>但 paged kernel、prefix tree 都建在"token block 含 K/V"的假设上，需重写</li>
+<li>线性注意力 / Mamba：状态是<strong>累计的</strong>，无法按 token 序列分段→ <strong>无 prefix cache 可言</strong></li>
+</ul>
+<h2 id="32">3.2 系统 × 部署<a class="headerlink" href="#32" title="Permanent link">&para;</a></h2>
+<h3 id="pd-prefix-cache-p-d">PD 分离下 prefix cache 应该归 P 还是归 D<a class="headerlink" href="#pd-prefix-cache-p-d" title="Permanent link">&para;</a></h3>
+<p>三种放置：</p>
 <table>
 <thead>
 <tr>
-<th>OS 分页</th>
-<th>PagedAttention</th>
+<th>方案</th>
+<th>位置</th>
+<th>优缺点</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>物理内存 → 固定大小的页帧</td>
-<td>HBM → 固定大小的 KV Block</td>
+<td><strong>归 P</strong></td>
+<td>Prefill 节点维护 prefix cache</td>
+<td>命中后直接跳过 prefill；但 P 节点要维持 KV，资源占用增加</td>
 </tr>
 <tr>
-<td>虚拟地址 → 页表 → 物理地址</td>
-<td>逻辑 Block 序号 → Block Table → 物理 Block 地址</td>
+<td><strong>归 D</strong></td>
+<td>Decode 节点维护 prefix cache</td>
+<td>D 反正要 KV，自然落点；但 P 节点的算力可能浪费在重算</td>
 </tr>
 <tr>
-<td>进程按需申请页帧</td>
-<td>Sequence 按需申请 KV Block</td>
-</tr>
-<tr>
-<td>不同进程共享只读页帧（COW）</td>
-<td>不同 Sequence 共享前缀 Block（Prefix Cache）</td>
+<td><strong>独立 KV 池（L4）</strong></td>
+<td>跨 P/D 共享的 cache</td>
+<td>灵活、可共享；但增加一跳网络延迟</td>
 </tr>
 </tbody>
 </table>
-<p>核心区别：OS 的分页针对 CPU 缓存层次和 DRAM 访问，而 PagedAttention 针对的是 GPU HBM 上的大块显存分配问题，其"页面调度"单位（block_size）远大于 OS 页（OS 页通常 4KB，KV Block 可能几十 KB 到几 MB）。</p>
-<h2 id="_2">实现原理<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="_3">初始化阶段<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
-<p>引擎启动时，Block Manager 将 GPU 可用于 KVCache 的 HBM（扣除模型权重后剩余）划分为 $N$ 个大小相等的物理 Block：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>每个 Block 存储:
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  shape = [block_size, num_kv_heads, head_dim]  × 2（K 和 V）× num_layers
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  bytes = block_size × num_kv_heads × head_dim × 2 × num_layers × dtype_bytes
-</code></pre></div>
-<p>这些物理 Block 的地址被记录在<strong>空闲 Block 池</strong>中。</p>
-<h3 id="_4">运行阶段<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>每个 Sequence 维护一张 Block Table：</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Block Table:  [ phy_blk_0, phy_blk_1, phy_blk_2, ... ]
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>逻辑 Block:       0           1           2
-</code></pre></div>
+<p>主流路线：<strong>归 D + 共享 L4</strong> 的混合（Mooncake 风格）。</p>
+<h3 id="kv-l4-cachel1l2">跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系<a class="headerlink" href="#kv-l4-cachel1l2" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Prefill 时：按顺序申请物理 Block，填入对应 K/V</li>
-<li>每完成一个 Block（block_size tokens）后，如果开启 Prefix Cache，对该 Block 进行哈希存储</li>
-<li>Decode 时：每新生成一个 token，写入当前活跃 Block 的下一个 Slot；当 Block 满时申请新 Block</li>
+<li>L4 是"权威 cache"——跨副本共享，命中率最高</li>
+<li>L1/L2 是"本地 cache"——访问最快，但冷启动后空</li>
+<li>层级协议：L1 miss → L2 miss → L4 fetch → 反向回填</li>
+<li>设计取舍：回填策略（write-through vs write-back）、淘汰一致性</li>
 </ul>
-<h3 id="attention-kernel">Attention Kernel 的适配<a class="headerlink" href="#attention-kernel" title="Permanent link">&para;</a></h3>
-<p>传统 Attention kernel 假设 K/V 存储在连续内存中。PagedAttention 需要改写 kernel：</p>
+<h3 id="cache-aware-routing-paged">Cache-aware routing 与 paged 内存管理的协同<a class="headerlink" href="#cache-aware-routing-paged" title="Permanent link">&para;</a></h3>
 <ul>
-<li>输入额外的 Block Table 和 block_size 参数</li>
-<li>Kernel 内部根据 Block Table 做间接寻址，逐 Block 读取 K/V 进行 Attention 计算</li>
-<li>间接寻址带来一定的访存效率损失，但实际测试中往往被更高并发带来的吞吐提升所覆盖</li>
+<li>路由层基于"副本上有什么 prefix"决策，需要 paged 元数据反向暴露</li>
+<li>引擎：暴露 <code>(prefix_hash → block_count)</code> 给 router</li>
+<li>Router：用这些信息选副本</li>
+<li>接口标准化是关键开放问题——目前各引擎暴露格式不一</li>
 </ul>
-<h2 id="_5">收益分析<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="_6">显存利用率提升<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
-<p>分页后，内部碎片上界为每个 Sequence <code>block_size - 1</code> 个 token 的 KV，通常可以忽略不计。外部碎片归零（Block 池统一分配，无碎片）。</p>
-<p>在高并发场景下，显存利用率通常可以从连续分配的 20-40% 提升至 90%+。</p>
-<h3 id="_7">并发数提升<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<p>同等显存下，分页管理可以服务更多并发请求：</p>
+<h2 id="33">3.3 部署 × 工作负载<a class="headerlink" href="#33" title="Permanent link">&para;</a></h2>
+<h3 id="agent-pd">Agent 场景与 PD 分离的契合度<a class="headerlink" href="#agent-pd" title="Permanent link">&para;</a></h3>
 <ul>
-<li>短序列不再占据为长序列准备的连续大块</li>
-<li>空闲 Block 可立即复用，无需等待连续空间出现</li>
+<li>Agent 是"短而多"的请求——单步 decode 通常 &lt; 100 token</li>
+<li>PD 分离的固定开销（KV 传输、调度协议）摊薄不了，相对劣势</li>
+<li><strong>结论</strong>：纯 Agent 负载不一定上 PD 分离，混部反而经济</li>
 </ul>
-<h3 id="prefix-cache">支持 Prefix Cache<a class="headerlink" href="#prefix-cache" title="Permanent link">&para;</a></h3>
-<p>Block 粒度的管理天然支持多 Sequence 共享物理 Block（只读引用），是实现 Prefix Cache 的基础。详见 <a href="../prefix-cache/">Prefix Cache</a>。</p>
-<h2 id="_8">局限性<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h3 id="coding-sp-prefix-cache">Coding 长上下文下 SP 与 prefix cache 的取舍<a class="headerlink" href="#coding-sp-prefix-cache" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Block Table 间接层</strong>：额外的显存访问（虽然 Block Table 通常很小）</li>
-<li><strong>Attention kernel 复杂性</strong>：需要为分页访问模式定制 kernel，与 FlashAttention 等标准实现的集成需要额外工作</li>
-<li><strong>block_size 选择</strong>：过大 → 内部碎片增加；过小 → Block Table 变大，间接层开销增加</li>
-<li><strong>KV 量化与 block_size 的交互</strong>：部分量化方案（如 KV FP8 with scaling per block）要求 block_size 是特定值的倍数</li>
+<li>SP/CP 把 KV 沿序列切到多卡，每卡只有部分 KV</li>
+<li>prefix cache 通常按"完整 prefix"组织，与 SP 的切分不对齐</li>
+<li>当前主流方案：长上下文场景<strong>优先保证 SP，prefix cache 命中率次要</strong></li>
+<li>研究方向：SP-aware 的分布式 prefix cache</li>
 </ul>
-<h2 id="flashattention">与 FlashAttention 的关系<a class="headerlink" href="#flashattention" title="Permanent link">&para;</a></h2>
-<p>FlashAttention 本身不直接处理分页 KV 存储——它优化的是 Attention 计算的 SRAM 使用效率（减少 HBM 读写次数）。PagedAttention 则处理 HBM 上的 KV 存储布局。</p>
-<p>两者可以结合：FlashAttention 的 block-wise 计算思路与 PagedAttention 的 block-wise 存储可以协同，但需要专门的 kernel 实现（如 vLLM 的 FlashInfer 集成、SGLang 的 triton kernel 等）。</p>
+<h3 id="reasoning-decode-pd">Reasoning 长 decode 场景是否还需要 PD 分离<a class="headerlink" href="#reasoning-decode-pd" title="Permanent link">&para;</a></h3>
+<ul>
+<li>reasoning 的特征：prefill 短、decode 极长（数十万 token）</li>
+<li>PD 分离主要解决"prefill 和 decode 互相挤占"的问题</li>
+<li>当 decode 时间 ≫ prefill 时间，挤占的边际成本变小，PD 分离的必要性下降</li>
+<li><strong>结论</strong>：纯 reasoning 负载下 PD 分离收益有限，混合负载下仍有价值</li>
+</ul>
+<h2 id="34">3.4 算法 × 工作负载<a class="headerlink" href="#34" title="Permanent link">&para;</a></h2>
+<h3 id="_2">多轮对话适合哪类稀疏<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>历史轮次衰减：早期内容重要性逐渐下降</li>
+<li>适配方案：<strong>StreamingLLM 风格</strong>——保留 attention sink + 滑动窗口，老内容自然丢弃</li>
+<li>不适配：H2O 等"重要性评分"方案——多轮场景下评分窗口很难定义</li>
+</ul>
+<h3 id="rag-kv">RAG 场景下位置不变性压缩 / 块级 KV 的可行性<a class="headerlink" href="#rag-kv" title="Permanent link">&para;</a></h3>
+<ul>
+<li>同一文档块在不同 prompt 中位置不同——传统 K/V（含 RoPE）位置敏感</li>
+<li>解法方向：<ul>
+<li><strong>预压缩</strong>：<a href="https://arxiv.org/abs/2311.04934">Prompt Cache</a> 把文档块压成位置无关的 KV summary</li>
+<li><strong>位置再校准</strong>：<a href="https://arxiv.org/abs/2405.16444">CacheBlend</a> 在加载时重算 RoPE</li>
+<li><strong>质量代价</strong>：通常有 1-3 个 BLEU / EM 点的精度损失</li>
+</ul>
+</li>
+<li>实用前提：<strong>业务能容忍质量损失</strong></li>
+</ul>
+<h3 id="coding-kv-kv">Coding 场景下增量 KV 与跨层共享 KV 的组合<a class="headerlink" href="#coding-kv-kv" title="Permanent link">&para;</a></h3>
+<ul>
+<li>编辑前的 prefix 完全可复用——传统 prefix cache 已经覆盖</li>
+<li>编辑点之后必须重 prefill——每层都要算</li>
+<li><a href="../sparsity/">YOCO / CLA</a> 类 layer-shared KV 在这里有意外收益：<strong>跨层共享意味着重 prefill 也只算一份</strong></li>
+<li>这是个尚未被充分挖掘的组合方向</li>
+</ul>
+<h2 id="35">3.5 四维联动的真实落地范式<a class="headerlink" href="#35" title="Permanent link">&para;</a></h2>
+<p>把所有维度拼起来，可以看到工业界的几种典型"全栈范式"：</p>
+<h3 id="mooncake">Mooncake 范式<a class="headerlink" href="#mooncake" title="Permanent link">&para;</a></h3>
+<p><strong>PD 分离 + 全局 KV 池 + 调度器统一感知</strong></p>
+<ul>
+<li>算法侧：MLA / GQA + FP8 KV</li>
+<li>系统侧：四级存储，KV 池作为独立产品</li>
+<li>部署侧：PD 分离 + cache-aware 全局路由</li>
+<li>工作负载：通用，多轮 + RAG + coding 都覆盖</li>
+</ul>
+<h3 id="sglang">SGLang 范式<a class="headerlink" href="#sglang" title="Permanent link">&para;</a></h3>
+<p><strong>RadixAttention + 结构化生成</strong></p>
+<ul>
+<li>算法侧：标准 GQA，主要靠系统优化</li>
+<li>系统侧：radix tree 组织的细粒度 prefix cache</li>
+<li>部署侧：cache-aware router</li>
+<li>工作负载：结构化输出（JSON、约束生成）+ 多轮</li>
+</ul>
+<h3 id="vllm">vLLM 生态范式<a class="headerlink" href="#vllm" title="Permanent link">&para;</a></h3>
+<p><strong>Paged + LMCache + 分布式扩展</strong></p>
+<ul>
+<li>算法侧：GQA + 可选 FP8/INT8</li>
+<li>系统侧：PagedAttention + LMCache 的多级存储</li>
+<li>部署侧：vLLM Production Stack 提供路由 + 自动扩缩容</li>
+<li>工作负载：通用 API 服务</li>
+</ul>
+<h3 id="_3">其他范式（待补充）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>TensorRT-LLM 范式</strong>：NVIDIA 全栈优化</li>
+<li><strong>AIBrix 范式</strong>：K8s 原生的弹性 + cache aware</li>
+<li><strong>Dynamo 范式</strong>：NVIDIA 推出的分布式推理基础设施</li>
+</ul>
+<h2 id="_4">关联章节<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ul>
+<li>各范式背后的具体框架：<a href="../frameworks/">框架对比</a></li>
+<li>评估这些跨维度组合的方法学：<a href="../evaluation/">评估方法</a></li>
+<li>未来可能的新范式：<a href="../future/">未来方向</a></li>
+</ul>
 
 
 

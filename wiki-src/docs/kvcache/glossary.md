@@ -9,6 +9,9 @@
 **Attention Kernel**
 实现 Attention 计算的 GPU kernel。在分页 KV 场景下，需要支持非连续 KVCache 的间接寻址访问。常见实现包括 FlashAttention、FlashInfer、Triton 自定义 kernel。
 
+**Attention Sink**
+StreamingLLM 提出的现象：模型在前几个 token 上集中了大量 attention 概率。简单丢弃这些 token 会破坏 attention 分布，因此实践中始终保留前 $k$ 个 token 的 K/V。
+
 **Autoregressive Decoding（自回归解码）**
 LLM 生成文本的基本方式：每次生成一个 token，将其追加到上下文后再生成下一个，直到结束符或达到长度限制。KVCache 是高效自回归解码的前提条件。
 
@@ -32,8 +35,23 @@ KVCache 的分配单位，存储固定数量（block_size）个 token 的 K/V �
 
 ## C
 
+**Cache-Aware Routing**
+路由层根据各副本上的 prefix cache 分布，把请求送到"最可能命中"的副本。在亲和性（命中率）和负载均衡之间需要权衡。
+
 **Cache Hit Rate（缓存命中率）**
 命中 Prefix Cache 的 KV token 数占总 Prompt token 数的比例。高命中率意味着更低的 TTFT 和更少的计算开销。
+
+**CacheBlend / Prompt Cache**
+针对 RAG 场景的"位置无关"prefix cache 研究方向。把文档块预先压缩或在加载时重算位置编码，以实现文档块在不同 prompt 位置下的 KV 复用。
+
+**CLA（Cross-Layer Attention）**
+跨层共享 KV 的方案：多层共用同一份 K/V，KVCache 体积按倍数下降。常与 YOCO 一起讨论。
+
+**CP（Context Parallelism）**
+见 [SP](#s)。在长上下文场景下沿 sequence 维度切分 KV。
+
+**CXL（Compute Express Link）**
+新一代设备互联标准，让 CPU、GPU、加速器以"内存语义"共享内存池。被认为可能重塑 KV 多级存储的层次。
 
 **Causal Attention（因果注意力）**
 LLM 使用的 Attention 变体：每个 token 只能关注自身及之前的 token，不能看到未来 token。这是 KVCache 可以按 token 顺序累积的前提。
@@ -57,9 +75,15 @@ LLM 推理的生成阶段。每步从 KVCache 读取历史 K/V，结合新 token
 **Disaggregated Prefill（PD 分离）**
 见 [PD Disaggregation](#p)。
 
+**DistServe**
+PD 分离的代表性论文之一，强调"goodput"——SLO 内的有效吞吐——的优化。
+
 ---
 
 ## E
+
+**EP（Expert Parallelism）**
+MoE 模型中将 expert 分布到不同 GPU 的并行方式。与 KV 直接关系不大，但 all-to-all 通信会挤占 KV 传输的带宽预算。
 
 **Eviction（驱逐）**
 当 GPU KVCache 空间不足时，Block Manager 将部分无活跃引用的 Block 标记为可回收（换出或丢弃）。常见驱逐策略：LRU（最近最少使用）、优先级调度等。
@@ -81,12 +105,18 @@ KVCache 显存的浪费现象。内部碎片：Block 的最后若干 Slot 未被
 
 ## G
 
+**GDS（GPUDirect Storage）**
+让 GPU 可以零拷贝直接读写 NVMe，绕过 CPU DRAM 中转。对批量 KV 落盘 / 召回场景有意义。
+
 **GQA（Grouped-Query Attention）**
 一种 Attention 变体，多个 Query head 共享同一组 K/V head，减小 KVCache 体积。LLaMA-3、Mistral 等主流模型采用。
 
 ---
 
 ## H
+
+**H2O（Heavy-Hitter Oracle）**
+基于 attention 累积分数识别"高重要性"token，丢弃其他 token 的 KV 稀疏化方案。
 
 **HBM（High Bandwidth Memory）**
 GPU 显存类型，提供极高的带宽（如 H100 的 HBM3e 达 3.35 TB/s）。LLM 推理 Decode 阶段是 Memory-bound，HBM 带宽是核心限制。
@@ -98,18 +128,40 @@ GPU 显存类型，提供极高的带宽（如 H100 的 HBM3e 达 3.35 TB/s）�
 
 ## K
 
+**KIVI**
+2-bit KV 量化方法：K 用 per-channel、V 用 per-token，平衡精度与压缩比。
+
 **KV Block**
 见 [Block](#b)。
 
 **KVCache**
 Transformer 自回归解码过程中缓存的 Key 和 Value 张量。避免对历史 token 重复计算 Attention，是现代 LLM 推理的基础机制。
 
+**KV Pool（KV 池）**
+跨节点共享的"分布式 KV 存储"。代表实现：Mooncake Store、LMCache 远端层。被认为有可能成为类似 Redis 的基础设施层产品。
+
+**KVQuant**
+4-bit KV 量化方案，配合 outlier 处理与 RoPE 对齐，在长上下文上有较好质量。
+
 **KV Transfer**
 在 PD 分离架构中，将 Prefill 节点生成的 KVCache 传输到 Decode 节点的过程。传输带宽和延迟直接影响端到端 TTFT。
 
 ---
 
+## L
+
+**L1 / L2 / L3 / L4**
+KVCache 的多级存储层级简记：L1 = GPU HBM，L2 = CPU DRAM，L3 = 本地 NVMe / SSD，L4 = 远端 / 分布式 KV 池。详见 [存储层级](storage-hierarchy.md)。
+
+**LMCache**
+专注于多级 KVCache 存储与跨实例共享的开源项目，可作为 vLLM 的 KV 后端。
+
+---
+
 ## M
+
+**Mamba / State Space Model（SSM）**
+用状态空间模型替代 Transformer attention 的架构，序列状态恒定大小，无传统意义上的 KVCache。
 
 **Memory-Bound**
 计算受限于内存带宽而非计算能力。LLM Decode 阶段是 memory-bound：每步计算量小（单 token），但需要大量 HBM 带宽读取 KVCache。
@@ -120,8 +172,18 @@ Transformer 自回归解码过程中缓存的 Key 和 Value 张量。避免对�
 **MLA（Multi-head Latent Attention）**
 DeepSeek 提出的 Attention 变体，将 K/V 压缩到低维潜空间存储，显著减小 KVCache 体积。
 
+**Mooncake**
+Kimi 团队开源的以 KVCache 为中心的 PD 分离推理基础设施。Mooncake Store 是其 KV 池组件。
+
 **MQA（Multi-Query Attention）**
 所有 Q head 共享单组 K/V，KVCache 最小。极端的 GQA 特例。
+
+---
+
+## N
+
+**NVLink / NVSwitch**
+NVIDIA GPU 间的高带宽互联（NVLink 4.0 双向 900 GB/s+），同机柜内 KV 跨卡传输的主要通道。
 
 ---
 
@@ -148,6 +210,9 @@ LLM 推理的预填充阶段，处理输入 Prompt。所有 Prompt token 并行�
 **Preemption（抢占）**
 当 GPU KVCache 耗尽时，Scheduler 暂停部分 Sequence 并释放其 KVCache（换出或丢弃），为高优先级或新到来的 Sequence 腾出空间。
 
+**Pre-warming（预热）**
+新副本启动后，从 L4 KV 池或对等副本拉取热门 prefix，避免冷启动期的命中率塌陷。
+
 ---
 
 ## R
@@ -164,6 +229,12 @@ SGLang 提出的 Prefix Cache 实现方案，使用 Radix Tree 组织 KV Block�
 **Remote Cache（远端缓存）**
 存储在其他节点（通过 RDMA 访问）的 KVCache。支持跨推理实例的 Prefix Cache 命中。
 
+**Ring Attention**
+长上下文序列并行（SP/CP）的代表实现：各卡按 ring 拓扑轮转传递 K/V，每卡都看到所有 K/V。
+
+**RWKV / RetNet**
+线性注意力 / 类 RNN 架构，状态恒定大小，无传统意义上的 KVCache。
+
 ---
 
 ## S
@@ -174,8 +245,26 @@ SGLang 提出的 Prefix Cache 实现方案，使用 Radix Tree 组织 KV Block�
 **Sequence（序列）**
 一个推理请求对应的完整 token 序列（Prompt + 已生成 token）。每个 Sequence 有独立的 Block Table 和 KVCache 分配。
 
+**Session Affinity（会话粘性）**
+路由层把同一 session 的所有请求送到同一副本，以最大化跨轮次 prefix cache 命中。
+
+**Sliding Window Attention（SWA）**
+每个 token 只关注最近 $w$ 个 token，KVCache 总量有上界。Mistral / Gemma 系列采用。
+
 **Slot**
 Block 内的最小存储单元，对应一个 token 的 K/V 数据。
+
+**SnapKV**
+Prefill 完成时利用末端 token 的 attention 模式预测重要 token，丢弃其余 K/V 的稀疏化方案。
+
+**SP（Sequence Parallelism）/ CP（Context Parallelism）**
+长上下文场景下沿 sequence 维度切分 KV 的并行方式。代表实现包括 Ring Attention、LoongTrain。
+
+**Splitwise**
+PD 分离的早期代表论文，强调 Prefill 和 Decode 计算特征不同因此应分开部署。
+
+**StreamingLLM**
+保留前 $k$ 个 attention sink token + 滑动窗口的稀疏化方案，让模型可以处理无限长流式输入。
 
 **Swap（换入/换出）**
 将 KVCache Block 在 GPU HBM 和 CPU DRAM 之间移动。换出（Swap-out）释放 GPU 显存，换入（Swap-in）恢复 Sequence 的 Decode 所需 KV。
@@ -199,3 +288,10 @@ Block 内的最小存储单元，对应一个 token 的 K/V 数据。
 
 **vLLM**
 最广泛使用的开源 LLM 推理引擎之一，PagedAttention 的原创提出者。
+
+---
+
+## Y
+
+**YOCO（You Only Cache Once）**
+跨层共享 KV 的架构思想：只在少数几层真正缓存 K/V，其余层复用，KVCache 体积可降一个数量级。

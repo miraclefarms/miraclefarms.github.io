@@ -28,14 +28,29 @@ theme:
 nav:
   - 首页: index.md
   - KVCache:
-      - 主题首页: kvcache/index.md
+      - 综述首页: kvcache/index.md
+      - 第一性原理: kvcache/first-principles.md
       - 基础概念: kvcache/basics.md
-      - 运行时架构: kvcache/runtime-architecture.md
-      - Prefix Cache: kvcache/prefix-cache.md
-      - Paged KV: kvcache/paged-kv.md
-      - KV Offload: kvcache/offload.md
-      - PD 分离中的 KVCache: kvcache/pd-disaggregation.md
+      - 算法维度（横向）:
+          - Attention 变体: kvcache/attention-variants.md
+          - 稀疏化: kvcache/sparsity.md
+          - 压缩与量化: kvcache/compression-quantization.md
+      - 系统维度（纵向）:
+          - 运行时架构: kvcache/runtime-architecture.md
+          - 存储层级: kvcache/storage-hierarchy.md
+          - Paged KV: kvcache/paged-kv.md
+          - Prefix Cache: kvcache/prefix-cache.md
+          - KV Offload: kvcache/offload.md
+          - 生命周期与淘汰: kvcache/lifecycle.md
+      - 部署维度:
+          - PD 分离: kvcache/pd-disaggregation.md
+          - 并行切分: kvcache/parallelism.md
+          - 路由与亲和性: kvcache/routing.md
+          - 弹性与故障: kvcache/elasticity.md
+      - 工作负载维度: kvcache/workloads.md
+      - 维度交叉: kvcache/crossings.md
       - 评估方法: kvcache/evaluation.md
+      - 未来方向: kvcache/future.md
       - 框架对比: kvcache/frameworks.md
       - 术语表: kvcache/glossary.md
       - 参考资料: kvcache/references.md
