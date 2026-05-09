@@ -115,6 +115,16 @@ updated: 2026-05-09   # YYYY-MM-DD，无需时间和时区
 Update {slug} essay to v1.1: {核心变更一句话}
 ```
 
+### 依赖仓库版本对齐
+
+每次更新 essay / reading 时，如果正文、参考资料或图示依赖 GitHub 仓库、PR、release、源码路径，必须刷新版本对齐信息。纯润色且没有新增或重算外部材料时可以不刷新；但只要用户要求“刷新版本号 / 版本对齐”，必须执行。
+
+- 源码分析：记录 repo、branch/tag、commit 前缀和日期；正文源码链接固定到 commit/tag，不只链接 `main`。
+- 已合并 PR：记录 PR 号、mergedAt、merge commit 前缀。
+- 开放 PR：记录 PR 号、head commit 前缀、查询日期，并明确“开放 PR，不视为稳定 release API”。
+- 多仓库材料：在文末 `## 参考资料` 内维护 `### 版本对齐信息` 小节；已有小节则更新对应行，不让旧 commit 冒充新材料依据。
+- 正文展示 commit 使用 8-12 位前缀即可，避免把 40 位 SHA 堆进文章；需要完整上下文时用 PR 或 commit 链接承接。
+
 ---
 
 ## 第二步：调研
@@ -382,6 +392,7 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 - [ ] 框架专属标签（vLLM / SGLang 等）只在该框架是主要分析对象时才出现？
 - [ ] 如果是新建 essay，版本声明 blockquote 是否已写入（单行格式，注明 commit 或日期）？
 - [ ] 如果是更新已有 essay，是否把版本声明升级为版本历史表格，并追加了新版本行？
+- [ ] 如果文章依赖 GitHub repo / PR / release / 源码路径，是否刷新了版本对齐信息（源码用固定 commit/tag，已合并 PR 用 merge commit 前缀，开放 PR 用 head commit 前缀 + 查询日期）？
 - [ ] 正文中新增的整节或修订的段落，是否在开头标注了 `**（vX.X 新增）**` 或 `**（vX.X 更新）**`？
 - [ ] 如果是更新已有 essay，front matter 里的 `updated` 字段是否已写入或更新为今天日期（`YYYY-MM-DD`）？
 - [ ] commit 消息是否包含版本号和一句话变更摘要？

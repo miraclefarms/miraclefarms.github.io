@@ -289,10 +289,19 @@ Mooncake 社区最近合并的一组 PR 则说明数据面已经进入生产加�
 
 ### 版本对齐信息
 
-- 仓库：`vllm-project/vllm`
-- 分支：`main`
-- 本文对齐 commit：`48e376a007173910330a8c83f53474b21e4279c0`
-- commit 链接：[48e376a](https://github.com/vllm-project/vllm/commit/48e376a007173910330a8c83f53474b21e4279c0)
+**v1.0 源码分析对齐**
+
+| 项目 | 范围 | 对齐版本 |
+|------|------|----------|
+| `vllm-project/vllm` | `main` 分支源码路径 | commit [`48e376a`](https://github.com/vllm-project/vllm/commit/48e376a007173910330a8c83f53474b21e4279c0) |
+
+**v1.1 社区进展对齐（2026-05-09 刷新）**
+
+| 项目 | 本文引用的更新材料 | 对齐版本 |
+|------|--------------------|----------|
+| `vllm-project/vllm` | PR [#40900](https://github.com/vllm-project/vllm/pull/40900)、[#39837](https://github.com/vllm-project/vllm/pull/39837) | #40900 为 open PR head `68a1718d`，查询于 2026-05-09，未视为稳定 release API；#39837 merge commit `ed333105` |
+| `LMCache/LMCache` | PR [#3042](https://github.com/LMCache/LMCache/pull/3042)、[#3137](https://github.com/LMCache/LMCache/pull/3137)、[#3208](https://github.com/LMCache/LMCache/pull/3208)、[#3172](https://github.com/LMCache/LMCache/pull/3172)、[#3018](https://github.com/LMCache/LMCache/pull/3018) | merge commit 前缀：`408d6df5`、`87829d20`、`730e8f99`、`7657836e`、`19acf22c` |
+| `kvcache-ai/Mooncake` | PR [#2041](https://github.com/kvcache-ai/Mooncake/pull/2041)、[#2035](https://github.com/kvcache-ai/Mooncake/pull/2035)、[#2034](https://github.com/kvcache-ai/Mooncake/pull/2034)、[#1903](https://github.com/kvcache-ai/Mooncake/pull/1903)、[#1959](https://github.com/kvcache-ai/Mooncake/pull/1959)、[#2004](https://github.com/kvcache-ai/Mooncake/pull/2004) | merge commit 前缀：`44cde29c`、`658297c4`、`d2dcd8b4`、`ea8fa5da`、`2a5a94a0`、`98333ad4` |
 
 ### 源码文件
 
