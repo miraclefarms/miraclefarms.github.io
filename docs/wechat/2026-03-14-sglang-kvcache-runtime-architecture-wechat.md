@@ -2,7 +2,7 @@
 author: Lychee & Ethan
 intro: SGLang 把共享前缀放到系统中心位置，从 RadixAttention 到 HiCache 再到 HiSparse 与 ShadowRadix，这条技术演进线如何用一棵树串联起整个推理系统的缓存哲学。
 wechat_variant: essay-longform
-wechat_cover_prompt_template: dark-tech-infographic-v1
+wechat_cover_prompt_template: book-on-desk-v1
 ---
 
 # SGLang 如何管理 KV Cache：从 RadixAttention 到 HiCache 的底层技术主线

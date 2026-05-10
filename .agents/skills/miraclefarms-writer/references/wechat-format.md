@@ -13,11 +13,11 @@
 
 - 微信公众号题图提示词不再直接内嵌在文章正文里，默认改由版本化模板文件统一管理：
   - `scripts/config/wechat-cover-prompt-templates.json`
-- 当前默认锁定这一套模板：`hand-drawn-infographic-card-v1`
-- 这套模板生成的是**中文信息图**：题图里的标题、区块标签和说明短语都应使用简体中文，只允许保留 AI / GPU / KV / LLM / PR / API 等必要技术缩写
-- 另有可选模板：`daily-morning-paper-v1`，会把 `[题图提示词]` 和 `[当天日期]` 渲染进一张带折痕、照片、引语和版式设计的日报桌面照片
+- **Brief 默认模板**：`daily-morning-paper-v1`，会把 `[题图提示词]` 和 `[当天日期]` 渲染进一张带折痕、照片、引语和版式设计的日报桌面照片（竖版 9:16）
+- **Essay 长文默认模板**：`book-on-desk-v1`，会把 `[题图提示词]` 渲染进一本展开平放在桌面上的科技图书，页面包含与文章主题相关的排版设计、图表和引语（横版 16:9），不体现具体时间
+- 另有备用模板：`dark-tech-infographic-v1`，生成深色竖版科技信息图（9:16），不带文字叠层
 - 模板文件除了 prompt 文案，也负责声明生成参数（例如 `aspectRatio`）；发布脚本会直接读取它，避免“模板写竖图、接口还在发横图”的上下游错位
-- 后续可以扩展成“按文章手动选择”或“由程序自动选择”模板，但**当前先锁定这一个模板**，不要在文章里重新发明一套 prompt block
+- Essay 长文如需使用 `book-on-desk-v1`，在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
 - 如果未来确实需要按文章覆盖模板，再额外引入 front matter 字段；在那之前，写作者默认依赖模板文件即可
 
 ## 目标
@@ -137,8 +137,9 @@ wechat_variant: essay-longform
 
 - front matter 必须写 `wechat_variant: essay-longform`
 - front matter 建议写 `author` 与 `intro`，让草稿箱摘要可直接复用
-- 题图提示词从 `scripts/config/wechat-cover-prompt-templates.json` 读取。默认模板是 `hand-drawn-infographic-card-v1`，但在搭配 thinking image model（如 Gemini flash image 系列）时，中文信息图容易出现文字乱码；此时应改用 `dark-tech-infographic-v1`，该模板使用纯英文 prompt，与 thinking 模型的兼容性更好
-- 模板选择优先级：先尝试 `hand-drawn-infographic-card-v1`；若结果出现乱码或文字不可读，回退到 `dark-tech-infographic-v1`
+- 题图提示词从 `scripts/config/wechat-cover-prompt-templates.json` 读取
+- Essay 微信公众号技术长文默认使用 `book-on-desk-v1` 模板（16:9 横版，展开的科技图书平放在桌面上，页面内容与文章主题相关，不体现具体时间）；在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
+- 如需回退，可改用 `dark-tech-infographic-v1`（9:16 竖版深色科技信息图）
 - 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`
