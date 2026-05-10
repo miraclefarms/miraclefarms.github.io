@@ -1,120 +1,99 @@
 ---
-title: AI Infra 早报｜FP4 量化跨越可用性门槛，三个框架同日推进
+title: AI Infra 早报｜推理框架从"能跑"转向"跑得稳"：约束解码体系化、KV 缓存韧性、异构后端全覆盖
 date: 2026-05-10 08:00:00 +0800
 author: 荔枝不耐思
 kind: brief
 category: Brief
 series: ai-infra-daily-brief
-intro: FP4 量化在 vLLM、SGLang、llama.cpp 中同步跨越可用性门槛，TRL v1.4.0 修复两个静默训练 bug，TokenSpeed 密集迭代瞄准国产模型生态。
+intro: SGLang 约束解码从一次性功能变成有层级架构的系统能力，LMCache 补齐断线重连、多后端和可观测三项生产刚需，llama.cpp 异构后端从"能编译"走向"能跑好"。
+tags: [Constrained Decoding, KV Cache, MoE, Heterogeneous Inference]
 ---
 
-![题图](/assets/2026-05-10-ai-infra-daily-brief/cover.jpg)
+![题图](/assets/2026-05-10-ai-infra-daily-brief/cover.png)
 
 
-一个推理框架在 H20 GPU 上跑 GSM8K 评测，得分是零——不是模型不行，是 FP4 精度路径根本没被认真测过。vLLM 本周修了这个 bug，而就在同一个时间窗口内，SGLang 重写了 FP4 GEMM kernel，llama.cpp 修了 NVFP4 checkpoint 转换的崩溃。**FP4 量化正在从"格式能加载"进入"数字对得上、kernel 跑得快"的阶段——这不是巧合，是行业节奏到了。**
+本周推理框架的 PR 密度指向一个清晰方向：不再追求"能跑起来"，而是把已有能力的正确性、稳定性和平台覆盖推上一个台阶。SGLang 的约束解码从一次性 hack 变成分层设计的系统能力；LMCache 密集补齐断线重连、多后端和 token 级可观测三项生产刚需；llama.cpp 的 SYCL/Hexagon/Adreno 后端从"能编译"跨入"每个后端都能跑到合理性能"。vLLM、SGLang、TRT-LLM 各自出现的 MoE 正确性修复则从反面验证了这一步的紧迫——模型越复杂，静默精度丢失越容易发生。
 
-## 一、FP4 量化：三个框架同日推进，H20 精度 bug 最说明问题
+## 一、SGLang 约束解码体系化
 
-vLLM 本周做了两件事。一是添加原生 NVFP4 W4A16 支持[[1]](https://github.com/vllm-project/vllm/pull/41769)，这是功能补齐。二是修了一个更关键的 bug：Hopper 架构 GPU 上 GDN-based 模型输出垃圾结果，GSM8K 得分归零[[2]](https://github.com/vllm-project/vllm/pull/42076)。**一个生产级 GPU 上完整跑完评测流程而精度完全崩坏，说明 FP4 的端到端路径此前根本没有被认真验证过。**vLLM 另一个 FP4 相关修复是移除 GDN rearrange_mixed_qkv 中的嵌套 torch.compile，解决了 CUDA graph capture 失败的问题[[3]](https://github.com/vllm-project/vllm/pull/42070)。
+SGLang 本周在约束解码上推了三件互相补位的事。
 
-SGLang 同一天重新合入了用 CuteDSL 实现的 FP4 稠密 GEMM kernel[[4]](https://github.com/sgl-project/sglang/pull/23590)，这是 kernel 层面的深度优化，不是为了跑通，是为了跑快。llama.cpp 则聚焦于格式转换——Gemma4 26B NVFP4 checkpoint 的 weight_scale/input_scale 重命名和 FP8 KV-cache scales 剥离[[5]](https://github.com/ggml-org/llama.cpp/pull/22804)，以及因字典迭代变更导致的转换崩溃修复[[6]](https://github.com/ggml-org/llama.cpp/pull/22818)。
+Two-phase reasoning grammar[[1]](https://github.com/sgl-project/sglang/pull/23953) 解决了一个根因问题：reasoning 模型在 grammar 约束下容易丢失 `think_end` token。单阶段 grammar 无法区分 thinking 和 answer 两个语义区间的约束边界——thinking 阶段需放行 reasoning-content 类 token，answer 阶段才切换输出语法，同一套规则放不下两种矛盾的约束。Two-phase 方案配合 `--enable-strict-thinking` 标志，在 grammar 后端时序上显式划分两个阶段。**这不是格式补丁，而是 constrained generation 在 reasoning 模型上的架构级修正。**
 
-在量化训练侧，Megatron-LM 修了 FP8/MXFP8/FP4 参数 gather 在 eval 模式插入训练步之间时的收敛问题[[7]](https://github.com/NVIDIA/Megatron-LM/pull/4563)。TokenSpeed 修了 GPT-OSS MXFP4 的 scale dtype，保持共享 scale 参数为 checkpoint bytes 以避免加载时精度损坏[[8]](https://github.com/lightseekorg/tokenspeed/pull/42)。
+PDL（Programmable Dependency Latency）[[2]](https://github.com/sgl-project/sglang/pull/23965) 把问题拉到了延迟维度。MoE 推理中 kernel launch 的依赖关系过去是硬编码的——哪些 kernel 必须串行、哪些可以并行，全写死在手写的 launch sequence 里。PDL 把调度权交给一个可编程的依赖描述层，可根据模型结构和硬件拓扑动态编排时序。代码注释点名了 DSV32 和 GLM5 的 kernel 路径，大 MoE 的端到端延迟首次有了可调的调度自由度。
 
-三件事儿放在一起看：修精度、写 kernel、通格式转换——各自解决的是 FP4 落地链路的不同环节，但进度几乎同步。如果把 2025 年看成 FP8 从实验走向生产的过渡年，2026 年下半年很可能就是 FP4 的同类周期。
+Eagle3 扩展到 Gemma3/4[[3]](https://github.com/sgl-project/sglang/pull/23976) 将 speculative decoding 的模型覆盖从 Llama/Qwen 推向 Google 模型线；伴随的 FA3 page table 地址翻译修复保证 topk>1 场景下 spec metadata 正确性。三件事合在一起看：**grammar 层保正确性，PDL 层控延迟，Eagle3 层扩吞吐覆盖——约束解码在 SGLang 有了清晰的层级分工。**
 
-## 二、TRL v1.4.0：SFT 显存减半，两个静默训练 bug 比新特性更重要
+## 二、LMCache 生产韧性三件套
 
-TRL v1.4.0 正式发布[[9]](https://github.com/huggingface/trl/releases/tag/v1.4.0)，核心特性 `loss_type="chunked_nll"` 将 SFT 阶段峰值显存降低最高 50%，并已扩展到 VLM 和 MoE 模型[[10]](https://github.com/huggingface/trl/pull/5684)。
+LMCache 本周的 PR 密集覆盖了 KV 缓存从"能连上"到"连得稳"的三个维度。
 
-但最值得关注的不是这个显存优化，而是两个 GKD 训练路径的 bug 修复。一个是 `use_liger_kernel=True` 时 JSD 路径的 `weight_hard_loss` 默认值与标准路径不一致，导致训练目标静默错误[[11]](https://github.com/huggingface/trl/pull/5731)。另一个是 `seq_kd=True` 时 teacher 前向结果被 student 覆盖而完全浪费[[12]](https://github.com/huggingface/trl/pull/5726)。**这两个 bug 的共同特征是：训练能跑、loss 在降、没有报错，但最终模型不对。在训练框架里，这类 bug 比显式崩溃危险得多——你不知道自己浪费了多少 GPU 小时。**
+断线重连[[4]](https://github.com/LMCache/LMCache/pull/3208) 解决了一个生产里很常见的场景：LMCache MP server 重启后 vLLM worker 的 KV-cache 注册信息丢失，所有 STORE/RETRIEVE 调用失败。这意味着缓存静默降级为无缓存，调用方完全无感知。此次 PR 通过注册恢复机制让服务重启后的缓存关系自动重建。
 
-此外，Qwen2.5 工具调用响应格式支持补齐[[13]](https://github.com/huggingface/trl/pull/5728)，新增了 MFU 计算工具函数覆盖 dense 和 MoE 模型的训练 FLOPs 估算[[14]](https://github.com/huggingface/trl/pull/5698)，以及修复了 activation offloading 中 5GB+ CUDA 内存泄漏和 BNB 反量化缓冲未释放问题[[15]](https://github.com/huggingface/trl/pull/5700)[[16]](https://github.com/huggingface/trl/pull/5730)。
+多后端扩展打破了 KV 缓存此前几乎绑死在 NVIDIA + 本地盘上的硬约束。Azure Blob Storage[[5]](https://github.com/LMCache/LMCache/pull/3160) 作为 NIXL 对象存储后端的 drop-in replacement 被纳入，ROCm CacheBlend[[6]](https://github.com/LMCache/LMCache/pull/3092) 用 Triton kernel 替代 FlashInfer 让 AMD GPU 也能用非 prefix KV cache 复用。
 
-## 三、TokenSpeed：用"窄而深"的策略切入国产模型生态
+可观测性下沉到 token 级[[7]](https://github.com/LMCache/LMCache/pull/3196)：新增的 `lmcache_blend.lookup_requested_tokens` 和 `lmcache_blend.lookup_hit_tokens` 计数器把缓存命中率从 request 级变为 token 级。**request 级命中率说"这轮请求有没有命中"，是二值判断；token 级命中率说"命中了多少比例"，对成本核算才有实操意义。**
 
-TokenSpeed 本周的 PR 密度惊人。其瞄准的模型矩阵——DeepSeek V4、MiniMax-M2、Qwen3.5、Kimi K2.5、GPT-OSS——与其他推理框架形成清晰差异化：不是通吃所有模型，而是针对国产模型做深度优化。
+## 三、新模型跨框架同步登陆
 
-DeepSeek V4 路径合并了 DeepGEMM mega_moe experts、fast mHC fused kernels 和 ratio-aware compressed KV cache layout[[17]](https://github.com/lightseekorg/tokenspeed/pull/30)。MiniMax-M2.5 FP8 推理优化在 TP8/EP8 路径落地[[18]](https://github.com/lightseekorg/tokenspeed/pull/10)。Qwen3.5 运行时优化减少了前向准备阶段不必要的 GPU kernel launch、DtoD memcpy 和冗余通信[[19]](https://github.com/lightseekorg/tokenspeed/pull/32)。Mamba prefix cache 和 disaggregated prefill 的 Mamba cache 一并合入[[20]](https://github.com/lightseekorg/tokenspeed/pull/15)[[21]](https://github.com/lightseekorg/tokenspeed/pull/14)，为 hybrid linear attention 模型提供缓存支持。
+本周四个新模型/架构在 vLLM、TRT-LLM、llama.cpp 中同步获得支持，且不是简单的 config 适配。
 
-Kimi K2.5 建立了 NVFP4 agentic 性能 CI 管线，包含 router_gemm token 阈值调优和 tokenize 性能修复[[22]](https://github.com/lightseekorg/tokenspeed/pull/29)。推测解码默认参数调至 3 steps / EAGLE top-k 1[[23]](https://github.com/lightseekorg/tokenspeed/pull/40)。AMD 平台方面，MI355/MI300 的 CI、triton kernels 升级、通信后端切换、硬件拓扑探测也已合入[[24]](https://github.com/lightseekorg/tokenspeed/pull/36)。
+TRT-LLM[[8]](https://github.com/NVIDIA/TensorRT-LLM/pull/12932) 完整支持了 Gemma4 四个变体（26B-A4B-it MoE / E2B-it KV sharing PLE / 300M / 1.7B），覆盖 text + vision + audio 多模态。llama.cpp[[9]](https://github.com/ggml-org/llama.cpp/pull/22493) 完成 MiMo-V2.5 text-to-text 推理，但非对称 head size（K=192, V=128）导致 flash attention 回退到 CPU，被迫追加 MMA/Tiles 模板[[10]](https://github.com/ggml-org/llama.cpp/pull/22812)。vLLM[[11]](https://github.com/vllm-project/vllm/pull/42078) 新增 Cohere Eagle 模型支持，附带 speculative decoding 配置能力。
 
-**TokenSpeed 的策略是"窄而深"——不做全量模型兼容，而是针对国产模型做端到端的性能优化。在推理框架竞争已经很拥挤的 2026 年，这是一个值得跟踪的差异化信号。**
+**新模型落地的工程代价在上升，但跨框架响应速度也在加快。** Gemma4 需要 NvFp4 权重转换修复才能跑起来，MiMo 的非对称 KV 尺寸直接逼出了一个 kernel 级改动——这不是"换个 config 就行"的时代了。
 
-## 四、LMCache：多云部署的最后几块拼图
+## 四、llama.cpp 异构后端全面开花
 
-LMCache 本周合入的 PR 有一个共同特点：不改核心技术架构，但决定了能否在多云异构环境中交付。
+llama.cpp 本周的 SYCL 后端集中补齐了六个此前缺失的算子[[12]](https://github.com/ggml-org/llama.cpp/pull/22149)——从 FILL 到 GATED_DELTA_NET，让依赖这些算子的模型不再回退到 CPU。Q5_K/Q8_0 的 reorder-quantized 快速路径、BF16 GET_ROWS、flash attention buffer 复用策略同步落地，SYCL 后端的推理性能正从"能编译就行"的基线往上升。
 
-ROCm 平台上通过 Triton block-sparse attention 启用了 CacheBlend 非 prefix KV cache 复用[[25]](https://github.com/LMCache/LMCache/pull/3092)。新增 Azure Blob Storage 作为 NIXL 对象存储后端[[26]](https://github.com/LMCache/LMCache/pull/3160)。修复了 operator 硬编码 `runtimeClassName: nvidia` 导致 AMD 集群 Pod 无法调度的问题[[27]](https://github.com/LMCache/LMCache/pull/3211)。解决了 MP server 重启后 vLLM worker 的 KV cache 注册信息丢失导致的 STORE/RETRIEVE 失败[[28]](https://github.com/LMCache/LMCache/pull/3208)。MP 模式下新增 Device-DAX L2 缓存适配[[29]](https://github.com/LMCache/LMCache/pull/3161) 和 Mooncake 批量操作接口[[30]](https://github.com/LMCache/LMCache/pull/3172)。暴露了 token 级别的 lookup/hit 计数器用于可观测性[[31]](https://github.com/LMCache/LMCache/pull/3196)。
+移动端的加速同样密集。Hexagon HTP 拿到了 GATED_DELTA_NET[[13]](https://github.com/ggml-org/llama.cpp/pull/22837) 和 L2_NORM 专用 HVX kernel——前者让 Qwen3.5 等 GDN 模型的 recurrence 完全在端侧运行。Adreno OpenCL 新增 Q4_0 MoE GEMM[[14]](https://github.com/ggml-org/llama.cpp/pull/22731)。**"每个后端都能编译"和"每个后端都有合理推理性能"之间的差距，是 6 个算子、一批量化调优和几次内存分配策略改动填上的。**
 
-**这一批改动凑在一起，把 LMCache 从"实验室能跑"拉到了"多云异构能交付"——对生产落地来说，这种"无聊但必要"的补缺比炫技性特性重要得多。**
+## 五、MoE 正确性：同一天三个框架各自踩坑
 
-## 五、今天真正值得记住的判断
+vLLM[[15]](https://github.com/vllm-project/vllm/pull/42076) 修复了 Hopper GPU（sm_90, H20）上 GDN `chunk_scaled_dot_kkt` 的精度丢失——根本原因是 `tl.dot` 操作数布局与 WGMMA 不兼容，直接导致 GDN 模型在 lm_eval gsm8k 上得分为 0。这是静默错误的典型：模型能跑、不报错、输出像合法 token，但本质是随机结果。
 
-FP4 量化在三个主流推理框架中同日推进精度修复和 kernel 优化，标志着它正跨越从"实验支持"到"生产可用"的门槛。如果把 2025 年看作 FP8 的过渡年，2026 年下半年很可能进入 FP4 的同类周期。TRL 两个静默训练 bug 比新特性更值得关注——训练框架的工程成熟度决定了多少人正在浪费 GPU 小时而不自知。TokenSpeed 用"窄而深"的策略切国产模型生态，在推理框架竞争趋于同质化时，这个差异化方向值得持续跟踪。
+SGLang[[16]](https://github.com/sgl-project/sglang/pull/24562) 则在 PyTorch 升级 2.11 后发现 DeepSeek V3 Triton MoE 性能回退——Triton 3.6.0 缺少 tuned config 导致回退到旧版配置。这不是正确性 bug，但同样暴露了 MoE 推理路径对底层软件栈版本的敏感。
+
+TRT-LLM[[17]](https://github.com/NVIDIA/TensorRT-LLM/pull/13932) 在 DSv4 门控单元测试的 multi-GPU CI 上暴露了 FP32 reference 运算错误，伴随 FP8 workspace 尺寸计算修复和 Hadamard rotation 条件门控。**三个框架在同一天各自修复 MoE 路径的关键缺陷——不是巧合，而是 MoE 推理工程复杂度越过临界点后集中暴露 bug。**
+
+## 六、今天真正值得记住的判断
+
+推理框架的竞争正在换挡。"能跑起来"这条基线在过去一年被反复拉高后，接下来的竞争在三个维度上摊开：**正确性验证是生产部署的硬前置条件（三项 MoE 修复在同一周发生不是巧合），异构覆盖决定硬件选择自由度（llama.cpp 的后端补齐是这一趋势最清晰的信号），系统架构的体系化程度决定能力可组合性（SGLang 约束解码和 LMCache 生产韧性分别从设计端和运维端证明了这一点）。**
 
 ---
 
 ## 参考来源
 
-[1] [vLLM NVFP4 W4A16 support PR #41769](https://github.com/vllm-project/vllm/pull/41769)
+[1] [Two-phase reasoning grammar + --enable-strict-thinking](https://github.com/sgl-project/sglang/pull/23953)
 
-[2] [vLLM Fix GDN KKT precision loss PR #42076](https://github.com/vllm-project/vllm/pull/42076)
+[2] [Enable PDL for DSV32/GLM5 kernels](https://github.com/sgl-project/sglang/pull/23965)
 
-[3] [vLLM Remove nested torch.compile PR #42070](https://github.com/vllm-project/vllm/pull/42070)
+[3] [Gemma3/4 + Eagle3 speculative decoding](https://github.com/sgl-project/sglang/pull/23976)
 
-[4] [SGLang Cute-DSL FP4 dense GEMM PR #23590](https://github.com/sgl-project/sglang/pull/23590)
+[4] [vLLM reconnect after LMCache restart](https://github.com/LMCache/LMCache/pull/3208)
 
-[5] [llama.cpp Gemma4 NVFP4 checkpoint convert PR #22804](https://github.com/ggml-org/llama.cpp/pull/22804)
+[5] [Azure Blob NIXL backend](https://github.com/LMCache/LMCache/pull/3160)
 
-[6] [llama.cpp FP8 KV-cache scales fix PR #22818](https://github.com/ggml-org/llama.cpp/pull/22818)
+[6] [ROCm Triton block-sparse attention for CacheBlend](https://github.com/LMCache/LMCache/pull/3092)
 
-[7] [Megatron-LM MXFP8/FP4 param gather PR #4563](https://github.com/NVIDIA/Megatron-LM/pull/4563)
+[7] [Blend token-level hit-rate counters](https://github.com/LMCache/LMCache/pull/3196)
 
-[8] [TokenSpeed MXFP4 scale dtype fix PR #42](https://github.com/lightseekorg/tokenspeed/pull/42)
+[8] [Gemma4 multimodal in TRT-LLM](https://github.com/NVIDIA/TensorRT-LLM/pull/12932)
 
-[9] [TRL v1.4.0 Release](https://github.com/huggingface/trl/releases/tag/v1.4.0)
+[9] [MiMo-V2.5 text-to-text in llama.cpp](https://github.com/ggml-org/llama.cpp/pull/22493)
 
-[10] [TRL chunked NLL VLM/MoE PR #5684](https://github.com/huggingface/trl/pull/5684)
+[10] [Flash attention MMA/Tiles for MiMo-V2.5](https://github.com/ggml-org/llama.cpp/pull/22812)
 
-[11] [TRL GKD Liger JSD fix PR #5731](https://github.com/huggingface/trl/pull/5731)
+[11] [Cohere Eagle + MoE fix in vLLM](https://github.com/vllm-project/vllm/pull/42078)
 
-[12] [TRL GKD seq_kd teacher forward fix PR #5726](https://github.com/huggingface/trl/pull/5726)
+[12] [SYCL: FILL, CUMSUM, DIAG, SOLVE_TRI, SSM_SCAN, GATED_DELTA_NET](https://github.com/ggml-org/llama.cpp/pull/22149)
 
-[13] [TRL Qwen2.5 response schema PR #5728](https://github.com/huggingface/trl/pull/5728)
+[13] [Hexagon HTP: GATED_DELTA_NET HVX kernel](https://github.com/ggml-org/llama.cpp/pull/22837)
 
-[14] [TRL MFU helpers PR #5698](https://github.com/huggingface/trl/pull/5698)
+[14] [OpenCL: Adreno Q4_0 MoE GEMM](https://github.com/ggml-org/llama.cpp/pull/22731)
 
-[15] [TRL activation offloading fix PR #5700](https://github.com/huggingface/trl/pull/5700)
+[15] [GDN KKT precision loss on Hopper GPUs](https://github.com/vllm-project/vllm/pull/42076)
 
-[16] [TRL BNB dequant buffer fix PR #5730](https://github.com/huggingface/trl/pull/5730)
+[16] [DSV3 Triton MoE perf regression on SM90](https://github.com/sgl-project/sglang/pull/24562)
 
-[17] [TokenSpeed DeepSeek V4 perf PR #30](https://github.com/lightseekorg/tokenspeed/pull/30)
-
-[18] [TokenSpeed MiniMax-M2 FP8 PR #10](https://github.com/lightseekorg/tokenspeed/pull/10)
-
-[19] [TokenSpeed Qwen3.5 runtime optimization PR #32](https://github.com/lightseekorg/tokenspeed/pull/32)
-
-[20] [TokenSpeed Mamba prefix cache PR #15](https://github.com/lightseekorg/tokenspeed/pull/15)
-
-[21] [TokenSpeed PD Mamba cache PR #14](https://github.com/lightseekorg/tokenspeed/pull/14)
-
-[22] [TokenSpeed Kimi K2.5 NVFP4 agentic perf CI PR #29](https://github.com/lightseekorg/tokenspeed/pull/29)
-
-[23] [TokenSpeed speculative decoding defaults PR #40](https://github.com/lightseekorg/tokenspeed/pull/40)
-
-[24] [TokenSpeed AMD platform support PR #36](https://github.com/lightseekorg/tokenspeed/pull/36)
-
-[25] [LMCache ROCm CacheBlend PR #3092](https://github.com/LMCache/LMCache/pull/3092)
-
-[26] [LMCache Azure Blob NIXL PR #3160](https://github.com/LMCache/LMCache/pull/3160)
-
-[27] [LMCache GPU vendor operator PR #3211](https://github.com/LMCache/LMCache/pull/3211)
-
-[28] [LMCache MP reconnect PR #3208](https://github.com/LMCache/LMCache/pull/3208)
-
-[29] [LMCache Device-DAX L2 PR #3161](https://github.com/LMCache/LMCache/pull/3161)
-
-[30] [LMCache Mooncake batch ops PR #3172](https://github.com/LMCache/LMCache/pull/3172)
-
-[31] [LMCache blend hit-rate counters PR #3196](https://github.com/LMCache/LMCache/pull/3196)
+[17] [DSv4 gate test fix](https://github.com/NVIDIA/TensorRT-LLM/pull/13932)
