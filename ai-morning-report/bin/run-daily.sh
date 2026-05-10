@@ -7,6 +7,7 @@
 #   OPENROUTER_API_KEY                     (for cover image, optional)
 #   WECHAT_APPID / WECHAT_APPSECRET        (required for WeChat push)
 #   WECHAT_THUMB_MEDIA_ID                  (fallback cover if no generated image)
+#   WECHAT_CONTENT_SOURCE_BASE_URL         (original-link base URL; defaults to GitHub Pages)
 #   SKIP_WECHAT=1                          (skip WeChat stages)
 #   ENABLE_X_PUSH=1                        (enable optional X rewrite + publishing; default off)
 #   X_DRY_RUN=1                            (generate X thread but do not post)

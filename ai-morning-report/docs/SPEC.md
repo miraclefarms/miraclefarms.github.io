@@ -74,6 +74,7 @@ ai-morning-report/
 | `WECHAT_APPID` | 是* | 微信公众号 AppID |
 | `WECHAT_APPSECRET` | 是* | 微信公众号 AppSecret |
 | `WECHAT_THUMB_MEDIA_ID` | 否 | 无封面图时的备用 media_id |
+| `WECHAT_CONTENT_SOURCE_BASE_URL` | 否 | 原文链接域名，默认 `https://miraclefarms.github.io` |
 | `SKIP_WECHAT=1` | 否 | 跳过 Stage 6-7（只发 GitHub.io）|
 | `ENABLE_X_PUSH=1` | 否 | 开启 Stage 8；默认关闭，不做 X 改写也不推送 |
 | `X_USER_ACCESS_TOKEN` | 是** | X OAuth 2.0 user access token，需包含 `tweet.write` |
