@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "defaultTemplateId": "hand-drawn-infographic-card-v1",
   "templates": {
     "dark-tech-infographic-v1": {
@@ -17,6 +17,14 @@
         "aspectRatio": "9:16"
       },
       "prompt": "生成一张 9:16 竖版中文信息图卡片。整体使用米白或浅米色纸张质感背景，保持温暖、克制、手绘感的技术编辑风格。顶部放置醒目的简体中文标题，建议不超过 14 个汉字；主体分成 2-4 个清晰信息区块，每块使用简体中文短语概括核心点，单个短语建议不超过 10 个汉字。所有可见文字必须使用简体中文；允许保留 AI、GPU、KV、LLM、PR、API 等必要技术缩写。禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。使用红黑色做重点标注，搭配简单手绘图标、箭头、节点、芯片、缓存块或数据流示意，体现 AI 基础设施日报的专业感。画面留白充足，布局清楚，易读，不要具体人脸。请根据文章正文提炼主题和信息层级。"
+    },
+    "daily-morning-paper-v1": {
+      "id": "daily-morning-paper-v1",
+      "label": "Daily morning paper photo",
+      "imageConfig": {
+        "aspectRatio": "9:16"
+      },
+      "prompt": "Put this whole text, verbatim, into a photo of A daily morning paper with reading creases on a desk, with photos, beautiful typography design, pull quotes and brave formatting. The text: [题图提示词][当天日期]"
     }
   }
 }

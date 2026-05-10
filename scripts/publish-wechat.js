@@ -209,7 +209,7 @@ function toMarkdownRelativePath(fromFilePath, targetPath) {
   return path.relative(path.dirname(fromFilePath), targetPath).split(path.sep).join('/');
 }
 
-async function generateImageWithOpenRouter({ frontMatter, title, digest, bodyMarkdown }) {
+async function generateImageWithOpenRouter({ frontMatter, title, digest, bodyMarkdown, date }) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     throw new Error('OPENROUTER_API_KEY not found in .env');
@@ -225,6 +225,7 @@ async function generateImageWithOpenRouter({ frontMatter, title, digest, bodyMar
     registry: COVER_PROMPT_REGISTRY,
     model,
     imageSize,
+    date,
   });
   const headers = {
     Authorization: `Bearer ${apiKey}`,
@@ -265,7 +266,13 @@ async function ensureGeneratedTitleImage({ filePath, frontMatter, title, digest,
     }
   }
 
-  const generated = await generateImageWithOpenRouter({ frontMatter, title, digest, bodyMarkdown });
+  const generated = await generateImageWithOpenRouter({
+    frontMatter,
+    title,
+    digest,
+    bodyMarkdown,
+    date: parseWechatArticleIdentity(filePath).date,
+  });
   const ext = getImageExtensionForMimeType(generated.mimeType);
   const targetPath = `${basePath}.${ext}`;
   clearGeneratedImageVariants(basePath);

@@ -98,16 +98,66 @@ function extractLegacyTitleImagePrompts(markdown) {
   return null;
 }
 
+function templateHasContentSlots(templatePrompt = '') {
+  return /\[题图提示词\]|\[当天日期\]/.test(templatePrompt);
+}
+
+function resolveCoverPromptDate({ date, frontMatter = {}, bodyMarkdown = '' } = {}) {
+  const candidates = [
+    date,
+    frontMatter.date,
+    bodyMarkdown.match(/\*\*📅\s*(\d{4}-\d{2}-\d{2})\*\*/)?.[1],
+  ];
+
+  for (const candidate of candidates) {
+    if (!candidate) {
+      continue;
+    }
+
+    const match = String(candidate).match(/\d{4}-\d{2}-\d{2}/);
+    if (match) {
+      return match[0];
+    }
+  }
+
+  return '';
+}
+
+function buildCoverPromptText({ title, digest, mainBodySummary }) {
+  return [title, digest, mainBodySummary]
+    .filter(Boolean)
+    .join('\n');
+}
+
+function renderCoverPromptTemplate(templatePrompt, { coverPromptText = '', date = '' } = {}) {
+  const dateText = date ? `\n${date}` : '';
+  return templatePrompt
+    .replace(/\[题图提示词\]/g, coverPromptText)
+    .replace(/\[当天日期\]/g, dateText)
+    .trim();
+}
+
 function buildWechatCoverPrompt({
   frontMatter = {},
   title,
   digest,
   bodyMarkdown,
   registry,
+  date,
 }) {
   const template = resolveWechatCoverPromptTemplate(frontMatter, registry);
   const mainBodySummary = summarizeMainBodyForPrompt(bodyMarkdown);
   const legacyPrompts = extractLegacyTitleImagePrompts(bodyMarkdown);
+  const coverPromptText = buildCoverPromptText({ title, digest, mainBodySummary });
+  const promptDate = resolveCoverPromptDate({ date, frontMatter, bodyMarkdown });
+
+  if (templateHasContentSlots(template.prompt)) {
+    return renderCoverPromptTemplate(template.prompt, {
+      coverPromptText,
+      date: promptDate,
+    });
+  }
+
   const parts = [
     template.prompt,
     '以下上下文仅用于理解文章主题和信息层级；最终画面文字必须使用简体中文，不要照搬上下文标签。',
@@ -144,6 +194,7 @@ function buildWechatCoverImageRequest({
   registry,
   model,
   imageSize,
+  date,
 }) {
   const imageConfig = resolveWechatCoverImageConfig(frontMatter, registry);
   return {
@@ -157,6 +208,7 @@ function buildWechatCoverImageRequest({
           digest,
           bodyMarkdown,
           registry,
+          date,
         }),
       },
     ],
@@ -203,6 +255,7 @@ module.exports = {
   extractLegacyTitleImagePrompts,
   insertGeneratedTitleImageMarkdown,
   loadWechatCoverPromptTemplates,
+  renderCoverPromptTemplate,
   resolveWechatCoverImageConfig,
   resolveWechatCoverPromptTemplate,
 };

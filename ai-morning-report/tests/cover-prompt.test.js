@@ -53,3 +53,20 @@ test('stage 04 fallback prompt asks for a Chinese infographic cover', async () =
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
+
+test('stage 04 final prompt renders daily newspaper template placeholders', () => {
+  const { buildFinalPrompt } = require('../src/stages/04-cover');
+  const template = {
+    prompt: 'Put this whole text, verbatim, into a photo of A daily morning paper with reading creases on a desk, with photos, beautiful typography design, pull quotes and brave formatting. The text: [题图提示词][当天日期]',
+  };
+  const prompt = buildFinalPrompt(
+    '今日核心判断：推理调度进入日报头版。',
+    template,
+    '2026-05-11',
+  );
+
+  assert.match(prompt, /Put this whole text, verbatim, into a photo of A daily morning paper/);
+  assert.match(prompt, /The text: 今日核心判断：推理调度进入日报头版。\n2026-05-11/);
+  assert.doesNotMatch(prompt, /\[题图提示词\]|\[当天日期\]/);
+  assert.doesNotMatch(prompt, /硬性约束：最终图片必须是中文信息图/);
+});

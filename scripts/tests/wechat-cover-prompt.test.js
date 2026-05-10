@@ -13,7 +13,7 @@ test('cover prompt templates are stored in a versioned template file with a lock
   const registry = loadWechatCoverPromptTemplates(projectRoot);
   const template = resolveWechatCoverPromptTemplate({}, registry);
 
-  assert.equal(registry.version, 3);
+  assert.equal(registry.version, 4);
   assert.equal(registry.defaultTemplateId, 'hand-drawn-infographic-card-v1');
   assert.equal(template.id, 'hand-drawn-infographic-card-v1');
   assert.equal(template.imageConfig.aspectRatio, '9:16');
@@ -21,6 +21,37 @@ test('cover prompt templates are stored in a versioned template file with a lock
   assert.match(template.prompt, /简体中文/);
   assert.match(template.prompt, /禁止出现英文长句/);
   assert.doesNotMatch(template.prompt, /English cursive|concise English phrases/i);
+});
+
+test('daily morning paper template renders prompt text and date placeholders', () => {
+  const {
+    buildWechatCoverPrompt,
+    loadWechatCoverPromptTemplates,
+    resolveWechatCoverPromptTemplate,
+  } = require('../lib/wechat-cover-prompts');
+
+  const registry = loadWechatCoverPromptTemplates(projectRoot);
+  const template = resolveWechatCoverPromptTemplate({
+    wechat_cover_prompt_template: 'daily-morning-paper-v1',
+  }, registry);
+  const prompt = buildWechatCoverPrompt({
+    frontMatter: {
+      wechat_cover_prompt_template: 'daily-morning-paper-v1',
+      date: '2026-05-11 08:00:00 +0800',
+    },
+    title: 'AI Infra 早报｜推理调度进入日报头版',
+    digest: 'KV cache 与路由策略成为今天的主线。',
+    bodyMarkdown: '## 一、调度路径\n\n今天的核心判断是调度面开始变成默认基础设施。',
+    registry,
+  });
+
+  assert.equal(template.imageConfig.aspectRatio, '9:16');
+  assert.match(prompt, /Put this whole text, verbatim, into a photo of A daily morning paper/);
+  assert.match(prompt, /The text: AI Infra 早报｜推理调度进入日报头版/);
+  assert.match(prompt, /KV cache 与路由策略成为今天的主线。/);
+  assert.match(prompt, /2026-05-11/);
+  assert.doesNotMatch(prompt, /\[题图提示词\]|\[当天日期\]/);
+  assert.doesNotMatch(prompt, /文章标题：|正文摘要：/);
 });
 
 test('cover prompt builder uses Chinese labels and avoids conflicting old English requirements', () => {

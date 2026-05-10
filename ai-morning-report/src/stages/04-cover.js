@@ -76,11 +76,23 @@ function extForMime(mime) {
   return 'png';
 }
 
-function loadImageTemplate(projectRoot) {
+function templateHasContentSlots(templatePrompt = '') {
+  return /\[题图提示词\]|\[当天日期\]/.test(templatePrompt);
+}
+
+function renderCoverPromptTemplate(templatePrompt, { coverPromptText = '', date = '' } = {}) {
+  const dateText = date ? `\n${date}` : '';
+  return templatePrompt
+    .replace(/\[题图提示词\]/g, coverPromptText)
+    .replace(/\[当天日期\]/g, dateText)
+    .trim();
+}
+
+function loadImageTemplate(projectRoot, frontMatter = {}) {
   const templatePath = path.join(projectRoot, 'scripts', 'config', 'wechat-cover-prompt-templates.json');
   if (!fs.existsSync(templatePath)) return null;
   const registry = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
-  const templateId = registry.defaultTemplateId;
+  const templateId = frontMatter.wechat_cover_prompt_template || registry.defaultTemplateId;
   return registry.templates[templateId] || null;
 }
 
@@ -126,7 +138,14 @@ ${body}
   }
 }
 
-function buildFinalPrompt(aiPrompt, template) {
+function buildFinalPrompt(aiPrompt, template, date = '') {
+  if (template?.prompt && templateHasContentSlots(template.prompt)) {
+    return renderCoverPromptTemplate(template.prompt, {
+      coverPromptText: aiPrompt,
+      date,
+    });
+  }
+
   const parts = [];
 
   if (template && template.prompt) {
@@ -211,6 +230,7 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
   }
 
   const postContent = fs.readFileSync(postFile, 'utf8');
+  const frontMatter = parseFrontMatter(postContent);
   fs.mkdirSync(assetsDir, { recursive: true });
 
   try {
@@ -218,8 +238,7 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
     let aiPrompt = await generateCoverPrompt(date, postContent, projectRoot);
 
     if (!aiPrompt) {
-      const fm = parseFrontMatter(postContent);
-      const cleanTitle = (fm.title || '').replace(/AI Infra 早报｜/, '').trim();
+      const cleanTitle = (frontMatter.title || '').replace(/AI Infra 早报｜/, '').trim();
       aiPrompt = `生成 9:16 竖版中文信息图题图。主题："${cleanTitle}"。画面使用米白或浅米色纸张质感背景，温暖克制的手绘技术编辑风格，红黑色重点标注，分成 2-4 个信息区块。标题和区块短语必须使用简体中文；允许 AI、GPU、KV、LLM、PR、API 等必要技术缩写；禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。使用简单手绘图标、箭头、缓存块、芯片或数据流示意，不要具体人脸。`;
       console.log('[cover] Using fallback prompt');
     }
@@ -229,8 +248,8 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
     console.log(`[cover] Prompt saved: ${promptPath}`);
 
     // Step B: Generate image via OpenRouter
-    const template = projectRoot ? loadImageTemplate(projectRoot) : null;
-    const finalPrompt = buildFinalPrompt(aiPrompt, template);
+    const template = projectRoot ? loadImageTemplate(projectRoot, frontMatter) : null;
+    const finalPrompt = buildFinalPrompt(aiPrompt, template, date);
 
     console.log('[cover] Step B: Generating cover image...');
     const imgUrl = await generateViaOpenRouter(finalPrompt);
@@ -279,4 +298,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { generateCover };
+module.exports = { buildFinalPrompt, generateCover };
