@@ -36,6 +36,9 @@ STAGES_DIR="${REPORT_DIR}/src/stages"
 CONFIG_DIR="${REPORT_DIR}/config"
 WORK_DIR="/tmp/morning-report/${DATE}"
 WECHAT_OUT_DIR="${WORK_DIR}/wechat"
+WECHAT_ARCHIVE_DIR="${PROJECT_ROOT}/docs/wechat"
+WECHAT_ARCHIVE_ASSET_DIR="${WECHAT_ARCHIVE_DIR}/assets/${DATE}"
+WECHAT_MD_PATH="${WECHAT_ARCHIVE_DIR}/${DATE}-ai-infra-daily-brief-wechat.md"
 
 POST_FILE="${PROJECT_ROOT}/_posts/${DATE}-ai-infra-daily-brief.md"
 REPO_SCOPE="${CONFIG_DIR}/repo-scope.json"
@@ -43,6 +46,25 @@ REPO_SCOPE="${CONFIG_DIR}/repo-scope.json"
 mkdir -p "${WORK_DIR}"
 
 log() { echo "[$(TZ="Asia/Shanghai" date '+%H:%M:%S')] $*"; }
+
+commit_wechat_archive() {
+  local archive_file="${1:?}"
+  local pathspecs=("${archive_file}")
+
+  git -C "${PROJECT_ROOT}" add "${archive_file}"
+  if [ -d "${WECHAT_ARCHIVE_ASSET_DIR}" ]; then
+    git -C "${PROJECT_ROOT}" add "${WECHAT_ARCHIVE_ASSET_DIR}"
+    pathspecs+=("${WECHAT_ARCHIVE_ASSET_DIR}")
+  fi
+
+  if git -C "${PROJECT_ROOT}" diff --cached --quiet -- "${pathspecs[@]}"; then
+    log "No WeChat archive changes to commit."
+    return 0
+  fi
+
+  git -C "${PROJECT_ROOT}" commit -m "Archive ${DATE} WeChat draft" -- "${pathspecs[@]}"
+  git -C "${PROJECT_ROOT}" push
+}
 
 FINAL_STATUS="SUCCESS"
 TOTAL_STAGES=7
@@ -126,7 +148,8 @@ else
       "${POST_FILE}" \
       "${WECHAT_OUT_DIR}" \
       "${PROJECT_ROOT}" \
-      "${COVER_PATH}"; then
+      "${COVER_PATH}" \
+      "${WECHAT_ARCHIVE_DIR}"; then
     log "FAILED at stage 6 (wechat-format)"
     FINAL_STATUS="FAILED"
     log "=== ${FINAL_STATUS} ==="
@@ -136,9 +159,17 @@ else
   # ── Stage 7: WeChat push ────────────────────────────────────────────────
   log "[7/${TOTAL_STAGES}] Pushing WeChat draft..."
   if ! node "${STAGES_DIR}/07-wechat-push.js" \
-      "${WECHAT_OUT_DIR}/${DATE}-ai-infra-daily-brief-wechat.md" \
+      "${WECHAT_MD_PATH}" \
       "${COVER_PATH}"; then
     log "FAILED at stage 7 (wechat-push)"
+    FINAL_STATUS="FAILED"
+    log "=== ${FINAL_STATUS} ==="
+    exit 1
+  fi
+
+  log "[7/${TOTAL_STAGES}] Persisting WeChat archive..."
+  if ! commit_wechat_archive "${WECHAT_MD_PATH}"; then
+    log "FAILED at stage 7 (wechat-archive)"
     FINAL_STATUS="FAILED"
     log "=== ${FINAL_STATUS} ==="
     exit 1

@@ -19,8 +19,8 @@
       ├── [3] 03-write.js       AI call 2：写作 → _posts/YYYY-MM-DD-ai-infra-daily-brief.md
       ├── [4] 04-cover.js       封面图生成（非阻塞，失败继续）
       ├── [5] 05-publish.sh     git push → GitHub.io
-      ├── [6] 06-wechat-format.js  AI 改写（wechat-formatter skill）+ CSS 渲染 → .md + .html
-      ├── [7] 07-wechat-push.js    WeChat draft API → 草稿箱
+      ├── [6] 06-wechat-format.js  AI 改写（wechat-formatter skill）+ CSS 渲染 → 临时 .md + .html，并归档 Markdown + 题图到 docs/wechat
+      ├── [7] 07-wechat-push.js    WeChat draft API → 草稿箱，成功后提交并推送 docs/wechat 归档稿与题图资产
       └── [8] 08-x-push.js         AI 生成英文 thread → X API 发帖（默认关闭）
 ```
 
@@ -40,7 +40,7 @@ ai-morning-report/
       03-write.js             AI：撰写 GitHub.io 日报
       04-cover.js             封面图生成（OpenRouter）
       05-publish.sh           git add/commit/push
-      06-wechat-format.js     AI 改写 + CSS 渲染
+      06-wechat-format.js     AI 改写 + CSS 渲染 + Markdown/题图归档
       07-wechat-push.js       WeChat API
       08-x-push.js            X thread 生成与发布
   wechat-themes/
