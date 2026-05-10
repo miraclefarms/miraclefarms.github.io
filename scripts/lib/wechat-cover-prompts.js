@@ -42,12 +42,26 @@ function stripMarkdown(markdown) {
 }
 
 function summarizeMainBodyForPrompt(bodyMarkdown) {
-  const plain = stripMarkdown(bodyMarkdown);
+  const plain = stripMarkdown(removeLegacyTitleImagePromptBlocks(bodyMarkdown));
   if (!plain) {
     return '';
   }
 
   return plain.slice(0, 1200);
+}
+
+function removeLegacyTitleImagePromptBlocks(markdown) {
+  const legacyPrompts = extractLegacyTitleImagePrompts(markdown);
+  if (!legacyPrompts) {
+    return markdown;
+  }
+
+  const lines = markdown.split('\n');
+  lines.splice(
+    legacyPrompts.startLine,
+    legacyPrompts.endLine - legacyPrompts.startLine + 1,
+  );
+  return lines.join('\n');
 }
 
 function extractLegacyTitleImagePrompts(markdown) {
@@ -94,26 +108,29 @@ function buildWechatCoverPrompt({
   const template = resolveWechatCoverPromptTemplate(frontMatter, registry);
   const mainBodySummary = summarizeMainBodyForPrompt(bodyMarkdown);
   const legacyPrompts = extractLegacyTitleImagePrompts(bodyMarkdown);
-  const parts = [template.prompt];
+  const parts = [
+    template.prompt,
+    '以下上下文仅用于理解文章主题和信息层级；最终画面文字必须使用简体中文，不要照搬上下文标签。',
+  ];
 
   if (title) {
-    parts.push(`Article title: ${title}`);
+    parts.push(`文章标题：${title}`);
   }
 
   if (digest) {
-    parts.push(`Article summary: ${digest}`);
+    parts.push(`文章摘要：${digest}`);
   }
 
   if (mainBodySummary) {
-    parts.push(`Main body summary: ${mainBodySummary}`);
+    parts.push(`正文摘要：${mainBodySummary}`);
   }
 
   if (legacyPrompts?.english) {
-    parts.push(`Legacy article-specific visual note: ${legacyPrompts.english}`);
+    parts.push(`旧版英文视觉备注（只提取场景含义，禁止照搬英文文字）：${legacyPrompts.english}`);
   }
 
   if (legacyPrompts?.chinese) {
-    parts.push(`Legacy Chinese visual note: ${legacyPrompts.chinese}`);
+    parts.push(`旧版中文视觉备注：${legacyPrompts.chinese}`);
   }
 
   return parts.join('\n');

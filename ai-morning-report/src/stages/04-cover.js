@@ -17,6 +17,12 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
+const CHINESE_INFOGRAPHIC_GUARDRAILS = [
+  '硬性约束：最终图片必须是中文信息图。',
+  '所有可见文字必须使用简体中文；允许 AI、GPU、KV、LLM、PR、API 等必要技术缩写。',
+  '禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。',
+].join('\n');
+
 function parseFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
@@ -93,11 +99,13 @@ async function generateCoverPrompt(date, postContent, projectRoot) {
 **重要约束：不要读取任何文件，不要创建任何文件，不要使用任何工具。只需要将提示词作为纯文本输出。**
 
 要求：
-- 提示词用英文撰写
+- 提示词用中文撰写
 - 控制在 500 字符以内
 - 突出当天最重要的 PR 内容或整体技术趋势
-- 风格：米白/米色纸张质感背景，手绘插画风格，红黑配色点缀
-- 不要出现文字/字母叠加
+- 生成 9:16 竖版中文信息图，而不是英文信息图
+- 画面中的标题、分区标签、说明短语必须使用简体中文
+- 可保留 AI、GPU、KV、LLM、PR、API 等必要技术缩写，但禁止出现英文长句、英文花体、拼音、乱码、水印或 Logo
+- 风格：米白/米色纸张质感背景，手绘插画风格，红黑配色点缀，留白充足
 - 不要描述具体的人脸
 
 以下为今日早报正文：
@@ -119,10 +127,19 @@ ${body}
 }
 
 function buildFinalPrompt(aiPrompt, template) {
+  const parts = [];
+
   if (template && template.prompt) {
-    return `${template.prompt}\n\n${aiPrompt}`;
+    parts.push(template.prompt);
   }
-  return aiPrompt;
+
+  parts.push(CHINESE_INFOGRAPHIC_GUARDRAILS);
+
+  if (aiPrompt) {
+    parts.push(`文章主题提示：\n${aiPrompt}`);
+  }
+
+  return parts.join('\n\n');
 }
 
 async function generateViaOpenRouter(prompt) {
@@ -203,7 +220,7 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
     if (!aiPrompt) {
       const fm = parseFrontMatter(postContent);
       const cleanTitle = (fm.title || '').replace(/AI Infra 早报｜/, '').trim();
-      aiPrompt = `Create a hand-drawn style infographic card. Beige or off-white paper texture background, warm rustic aesthetic. Topic: "${cleanTitle}". Simple hand-drawn illustrations, no text overlays, no faces.`;
+      aiPrompt = `生成 9:16 竖版中文信息图题图。主题："${cleanTitle}"。画面使用米白或浅米色纸张质感背景，温暖克制的手绘技术编辑风格，红黑色重点标注，分成 2-4 个信息区块。标题和区块短语必须使用简体中文；允许 AI、GPU、KV、LLM、PR、API 等必要技术缩写；禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。使用简单手绘图标、箭头、缓存块、芯片或数据流示意，不要具体人脸。`;
       console.log('[cover] Using fallback prompt');
     }
 

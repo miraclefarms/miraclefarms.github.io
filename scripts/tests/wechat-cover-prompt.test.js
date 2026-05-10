@@ -4,7 +4,7 @@ const path = require('node:path');
 
 const projectRoot = path.resolve(__dirname, '..', '..');
 
-test('cover prompt templates are stored in a versioned template file with a locked default', () => {
+test('cover prompt templates are stored in a versioned template file with a locked Chinese default', () => {
   const {
     loadWechatCoverPromptTemplates,
     resolveWechatCoverPromptTemplate,
@@ -13,14 +13,17 @@ test('cover prompt templates are stored in a versioned template file with a lock
   const registry = loadWechatCoverPromptTemplates(projectRoot);
   const template = resolveWechatCoverPromptTemplate({}, registry);
 
-  assert.equal(registry.version, 2);
-  assert.equal(registry.defaultTemplateId, 'dark-tech-infographic-v1');
-  assert.equal(template.id, 'dark-tech-infographic-v1');
+  assert.equal(registry.version, 3);
+  assert.equal(registry.defaultTemplateId, 'hand-drawn-infographic-card-v1');
+  assert.equal(template.id, 'hand-drawn-infographic-card-v1');
   assert.equal(template.imageConfig.aspectRatio, '9:16');
-  assert.match(template.prompt, /9:16 vertical infographic card/);
+  assert.match(template.prompt, /中文信息图/);
+  assert.match(template.prompt, /简体中文/);
+  assert.match(template.prompt, /禁止出现英文长句/);
+  assert.doesNotMatch(template.prompt, /English cursive|concise English phrases/i);
 });
 
-test('cover prompt builder uses the locked template and article body context without conflicting old requirements', () => {
+test('cover prompt builder uses Chinese labels and avoids conflicting old English requirements', () => {
   const {
     buildWechatCoverPrompt,
     loadWechatCoverPromptTemplates,
@@ -35,12 +38,14 @@ test('cover prompt builder uses the locked template and article body context wit
     registry,
   });
 
-  assert.match(prompt, /9:16 vertical infographic card/);
-  assert.match(prompt, /dark background/);
-  assert.match(prompt, /Article title:/);
-  assert.match(prompt, /Main body summary:/);
+  assert.match(prompt, /中文信息图/);
+  assert.match(prompt, /文章标题：/);
+  assert.match(prompt, /文章摘要：/);
+  assert.match(prompt, /正文摘要：/);
   assert.doesNotMatch(prompt, /landscape 16:9/i);
   assert.doesNotMatch(prompt, /no text, no letters/i);
+  assert.doesNotMatch(prompt, /Article title:|Article summary:|Main body summary:/);
+  assert.doesNotMatch(prompt, /English cursive|concise English phrases/i);
 });
 
 test('cover image request inherits aspect ratio from the locked template instead of a hardcoded fallback', () => {
@@ -63,7 +68,8 @@ test('cover image request inherits aspect ratio from the locked template instead
   assert.equal(payload.model, 'openrouter/mock-image-model');
   assert.equal(payload.image_config.aspect_ratio, '9:16');
   assert.equal(payload.image_config.image_size, '1536x1024');
-  assert.match(payload.messages[0].content, /9:16 vertical infographic card/);
+  assert.match(payload.messages[0].content, /中文信息图/);
+  assert.match(payload.messages[0].content, /简体中文/);
 });
 
 test('title image insertion works even when articles no longer contain inline Chinese\/English prompt blocks', () => {
@@ -117,8 +123,9 @@ test('legacy inline prompt blocks remain compatible with the new template-driven
   });
   const rewritten = insertGeneratedTitleImageMarkdown(markdown, 'assets/2026-04-18/legacy-cover.png');
 
-  assert.match(prompt, /Legacy article-specific visual note:/);
-  assert.match(prompt, /Legacy Chinese visual note:/);
+  assert.match(prompt, /旧版英文视觉备注/);
+  assert.match(prompt, /旧版中文视觉备注/);
+  assert.match(prompt, /最终画面文字必须使用简体中文/);
   assert.doesNotMatch(rewritten, /^>\s*中文[:：]/m);
   assert.doesNotMatch(rewritten, /^>\s*English[:：]/m);
   assert.match(rewritten, /!\[题图\]\(assets\/2026-04-18\/legacy-cover\.png\)/);
