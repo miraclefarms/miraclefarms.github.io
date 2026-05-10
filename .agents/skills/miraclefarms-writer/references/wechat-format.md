@@ -4,8 +4,8 @@
 
 但这里有一个必须显式写出来的分叉：
 
-- `brief -> 微信公众号` 仍然沿用日报路径，默认是短段落、低配图密度、日报配色。
-- `essay -> 微信公众号技术长文` 虽然复用大部分调研、引用整理和素材筛选流程，但**必须走独立长文路径**：保留 GitHub.io 版 essay 的正文配图，写入 `wechat_variant: essay-longform`，并使用经典蓝主题。
+- `brief -> 微信公众号` 仍然沿用日报路径，默认是短段落、低配图密度、日报配色，**正文保留日期行 `📅 YYYY-MM-DD`**。
+- `essay -> 微信公众号技术长文` 虽然复用大部分调研、引用整理与素材筛选流程，但**必须走独立长文路径**：保留 GitHub.io 版 essay 的正文配图，写入 `wechat_variant: essay-longform`，并使用经典蓝主题；**技术长文不写日期行**，标题下方直接跟引导语 blockquote。
 
 不要把技术长文误写成只有题图的 brief 模板。写作路径不分叉，后面的发布脚本就很容易走偏。
 
@@ -86,7 +86,7 @@ H2 直接写分类名，**不加** `$` 包裹，**不使用**中文数字编号�
 
 ## 文章结构模板（Essay 类型）
 
-Essay 的微信公众号版本是技术长文，不沿用 brief 的日报模板。这里要显式告诉发布链路：这是篇长文。
+Essay 的微信公众号版本是技术长文，不沿用 brief 的日报模板，**不写日期行**。这里要显式告诉发布链路：这是篇长文。
 
 ```markdown
 ---
@@ -95,8 +95,6 @@ intro: {一句话摘要，40-80 字，用于公众号摘要}
 wechat_variant: essay-longform
 ---
 # {描述性中文标题}
-
-**📅 YYYY-MM-DD**
 
 > {引导语：一句话点明文章的核心判断，不超过 80 字}
 
@@ -139,7 +137,8 @@ wechat_variant: essay-longform
 
 - front matter 必须写 `wechat_variant: essay-longform`
 - front matter 建议写 `author` 与 `intro`，让草稿箱摘要可直接复用
-- 题图提示词默认从 `scripts/config/wechat-cover-prompt-templates.json` 读取，当前锁定模板 `hand-drawn-infographic-card-v1`
+- 题图提示词从 `scripts/config/wechat-cover-prompt-templates.json` 读取。默认模板是 `hand-drawn-infographic-card-v1`，但在搭配 thinking image model（如 Gemini flash image 系列）时，中文信息图容易出现文字乱码；此时应改用 `dark-tech-infographic-v1`，该模板使用纯英文 prompt，与 thinking 模型的兼容性更好
+- 模板选择优先级：先尝试 `hand-drawn-infographic-card-v1`；若结果出现乱码或文字不可读，回退到 `dark-tech-infographic-v1`
 - 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`
@@ -175,6 +174,7 @@ wechat_variant: essay-longform
 - 每个 H2 下通常 2-5 段，图片应紧跟第一次深入分析该机制 / 实验的位置
 - 可以适度收短句子，但不要把技术长文改成营销摘要
 - 一篇 essay 的微信公众号技术长文通常保留 2-4 张图；如果 GitHub.io 版某张图明显承担关键论证，就不应在微信版里消失
+- **不要使用 Markdown bullet list（`- ` 或 `* ` 列表）**。微信公众号编辑器对标准列表的渲染不稳定，可能出现缩进丢失、圆点符号缺失或整体格式错乱。需要并列展开的内容一律改用连续段落：使用"第一点……""第二点……""第三点……"的衔接句式，或用"首先……其次……最后……"的过渡语，将内容嵌入段落流中
 
 ### 持续更新标签
 
@@ -223,6 +223,8 @@ wechat_variant: essay-longform
 - Brief 的 H2 直接写分类名，没有 `$` 包裹，没有用中文数字编号
 - 结尾有 `> 一句话结论：**...**` blockquote
 - 改写后仍然保留原文的核心判断，而不是只剩新闻摘要
+- 正文没有使用 Markdown bullet list（`- ` 或 `* `），并列内容已改用连续段落展开
 - 如果是 essay 的微信公众号技术长文，是否已经写入 `wechat_variant: essay-longform`
 - 如果是 essay 的微信公众号技术长文，是否保留了与 GitHub.io 版 essay 相同的正文配图，而不光是题图
 - 如果是 essay 的微信公众号技术长文，是否明确走经典蓝主题
+- 如果是 essay 的微信公众号技术长文，**标题下方没有日期行 `📅`**
