@@ -490,7 +490,7 @@ async function addDraft(accessToken, article) {
         author: article.author,
         digest: article.digest,
         content: article.content,
-        content_source_url: '',
+        content_source_url: article.content_source_url || '',
         thumb_media_id: article.thumb_media_id,
         need_open_comment: 1,
         only_fans_can_comment: 0,
@@ -748,7 +748,7 @@ async function main() {
 
       const htmlContent = renderWechatHtml(articleBody, { themeName: renderProfile.themeName });
 
-      const response = await addDraft(accessToken, { title, author, digest, content: htmlContent, thumb_media_id: articleThumbMediaId });
+      const response = await addDraft(accessToken, { title, author, digest, content: htmlContent, thumb_media_id: articleThumbMediaId, content_source_url: frontMatter.source_url || '' });
       recordPublished(publishRecord, filePath, persistedContentHash, title, response);
 
       console.error(`✅ Published: ${fileName}`);

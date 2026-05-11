@@ -93,6 +93,8 @@ Essay 的微信公众号版本是技术长文，不沿用 brief 的日报模板�
 author: Ethan
 intro: {一句话摘要，40-80 字，用于公众号摘要}
 wechat_variant: essay-longform
+wechat_cover_prompt_template: book-on-desk-v1
+source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 ---
 # {描述性中文标题}
 
@@ -137,12 +139,14 @@ wechat_variant: essay-longform
 
 - front matter 必须写 `wechat_variant: essay-longform`
 - front matter 建议写 `author` 与 `intro`，让草稿箱摘要可直接复用
+- **front matter 必须写 `source_url`**，填入 GitHub.io 对应文章的完整 URL（格式：`https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/`）。发布脚本会把它写入草稿的 `content_source_url`，即公众号文章底部的"阅读原文"链接
 - 题图提示词从 `scripts/config/wechat-cover-prompt-templates.json` 读取
 - Essay 微信公众号技术长文默认使用 `book-on-desk-v1` 模板（16:9 横版，展开的科技图书平放在桌面上，页面内容与文章主题相关，不体现具体时间）；在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
 - 如需回退，可改用 `dark-tech-infographic-v1`（9:16 竖版深色科技信息图）
 - 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`
+- **正文配图必须为 PNG / JPG / WEBP 格式**。微信 `uploadimg` 接口不接受 SVG。如果 GitHub.io 版原图是 SVG，必须先转成 PNG 再在微信版里引用。转换方法：`node -e "require('sharp')('input.svg').png().toFile('output.png', (e,i)=>console.log(e||i))"`（`sharp` 已在 repo 的 npm 依赖中）
 - 不要把 GitHub.io 站点的公开 URL 当成默认做法；技术长文路径应优先交给发布脚本处理本地图片上传
 - Essay 的微信公众号技术长文使用**经典蓝**主题，不沿用 brief 的翡翠绿
 
@@ -226,6 +230,8 @@ wechat_variant: essay-longform
 - 改写后仍然保留原文的核心判断，而不是只剩新闻摘要
 - 正文没有使用 Markdown bullet list（`- ` 或 `* `），并列内容已改用连续段落展开
 - 如果是 essay 的微信公众号技术长文，是否已经写入 `wechat_variant: essay-longform`
+- 如果是 essay 的微信公众号技术长文，front matter 是否写入了 `source_url`（GitHub.io 原文链接）？发布脚本依赖它生成"阅读原文"按钮
 - 如果是 essay 的微信公众号技术长文，是否保留了与 GitHub.io 版 essay 相同的正文配图，而不光是题图
+- 如果是 essay 的微信公众号技术长文，正文配图是否全部为 PNG / JPG / WEBP？SVG 需要用 `sharp` 先转成 PNG
 - 如果是 essay 的微信公众号技术长文，是否明确走经典蓝主题
 - 如果是 essay 的微信公众号技术长文，**标题下方没有日期行 `📅`**
