@@ -2,21 +2,13 @@
   "version": 5,
   "defaultTemplateId": "daily-morning-paper-v1",
   "templates": {
-    "dark-tech-infographic-v1": {
-      "id": "dark-tech-infographic-v1",
-      "label": "Dark tech infographic",
-      "imageConfig": {
-        "aspectRatio": "9:16"
-      },
-      "prompt": "Create a 9:16 vertical infographic card with a dark background (#1a1a2e) and emerald green (#2e9e6b) accent color. Style: modern, minimalist, professional tech aesthetic. Include subtle circuit board traces, neural network nodes, or data flow patterns as background decoration. Use clean geometric shapes and thin connecting lines to convey technical precision. No text overlays, no faces. The overall mood should be futuristic, calm, and authoritative — suitable for an AI infrastructure daily briefing cover."
-    },
     "daily-morning-paper-v1": {
       "id": "daily-morning-paper-v1",
       "label": "Daily morning paper photo",
       "imageConfig": {
         "aspectRatio": "9:16"
       },
-      "prompt": "Put this whole text, verbatim, into a photo of A daily morning paper in english with reading creases on a desk, with photos, beautiful typography design, pull quotes and brave formatting. The text: [题图提示词][当天日期]"
+      "prompt": "Realistic editorial photo of a folded daily morning newspaper resting on a wooden desk, natural reading creases, ambient morning light. The newspaper is open to the feature section with rich editorial layout: headline type, body copy columns, pull quotes, and inset photos. The newspaper headline and article text reads: [题图提示词][当天日期]"
     },
     "book-on-desk-v1": {
       "id": "book-on-desk-v1",

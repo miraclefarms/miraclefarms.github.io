@@ -15,7 +15,6 @@
   - `scripts/config/wechat-cover-prompt-templates.json`
 - **Brief 默认模板**：`daily-morning-paper-v1`，会把 `[题图提示词]` 和 `[当天日期]` 渲染进一张带折痕、照片、引语和版式设计的日报桌面照片（竖版 9:16）
 - **Essay 长文默认模板**：`book-on-desk-v1`，会把 `[题图提示词]` 渲染进一本展开平放在桌面上的科技图书，页面包含与文章主题相关的排版设计、图表和引语（横版 16:9），不体现具体时间
-- 另有备用模板：`dark-tech-infographic-v1`，生成深色竖版科技信息图（9:16），不带文字叠层
 - 模板文件除了 prompt 文案，也负责声明生成参数（例如 `aspectRatio`）；发布脚本会直接读取它，避免“模板写竖图、接口还在发横图”的上下游错位
 - Essay 长文如需使用 `book-on-desk-v1`，在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
 - 如果未来确实需要按文章覆盖模板，再额外引入 front matter 字段；在那之前，写作者默认依赖模板文件即可
@@ -142,7 +141,6 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 - **front matter 必须写 `source_url`**，填入 GitHub.io 对应文章的完整 URL（格式：`https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/`）。发布脚本会把它写入草稿的 `content_source_url`，即公众号文章底部的"阅读原文"链接
 - 题图提示词从 `scripts/config/wechat-cover-prompt-templates.json` 读取
 - Essay 微信公众号技术长文默认使用 `book-on-desk-v1` 模板（16:9 横版，展开的科技图书平放在桌面上，页面内容与文章主题相关，不体现具体时间）；在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
-- 如需回退，可改用 `dark-tech-infographic-v1`（9:16 竖版深色科技信息图）
 - 题图的图片比例等生成参数也由同一模板文件声明，发布脚本按模板读取，不要在别处再硬编码一套
 - **保留与 GitHub.io 版 essay 使用同一组配图**；如果 GitHub.io 版用了 3 张关键图，微信公众号技术长文也应保留这 3 张，而不是只留题图
 - 正文配图优先复用 repo 内的本地图片路径，推荐写成相对 `docs/wechat/` 文件的路径，例如 `../../assets/{post-slug}/fig-1-architecture.png`
