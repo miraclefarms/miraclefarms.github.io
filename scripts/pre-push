@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# pre-push hook - NOOP since image generation moved to ai-morning-report stage 03
-# WeChat draft is now pushed in stage 7 of the daily run script
-
-exit 0
