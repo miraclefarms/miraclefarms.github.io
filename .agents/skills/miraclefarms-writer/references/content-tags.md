@@ -10,6 +10,7 @@
 |------|---------|
 | `Agents` | AI agent 框架、多 agent 协作、agent loop、agent 评测、AI 编程助手（如 Claude Code、Cursor）的工程分析 |
 | `Attention` | Attention 机制、FlashAttention 系列、稀疏 attention、attention kernel 优化 |
+| `CXL` | Compute Express Link、CXL memory pooling、CXL switch、CXL.mem 以及面向 AI 基础设施的内存池化架构 |
 | `Disaggregation` | Prefill-Decode 分离（P/D disaggregation）、计算与存储解耦 |
 | `Evaluation` | LLM benchmark、评测框架、能力评估、对比测试 |
 | `Inference` | LLM 推理服务（通用）、推理框架对比、吞吐量/延迟优化（无法归入更细分类时使用） |

@@ -8,5 +8,6 @@ vendor/
 wechat-publish.log
 node_modules/
 .claude/worktrees/
+.playwright-mcp/
 wiki-src/.venv/
 wiki-src/site/
