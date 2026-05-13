@@ -3,7 +3,7 @@
 # Called by launchd at 05:30 Asia/Shanghai
 #
 # Environment variables:
-#   AI_CLI          claude|opencode|codex  (auto-detected if unset)
+#   AI_CLI          claude|opencode|codex  (defaults to opencode if unset)
 #   OPENROUTER_API_KEY                     (for cover image, optional)
 #   WECHAT_APPID / WECHAT_APPSECRET        (required for WeChat push)
 #   WECHAT_THUMB_MEDIA_ID                  (fallback cover if no generated image)
@@ -32,6 +32,8 @@ exec >> "${LOG_FILE}" 2>&1
 if [ -f "${PROJECT_ROOT}/.env" ]; then
   set -a; source "${PROJECT_ROOT}/.env"; set +a
 fi
+AI_CLI="${AI_CLI:-opencode}"
+export AI_CLI
 STAGES_DIR="${REPORT_DIR}/src/stages"
 CONFIG_DIR="${REPORT_DIR}/config"
 WORK_DIR="/tmp/morning-report/${DATE}"
@@ -73,7 +75,7 @@ if [ "${ENABLE_X_PUSH:-0}" = "1" ]; then
 fi
 
 log "=== AI Morning Report ${DATE} ==="
-log "AI_CLI: ${AI_CLI:-auto}"
+log "AI_CLI: ${AI_CLI}"
 
 # ── Stage 1: Fetch raw data ────────────────────────────────────────────────
 log "[1/${TOTAL_STAGES}] Fetching repo data..."

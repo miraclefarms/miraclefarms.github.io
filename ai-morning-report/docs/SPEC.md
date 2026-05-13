@@ -68,7 +68,7 @@ ai-morning-report/
 
 | 变量 | 必填 | 说明 |
 |------|------|------|
-| `AI_CLI` | 否 | `claude`/`opencode`/`codex`，未设则自动探测 |
+| `AI_CLI` | 否 | `claude`/`opencode`/`codex`，未设则默认 `opencode` |
 | `OPENROUTER_API_KEY` | 否 | 封面图生成（无则跳过）|
 | `COVER_IMAGE_MODEL` | 否 | 默认 `google/gemini-2.0-flash-exp:free` |
 | `WECHAT_APPID` | 是* | 微信公众号 AppID |

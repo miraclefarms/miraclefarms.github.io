@@ -2,7 +2,7 @@
  * Multi-CLI adapter for AI calls.
  *
  * Supports claude / opencode / codex, selected by AI_CLI env var.
- * Falls back in order: claude → opencode → codex.
+ * Falls back in order from the configured/default CLI, with opencode as the default.
  * Skills are injected as plain text prepended to the user prompt.
  */
 
