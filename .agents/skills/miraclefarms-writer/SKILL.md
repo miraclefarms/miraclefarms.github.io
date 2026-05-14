@@ -1,7 +1,7 @@
 ---
 name: miraclefarms-writer
 description: >
-  为 miraclefarms.github.io 撰写或修改润色可发布的技术文章（brief 日报 或 reading 文章阅读 或 essay 深度分析），并直接输出到 _posts/ 目录。
+  为 miraclefarms.github.io 撰写或修改润色可发布的技术文章（brief 日报 / reading 文章阅读 / essay 深度分析 / field-note 实操笔记），并直接输出到 _posts/ 目录。
   触发条件：用户提供主题 + 参考链接，想生成博客文章；用户说"写一篇关于 X 的文章"并给出引用材料；
   用户有调研材料（PR、论文、博客）想整理成带格式的文章；用户提供已有文章并要求修改润色；
   任何需要输出 miraclefarms.github.io _posts/ 文章的请求——
@@ -26,7 +26,7 @@ description: >
 
 ## 第一步：判断文章类型
 
-在开始调研之前，先确认写哪种文章。三种类型在深度和篇幅上有明确梯度：**Brief < Reading < Essay**。
+在开始调研之前，先确认写哪种文章。四种类型在深度和篇幅上有明确梯度：**Brief < Reading < Essay**；**Field Note** 在深度上与 Essay 同级但侧重点不同。
 
 **Brief（日报 / 简报）** — 最轻量
 - 主题覆盖多个项目过去 24–48 小时的更新进展，或用户明确说"日报/简报/brief"
@@ -49,6 +49,13 @@ description: >
 - 深度定位：最深的一层——需要跨多个系统/论文做原创分析，追溯设计决策的工程动机，引入具体代码路径或生产数据，给出有边界的独立判断
 - 作者：Lychee & Ethan
 
+**Field Note（实操笔记）** — 工具/框架参数手册与排障指南
+- 主题是针对单一框架或工具链的部署参数、调优空间、监控与生产陷阱的系统梳理
+- 深度定位：与 Essay 同级但不要求原创分析——重在把分散在源码、文档、社区 issue 中的参数/机制/陷阱结构化，形成可参考的部署手册
+- 格式：引用格式与 Essay 一致（HTML anchor 行内引用 + `## 参考资料` + 版本对齐信息表）；允许适度使用表格呈现参数对照
+- 版本管理规则与 Essay 完全一致（见下方 Essay 版本管理）；field-note 更新时同步执行版本历史、`updated` 字段、版本对齐信息刷新
+- 作者：MiracleFarms
+
 **如果用户没有明确说明类型**，根据参考资料判断：
 - 参考资料以 PR 列表为主 -> brief
 - 参考资料是一篇论文 / 单一技术主题 -> reading（偏解读）或 essay（有明确原创判断）
@@ -59,19 +66,19 @@ description: >
 - 应用同样的写作原则（开篇立旗、叙述为主、避免 AI 味句式）
 - 保留原有 front matter，只修改 body 内容
 - 如用户未提供新参考资料，跳过调研步骤，直接进入写作原则检查与修改
-- **如果是 essay，必须同时执行下面的版本管理规则**
+- **如果是 essay / field-note，必须同时执行下面的版本管理规则**
 
-### Essay 版本管理
+### Essay / Field Note 版本管理
 
-Essay 的生命周期比 Brief 长，随着技术演进需要定期修订。每次更新时遵守以下规则，让读者和未来的自己都能清楚看到文章的演进脉络。
+Essay 和 Field Note 的生命周期比 Brief 长，随着技术演进需要定期修订。两类文章适用同一套版本管理规则。每次更新时遵守以下规则，让读者和未来的自己都能清楚看到文章的演进脉络。
 
-**新建 essay（v1.0）**：在 frontmatter 之后用单行 blockquote：
+**新建（v1.0）**：在 frontmatter 之后用单行 blockquote：
 
 ```markdown
 > **版本声明**：本文分析基于 {repo} commit `{hash}`（{date}）；除非特别说明，以下描述均基于此版本。
 ```
 
-**更新已有 essay（v1.1+）**：将版本声明升级为版本历史表格，每次更新追加一行，不修改已有行：
+**更新已有文章（v1.1+）**：将版本声明升级为版本历史表格，每次更新追加一行，不修改已有行：
 
 ```markdown
 > **版本历史**
@@ -370,7 +377,7 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 写完后自检：
 
 - [ ] front matter 所有必填字段都有？
-- [ ] `kind` 和 `category` 配对正确？（essay/Essay、reading/Reading、brief/Brief）
+- [ ] `kind` 和 `category` 配对正确？（essay/Essay、reading/Reading、brief/Brief、field-note/Field Note）
 - [ ] Essay 作者是 `Lychee & Ethan`？Reading 作者是 `Ethan`？Brief 作者是 `荔枝不耐思`？
 - [ ] 日期用 `+0800`？
 - [ ] Brief：引用是 `[[N]](url)` 格式？有 `## 参考来源` 章节？
@@ -398,9 +405,9 @@ Essay 和 Reading 一般不用 bold，靠段落结构和句式本身传递重点
 - [ ] 如果输出的是 essay 的微信公众号技术长文，是否明确走经典蓝主题，而不是 brief 的默认绿色主题？
 - [ ] front matter 里有 `tags` 字段？标签数量在 2–5 个之间？大小写与 `references/content-tags.md` 体系一致？
 - [ ] 框架专属标签（vLLM / SGLang 等）只在该框架是主要分析对象时才出现？
-- [ ] 如果是新建 essay，版本声明 blockquote 是否已写入（单行格式，注明 commit 或日期）？
-- [ ] 如果是更新已有 essay，是否把版本声明升级为版本历史表格，并追加了新版本行？
+- [ ] 如果是新建 essay / field-note，版本声明 blockquote 是否已写入（单行格式，注明 commit 或日期）？
+- [ ] 如果是更新已有 essay / field-note，是否把版本声明升级为版本历史表格，并追加了新版本行？
 - [ ] 如果文章依赖 GitHub repo / PR / release / 源码路径，是否刷新了版本对齐信息（源码用固定 commit/tag，已合并 PR 用 merge commit 前缀，开放 PR 用 head commit 前缀 + 查询日期）？
 - [ ] 正文中新增的整节或修订的段落，是否在开头标注了 `**（vX.X 新增）**` 或 `**（vX.X 更新）**`？
-- [ ] 如果是更新已有 essay，front matter 里的 `updated` 字段是否已写入或更新为今天日期（`YYYY-MM-DD`）？
+- [ ] 如果是更新已有 essay / field-note，front matter 里的 `updated` 字段是否已写入或更新为今天日期（`YYYY-MM-DD`）？
 - [ ] commit 消息是否包含版本号和一句话变更摘要？
