@@ -1358,6 +1358,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1500,6 +1511,23 @@
 <p>以 LLaMA-3 70B（BF16）为例：num_layers = 80，num_kv_heads = 8（GQA），head_dim = 128 →
 <strong>每 token KV ≈ 327 KB</strong>。</p>
 <p>一个 80GB HBM 的 GPU，在模型权重之外约剩 20-30 GB 用于 KVCache，大约能缓存 <strong>60,000–90,000 个 token</strong> 的上下文（不含其他运行时开销）。实际可用量受批量大小、调度策略和碎片率影响。</p>
+<h2 id="_4">版本历史<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.1</td>
+<td>2026-05-14</td>
+<td>框架搭建</td>
+</tr>
+</tbody>
+</table>
 
 
 

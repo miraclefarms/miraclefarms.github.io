@@ -1418,6 +1418,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cxl-kvcache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 与 KVCache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 与长上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PD 分离与多轮
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attention_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attention 机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#flashattention" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1471,6 +1515,17 @@
     <span class="md-ellipsis">
       
         MiracleFarms 站内相关文章
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1620,6 +1675,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cxl-kvcache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 与 KVCache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 与长上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PD 分离与多轮
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attention_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attention 机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#flashattention" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1673,6 +1772,17 @@
     <span class="md-ellipsis">
       
         MiracleFarms 站内相关文章
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1844,6 +1954,16 @@
   Lin et al., 2024.
   <a href="https://arxiv.org/abs/2405.04532">arXiv:2405.04532</a></p>
 </li>
+<li>
+<p><strong>TurboQuant: Extremely Low-Bit KV Cache Quantization for Negligible Accuracy Loss</strong>
+  Mao et al., 2025. 3.5-bit 近似无损，WHT + QJL 残差纠偏。
+  <a href="https://arxiv.org/abs/2504.19874">arXiv:2504.19874</a></p>
+</li>
+<li>
+<p><strong>HACK: Homomorphic Acceleration via Compression of the Key-Value Cache for Disaggregated LLM Inference</strong>
+  Luo et al., 2025. 同态 INT2 量化，KV 不还原直接在 attention 内计算。
+  <a href="https://arxiv.org/abs/2502.03589">arXiv:2502.03589</a></p>
+</li>
 </ul>
 <h3 id="prefix-cache-kv">Prefix Cache 与 KV 复用<a class="headerlink" href="#prefix-cache-kv" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1900,6 +2020,61 @@
   <a href="https://arxiv.org/abs/2310.07240">arXiv:2310.07240</a></p>
 </li>
 </ul>
+<h3 id="cxl-kvcache">CXL 与 KVCache<a class="headerlink" href="#cxl-kvcache" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Beluga: CXL Memory Pooling for Disaggregated LLM Inference</strong>
+  Li et al., 2025. CXL 2.0 内存池化 KV Cache，TTFT 1.36s vs RDMA 13.00s。
+  <a href="https://arxiv.org/abs/2511.20172">arXiv:2511.20172</a></p>
+</li>
+<li>
+<p><strong>TraCT: CXL-based KV Cache Transfer for Disaggregated LLM Inference</strong>
+  CXL 作为 PD KV 传输通道，TTFT 最高 9.8× 提升。
+  <a href="https://arxiv.org/abs/2512.18194">arXiv:2512.18194</a></p>
+</li>
+<li>
+<p><strong>CXL-SpecKV: Speculative KV Cache Lookup with CXL Memory</strong>
+  CXL 池作为独立 KVCache 服务。
+  <a href="https://arxiv.org/abs/2512.11920">arXiv:2512.11920</a></p>
+</li>
+</ul>
+<h3 id="agent">Agent 与长上下文<a class="headerlink" href="#agent" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>SCBench: A KV Cache-Centric Analysis of Long-Context Methods</strong>
+  Tan et al., 2024. KV 生命周期四阶段拆解评估框架。
+  <a href="https://arxiv.org/abs/2412.10319">arXiv:2412.10319</a></p>
+</li>
+<li>
+<p><strong>Don't Break the Cache: Caching-Aware Prompt Optimization for LLM Agents</strong>
+  Determinant of KV cache hit rate in agent systems.
+  <a href="https://arxiv.org/abs/2601.06007">arXiv:2601.06007</a></p>
+</li>
+</ul>
+<h3 id="pd_1">PD 分离与多轮<a class="headerlink" href="#pd_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>PPD: Prefill-Prefill-Decode Disaggregation for Efficient Multi-Turn LLM Serving</strong>
+  Full prefill vs append-prefill 的分野。
+  <a href="https://arxiv.org/abs/2603.13358">arXiv:2603.13358</a></p>
+</li>
+<li>
+<p><strong>Prefill-as-a-Service: Cross-Datacenter LLM Inference with Hybrid Attention</strong>
+  Hybrid attention 降低跨数据中心 KV 传输带宽至 3–8 Gbps。
+  <a href="https://arxiv.org/abs/2604.15039">arXiv:2604.15039</a></p>
+</li>
+<li>
+<p><strong>ZeRO-Prefill: Asynchronous Expert Parallelism for MoE Prefill Serving</strong>
+  MoE 推理中 KV 的"原地位"策略。
+  <a href="https://arxiv.org/abs/2605.02960">arXiv:2605.02960</a></p>
+</li>
+</ul>
+<h3 id="attention_1">Attention 机制<a class="headerlink" href="#attention_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Why Does the Attention Sink Occur?</strong> (ICML 2026)
+  Attention sink 的统计-结构形成机制，HeadNorm 缓解。
+  <a href="https://arxiv.org/abs/2605.06611">arXiv:2605.06611</a></li>
+</ul>
 <h3 id="flashattention">FlashAttention<a class="headerlink" href="#flashattention" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
@@ -1943,15 +2118,54 @@
 <li><a href="https://github.com/flashinfer-ai/flashinfer">FlashInfer</a> — 分页 KVCache 的高效 Attention kernel 库</li>
 <li><a href="https://github.com/vllm-project/aibrix">AIBrix</a> — vLLM 生态下的 K8s 原生推理基础设施，含 cache-aware autoscaler</li>
 <li><a href="https://github.com/ai-dynamo/dynamo">NVIDIA Dynamo</a> — NVIDIA 推出的分布式推理基础设施</li>
+<li><a href="https://github.com/ai-dynamo/tokenspeed">TokenSpeed</a> — NVIDIA Dynamo 生态的高性能推理调度引擎</li>
+<li><a href="https://www.xconn-tech.com/">XConn XC50256</a> — CXL 2.0 switch，Beluga 等 CXL KV 方案的关键硬件</li>
 </ul>
 <hr />
 <h2 id="miraclefarms">MiracleFarms 站内相关文章<a class="headerlink" href="#miraclefarms" title="Permanent link">&para;</a></h2>
-<p>以下是 Miracle Farms 博客中与 KVCache 相关的深度文章：</p>
+<p><strong>Essay（深度分析）：</strong></p>
 <ul>
-<li><a href="/notes/2025/04/28/trtllm-kvcache-runtime-architecture/">TRT-LLM KVCache Runtime 架构解析</a> — TensorRT-LLM KVCache 运行时内部架构的详细分析</li>
+<li><a href="/notes/2026/03/12/vllm-kvcache-runtime-architecture/">vLLM KVCache Runtime 架构解析</a> — PagedAttention、BlockPool、调度器集成</li>
+<li><a href="/notes/2026/03/14/sglang-kvcache-runtime-architecture/">SGLang KVCache Runtime 架构解析</a> — RadixAttention、HiCache、HiSparse、ShadowRadix</li>
+<li><a href="/notes/2026/04/08/kvcache-agent-long-context-benchmark/">KV Cache Agent 长上下文 Benchmark</a> — 研究现状与评估空白</li>
+<li><a href="/notes/2026/05/08/claude-code-context-kvcache-engineering/">Claude Code 上下文工程与 KV Cache</a> — Anthropic prompt caching 接口分析</li>
+<li><a href="/notes/2026/05/09/trtllm-kvcache-runtime-architecture/">TRT-LLM KVCache Runtime 架构解析</a> — 三层存储、事件驱动路由、NIXL 传输</li>
+<li><a href="/notes/2026/05/13/cxl-kvcache-survey/">CXL + KVCache 现状调研报告</a> — CXL 硬件/软件生态与五层分类</li>
+<li><a href="/notes/2026/05/13/kvcache-prefix-matching-design/">KV Cache 前缀匹配的设计分野</a> — Radix Tree / 链式哈希 / 两阶段 Claim</li>
+</ul>
+<p><strong>Reading（论文解读）：</strong></p>
+<ul>
+<li><a href="/notes/2026/03/27/turboquant-kvcache-3bit/">TurboQuant 详解</a> — 3.5-bit 近似无损 KV 量化</li>
+<li><a href="/notes/2026/04/19/prefill-as-a-service-cross-datacenter-kvcache/">Prefill-as-a-Service</a> — Hybrid attention 跨数据中心</li>
+<li><a href="/notes/2026/04/20/mainstream-attention-algorithms-overview/">主流 Attention 算法全景</a></li>
+<li><a href="/notes/2026/04/21/scbench-kv-cache-lifecycle-analysis/">SCBench KV 生命周期分析</a></li>
+<li><a href="/notes/2026/04/21/turboquant-vllm-sglang-trtllm-integration/">TurboQuant 框架集成路线图</a></li>
+<li><a href="/notes/2026/05/07/vllm-mooncake-store-distributed-kv-cache/">vLLM × Mooncake Store</a> — Agentic KV 分布式池</li>
+<li><a href="/notes/2026/05/08/hack-homomorphic-kv-cache-disaggregated-inference/">HACK 同态 KV 压缩</a></li>
+<li><a href="/notes/2026/05/08/ppd-disaggregation-multiturn-llm-serving/">PPD Disaggregation</a> — 多轮 Prefill 分化</li>
+<li><a href="/notes/2026/05/11/attention-sink-variance-super-neurons/">Attention Sink 的结构起点</a></li>
+<li><a href="/notes/2026/05/13/beluga-cxl-kvcache-memory-pool/">Beluga：CXL 内存池化 KV Cache</a></li>
+<li><a href="/notes/2026/05/14/zeRO-prefill-async-ep-moe-prefill-serving/">ZeRO-Prefill：MoE Prefill 的 KV 放置</a></li>
 </ul>
 <hr />
 <p><em>如有遗漏的重要论文或资源，欢迎通过 <a href="https://github.com/miraclefarms/miraclefarms.github.io/issues">GitHub Issues</a> 提交补充建议。</em></p>
+<h2 id="_6">版本历史<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>新增 TurboQuant、HACK、Beluga、TraCT、CXL-SpecKV、SCBench、PPD、PrfaaS、ZeRO-Prefill、Attention Sink 等论文；补充 CXL 论文分类；补充主站全部 18 篇 KV Cache 相关文章链接；新增 TokenSpeed/XConn 相关资源</td>
+</tr>
+</tbody>
+</table>
 
 
 

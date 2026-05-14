@@ -1049,10 +1049,82 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cxl-kv-offload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 作为 KV Offload 通道
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CXL 作为 KV Offload 通道">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cxl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 在存储层次中的位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#belugacxl-kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beluga：CXL 内存池化 KV Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cxl_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 的五层分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cxl_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 的限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        带宽与命中率的权衡模型
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1663,10 +1735,82 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cxl-kv-offload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 作为 KV Offload 通道
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CXL 作为 KV Offload 通道">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cxl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 在存储层次中的位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#belugacxl-kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beluga：CXL 内存池化 KV Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cxl_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 的五层分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cxl_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CXL 的限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        带宽与命中率的权衡模型
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1836,7 +1980,111 @@
 <li>挑战：网络延迟（即便 InfiniBand 也比 PCIe 更慢）、一致性管理、复杂的调度协议</li>
 </ul>
 <p>LMCache 等项目在探索这个方向。详见 <a href="../frameworks/">框架对比</a>。</p>
-<h2 id="_4">带宽与命中率的权衡模型<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="cxl-kv-offload">CXL 作为 KV Offload 通道<a class="headerlink" href="#cxl-kv-offload" title="Permanent link">&para;</a></h2>
+<p>CXL（Compute Express Link）是近年兴起的新型互联技术，对 KV Offload 的工程重心产生了根本性影响。</p>
+<h3 id="cxl">CXL 在存储层次中的位置<a class="headerlink" href="#cxl" title="Permanent link">&para;</a></h3>
+<p>CXL 连接的内存池处于 DDR 和 NVMe SSD 之间，作为 <strong>warm KV tier</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>介质</th>
+<th>典型容量</th>
+<th>典型带宽</th>
+<th>延迟</th>
+<th>KV 角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPU HBM</td>
+<td>80–192 GB/GPU</td>
+<td>3.35 TB/s</td>
+<td>~1 μs</td>
+<td>Hot KV（正在 decode）</td>
+</tr>
+<tr>
+<td>CPU DDR</td>
+<td>512 GB–2 TB</td>
+<td>100–200 GB/s</td>
+<td>~100 ns (local)</td>
+<td>Warm KV（近期可能复用）</td>
+</tr>
+<tr>
+<td><strong>CXL 内存池</strong></td>
+<td><strong>2–8 TB</strong></td>
+<td><strong>~1 TB/s（aggregate）</strong></td>
+<td><strong>~2 μs（CXL-RPC）</strong></td>
+<td><strong>Warm KV（跨节点复用）</strong></td>
+</tr>
+<tr>
+<td>NVMe SSD</td>
+<td>4–16 TB</td>
+<td>10–20 GB/s</td>
+<td>~10 μs</td>
+<td>Cold KV（存档）</td>
+</tr>
+<tr>
+<td>RDMA 远端</td>
+<td>弹性</td>
+<td>100–400 GB/s</td>
+<td>~8 μs（RDMA-RC）</td>
+<td>Remote KV（跨机传输）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="belugacxl-kv-cache">Beluga：CXL 内存池化 KV Cache<a class="headerlink" href="#belugacxl-kv-cache" title="Permanent link">&para;</a></h3>
+<p>Beluga（arxiv 2511.20172v2）使用 CXL 2.0 switch 连接的最大 8TB 内存池（1TB/s 聚合带宽），服务 16 台服务器：</p>
+<ul>
+<li><strong>Cache-hit 场景</strong>：TTFT 1.36s vs RDMA（Mooncake）13.00s，QPS 11.32 vs 1.54 → <strong>7.35× 提升</strong></li>
+<li><strong>关键优势</strong>：load/store 语义可以处理细粒度的 KV cache scatter/gather（Qwen-32B GQA 下每个 16-token Block 含 128 个不连续片段），RDMA 控制开销无法高效处理这种碎片化访问</li>
+<li><strong>CXL-RPC</strong>：往返 2.11μs vs RDMA-RC 8.39μs</li>
+</ul>
+<p>来源：主站 reading <a href="/notes/2026/05/13/beluga-cxl-kvcache-memory-pool/">Beluga：CXL 内存池为什么会改变 KV Cache Offload 的工程重心</a></p>
+<h3 id="cxl_1">CXL 的五层分类<a class="headerlink" href="#cxl_1" title="Permanent link">&para;</a></h3>
+<p>CXL 在 KVCache 生态中的五个应用层次：</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>场景</th>
+<th>代表工作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1: 扩容</td>
+<td>单机 GPU HBM 不足时 CXL 扩展</td>
+<td>Dynamo KVBM、Penguin MemoryAI</td>
+</tr>
+<tr>
+<td>L2: Warm Tier</td>
+<td>HBM→CXL 作为多级存储的一层</td>
+<td>Beluga、Predictive Multi-Tier</td>
+</tr>
+<tr>
+<td>L3: Prefix Cache</td>
+<td>CXL 池作为跨实例共享的 Prefix Cache</td>
+<td>TraCT</td>
+</tr>
+<tr>
+<td>L4: PD Transfer</td>
+<td>PD 分离中通过 CXL 传输 KV</td>
+<td>TraCT（TTFT 最高 9.8×, P99 最高 6.2×）</td>
+</tr>
+<tr>
+<td>L5: Cache Server</td>
+<td>CXL 池作为独立 KVCache 服务</td>
+<td>CXL-SpecKV</td>
+</tr>
+</tbody>
+</table>
+<p>来源：主站 essay <a href="/notes/2026/05/13/cxl-kvcache-survey/">CXL + KVCache 现状调研报告</a></p>
+<h3 id="cxl_2">CXL 的限制<a class="headerlink" href="#cxl_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>延迟不适合 GPU 直接 Attention 读取</strong>：CXL 的 ~2μs 延迟远高于 HBM 的 ~1μs，不适合在线 attention kernel 直接访问</li>
+<li><strong>适用场景是预取而非在线</strong>：需要在 decode 之前提前将 KV 从 CXL 预取到 HBM</li>
+<li><strong>生态尚在早期</strong>：CXL 2.0 switch（XConn XC50256）和软件栈（Dynamo KVBM）都在快速迭代中</li>
+</ul>
 <p>一个简化的 Offload 收益模型：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>节省的计算时间 = hit_rate × recompute_time_per_token × offloaded_tokens
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>换入带宽成本 = offloaded_kv_bytes / pcie_bandwidth
@@ -1844,6 +2092,35 @@
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>当 节省的计算时间 &gt; 换入带宽成本 时，Offload 有收益
 </code></pre></div>
 <p>实际系统中还需要考虑 Decode 等待时间、批次填充效率、DRAM 占用等因素，判断是否 Offload 是一个多变量的在线决策问题。</p>
+<h2 id="_4">关联章节<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ul>
+<li>CXL 在存储层次中的位置：<a href="../storage-hierarchy/">存储层级</a></li>
+<li>Beluga 与 RDMA 方案的对比：<a href="../elasticity/">弹性与故障</a></li>
+<li>PD 分离中的 KV 传输：<a href="../pd-disaggregation/">PD 分离</a></li>
+<li>Agent 场景的 offload 决策：<a href="../workloads/">工作负载维度</a></li>
+</ul>
+<h2 id="_5">版本历史<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.1</td>
+<td>2026-05-14</td>
+<td>框架搭建</td>
+</tr>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>新增 CXL 作为 KV Offload 通道（Beluga 实测数据、五层分类、限制）；补充多级 offload 生态进展</td>
+</tr>
+</tbody>
+</table>
 
 
 

@@ -793,6 +793,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-turboquant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. TurboQuant：极致低比特 + 零训练开销
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-hack-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. HACK：同态 KV 压缩
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -864,6 +886,17 @@
     <span class="md-ellipsis">
       
         关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1652,6 +1685,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#5-turboquant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. TurboQuant：极致低比特 + 零训练开销
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-hack-kv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. HACK：同态 KV 压缩
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1723,6 +1778,17 @@
     <span class="md-ellipsis">
       
         关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1949,8 +2015,38 @@
 <td>W4A8KV4 + Lookahead Search 等</td>
 <td><a href="https://arxiv.org/abs/2405.04532">arXiv:2405.04532</a></td>
 </tr>
+<tr>
+<td><strong>TurboQuant</strong></td>
+<td>3.5-bit 近似无损，WHT 旋转 + QJL 1-bit 残差，零训练开销</td>
+<td><a href="https://arxiv.org/abs/2504.19874">arXiv:2504.19874</a></td>
+</tr>
+<tr>
+<td><strong>HACK</strong></td>
+<td>同态 INT2 量化，KV 压缩后不还原直接在 attention 内计算</td>
+<td><a href="https://arxiv.org/abs/2502.03589">arXiv:2502.03589</a></td>
+</tr>
 </tbody>
 </table>
+<h3 id="5-turboquant">5. TurboQuant：极致低比特 + 零训练开销<a class="headerlink" href="#5-turboquant" title="Permanent link">&para;</a></h3>
+<p>TurboQuant 实现了在 LongBench / Needle-in-a-Haystack 上近无损的 ~3.5 bit KV 量化：</p>
+<ul>
+<li><strong>核心技术</strong>：随机旋转（WHT）+ 标量量化 + QJL 1-bit 残差纠偏</li>
+<li><strong>注意力度</strong>：H100 上 4-bit 注意力 logits 比 32-bit 快 8×</li>
+<li><strong>框架集成路线</strong>：</li>
+<li>SGLang PR #23135：3.88× 压缩，93–105% decode 吞吐（uniform mode 比 codebook mode 快 ~15%）</li>
+<li>vLLM PR #40396：v2 添加 FLUTE-style grouped Q heads + vectorized LUT，受 CUDA Graph grid size 约束</li>
+<li>TRT-LLM：使用 NVFP4 原生格式（非 TurboQuant），MLA FP4 模型配 BF16 fallback pool</li>
+</ul>
+<p>来源：主站 reading <a href="/notes/2026/03/27/turboquant-kvcache-3bit/">TurboQuant 详解</a>、<a href="/notes/2026/04/21/turboquant-vllm-sglang-trtllm-integration/">框架集成路线图</a></p>
+<h3 id="6-hack-kv">6. HACK：同态 KV 压缩<a class="headerlink" href="#6-hack-kv" title="Permanent link">&para;</a></h3>
+<p>HACK 的核心创新是<strong>压缩后的 KV 直接驻留在注意力计算路径上</strong>，不进行逐步解压：</p>
+<ul>
+<li><strong>同态量化</strong>：KV 保持 2-bit INT2 格式进入 attention kernel，避免 per-step dequantization</li>
+<li><strong>JCT 降低</strong>：38.6–61.6% vs 基线（disaggregated serving 场景）</li>
+<li><strong>Dequant 成本替换</strong>：CacheGen/KVQuant 的 17–38% JCT dequant 开销被 HACK 的 1.5–3.2% 近似开销替代</li>
+<li><strong>分区策略</strong>：Partition size Π=64 平衡精度与 JCT；求和消除 + V tail block FP16 buffer 关键优化</li>
+</ul>
+<p>来源：主站 reading <a href="/notes/2026/05/08/hack-homomorphic-kv-cache-disaggregated-inference/">HACK 同态 KV 压缩</a></p>
 <h2 id="c">C. 系统层面的协同<a class="headerlink" href="#c" title="Permanent link">&para;</a></h2>
 <h3 id="kv-paged">量化 KV 与 paged 管理<a class="headerlink" href="#kv-paged" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2000,6 +2096,23 @@
 <li>量化 KV 在跨节点传输中的角色：<a href="../pd-disaggregation/">PD 分离</a></li>
 <li>量化对端到端任务精度的影响：<a href="../evaluation/">评估方法</a></li>
 </ul>
+<h2 id="_2">版本历史<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>新增 TurboQuant（3.5-bit 近无损、三框架集成路线）和 HACK（同态 INT2 量化、JCT 38.6–61.6% 降低）代表方法及技术细节</td>
+</tr>
+</tbody>
+</table>
 
 
 

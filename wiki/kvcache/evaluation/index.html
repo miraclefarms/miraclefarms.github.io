@@ -1362,6 +1362,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#scbenchkv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SCBench：KV 生命周期视角的评估框架
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent + KV Cache 长上下文评估
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1671,6 +1704,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#scbenchkv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SCBench：KV 生命周期视角的评估框架
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-kv-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent + KV Cache 长上下文评估
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1866,6 +1932,92 @@
 <p class="admonition-title">指标要结合 Workload 解读</p>
 <p>不同 Benchmark 的结论可能相互矛盾，原因往往是 Workload 不同。在报告性能数据时，必须同时说明 Workload 特征（Prompt 长度分布、Output 长度分布、并发数、Prefix 共享率等）。</p>
 </div>
+<h2 id="scbenchkv">SCBench：KV 生命周期视角的评估框架<a class="headerlink" href="#scbenchkv" title="Permanent link">&para;</a></h2>
+<p>SCBench（Microsoft, arxiv 2412.10319）将 KV cache 评估拆解为四个生命阶段，每个阶段对应不同的测试场景：</p>
+<table>
+<thead>
+<tr>
+<th>生命周期阶段</th>
+<th>SCBench 对应场景</th>
+<th>评估内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Generation</strong></td>
+<td>生成阶段的 KV 写入</td>
+<td>首次 Prefill 和 Decode 的 KV 产生效率</td>
+</tr>
+<tr>
+<td><strong>Compression</strong></td>
+<td>KV 压缩/剪枝后保留效果</td>
+<td>压缩方法在多轮复用下的退化程度</td>
+</tr>
+<tr>
+<td><strong>Retrieval</strong></td>
+<td>长上下文中检索特定信息</td>
+<td>压缩/剪枝方法对远距离信息检索的影响</td>
+</tr>
+<tr>
+<td><strong>Loading</strong></td>
+<td>KV 重载到新请求</td>
+<td>跨请求复用时 KV 的有效性</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心发现：</strong>
+- Sub-O(n) 内存方法（StreamingLLM、SnapKV 等）在单轮测试中表现尚可，但在多轮场景下<strong>系统性退化</strong>——压缩是 query-conditioned 的，新 query 可能使之前丢弃的 KV 变得关键
+- O(n) 稀疏注意力方法在多轮复用场景下保持或提升性能
+- Attention 分布在长生成过程中发生漂移，远离早期上下文的注意力可能随时间衰减</p>
+<p><strong>覆盖矩阵：</strong> 8 种方法 × 6 个模型 × 12 个任务，是当前 KV cache 评估最系统化的基准。</p>
+<p>来源：主站 reading <a href="/notes/2026/04/21/scbench-kv-cache-lifecycle-analysis/">SCBench</a></p>
+<h2 id="agent-kv-cache">Agent + KV Cache 长上下文评估<a class="headerlink" href="#agent-kv-cache" title="Permanent link">&para;</a></h2>
+<p>Agent 场景的 KV cache 评估需要同时关注系统指标和任务成功率：</p>
+<table>
+<thead>
+<tr>
+<th>指标类别</th>
+<th>具体指标</th>
+<th>重要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>系统指标</td>
+<td>Cache hit rate、TTFT、压缩率</td>
+<td>Agent 多轮链路效率</td>
+</tr>
+<tr>
+<td>任务指标</td>
+<td>Agent 成功率、工具调用准确率</td>
+<td>功能正确性保证</td>
+</tr>
+</tbody>
+</table>
+<p><strong>当前研究空白：</strong> 尚无 benchmark 同时结合系统指标和 agent 成功率。现有工作各自独立——SCBench 侧重系统效率，LoCoBench-Agent 侧重多轮交互，WebAgent 侧重 web 操作——没有形成统一的 agent+cache 评估框架。</p>
+<p>来源：主站 essay <a href="/notes/2026/04/08/kvcache-agent-long-context-benchmark/">KV Cache Agent 长上下文 Benchmark</a></p>
+<h2 id="_7">版本历史<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.1</td>
+<td>2026-05-14</td>
+<td>框架搭建</td>
+</tr>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>新增 SCBench KV 生命周期评估框架及核心发现；新增 Agent + KV Cache 评估空白分析</td>
+</tr>
+</tbody>
+</table>
 
 
 

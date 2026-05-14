@@ -1060,10 +1060,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#8-scbench" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SCBench 的生命周期视角
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1629,10 +1651,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#8-scbench" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SCBench 的生命周期视角
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
       
     </span>
   </a>
@@ -1894,12 +1938,73 @@
 <li><strong>配额</strong>：单租户的 KV 占用不能耗尽全局池</li>
 </ul>
 <p>工程实践：cache key 中纳入 tenant_id，按 tenant 分桶维护 LRU，独立配额。</p>
+<h2 id="8-scbench">8. SCBench 的生命周期视角<a class="headerlink" href="#8-scbench" title="Permanent link">&para;</a></h2>
+<p>SCBench（arxiv 2412.10319）从 KV 生命周期的角度重新理解长上下文方法，将 KV 的一生拆解为四个阶段：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>SCBench 场景</th>
+<th>工程含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Generation</strong></td>
+<td>KV 产生与写入</td>
+<td>Prefill/Decode 时的 KV 分配和填充</td>
+</tr>
+<tr>
+<td><strong>Compression</strong></td>
+<td>压缩/剪枝/摘要</td>
+<td>KV 不再增长的收敛过程</td>
+</tr>
+<tr>
+<td><strong>Retrieval</strong></td>
+<td>从 KV 中检索信息</td>
+<td>对远距离历史 token 的注意力查询</td>
+</tr>
+<tr>
+<td><strong>Loading</strong></td>
+<td>KV 被新请求复用</td>
+<td>跨请求 Prefix Cache 命中</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心发现：</strong>
+- Sub-O(n) 内存方法在多轮场景下系统性退化——丢弃的 KV 在新的 query 下可能变得关键
+- O(n) 稀疏注意力方法在跨请求复用下保持或提升性能，说明"保留所有 KV 但稀疏读取"比"丢弃 KV"更稳健
+- 这意味着：在多轮和 Agent 场景下，<strong>精确前缀缓存的价值被低估了</strong></p>
+<p>来源：主站 reading <a href="/notes/2026/04/21/scbench-kv-cache-lifecycle-analysis/">SCBench</a>，主站 essay <a href="/notes/2026/04/08/kvcache-agent-long-context-benchmark/">KV Cache Agent Benchmark</a></p>
 <h2 id="_3">关联章节<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Block / refcount / COW 的基础机制：<a href="../runtime-architecture/">运行时架构</a></li>
 <li>不同 workload 对淘汰策略的不同敏感度：<a href="../workloads/">工作负载维度</a></li>
 <li>跨节点一致性问题在 <a href="../pd-disaggregation/">PD 分离</a> 中的具体表现</li>
+<li>SCBench 的评估方法论：<a href="../evaluation/">评估方法</a> §SCBench</li>
 </ul>
+<h2 id="_4">版本历史<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.1</td>
+<td>2026-05-14</td>
+<td>框架搭建</td>
+</tr>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>新增 SCBench 生命周期四阶段视角及核心发现（Sub-O(n) 多轮退化、O(n) 稀疏注意力稳健性）；更新关联章节</td>
+</tr>
+</tbody>
+</table>
 
 
 
