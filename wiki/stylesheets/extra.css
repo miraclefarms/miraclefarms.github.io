@@ -75,10 +75,10 @@ body {
 ::selection { background: rgba(220,232,116,0.42); color: var(--mf-ink); }
 
 
-/* ── Typography — matches main-site .page / .post-body scale ──────────── */
+/* ── Typography — intentionally denser than main site (~20% smaller) ─── */
 .md-typeset {
-  font-size: 15.5px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.65;
   color: var(--mf-ink);
   font-family: var(--md-text-font);
 }
@@ -93,24 +93,23 @@ body {
   color: var(--mf-ink);
 }
 
-/* Standard article H1 (inside-page) — px-explicit because Material's html is 125% */
+/* Standard article H1 — smaller than main-site's clamp(28.8px,4.1vw,41.6px) */
 .md-typeset h1 {
   font-family: var(--mf-font-serif);
-  font-size: clamp(28px, 3.8vw, 36px);
+  font-size: clamp(20px, 2.2vw, 28px);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.012em;
-  margin: 0.05em 0 0.45em;
+  margin: 0.05em 0 0.4em;
   padding-bottom: 0;
   border-bottom: 0;
 }
-/* Kicker label above the inner-page H1 — feels like main-site .post-kind-tag.
-   Only applies inside .md-content (NOT .wiki-hero which has its own kicker). */
+/* Kicker label above the inner-page H1 */
 .md-content > .md-typeset > h1:first-of-type::before,
 .md-content > .md-typeset > h1:not(.wiki-hero h1):first-of-type::before {
   content: "知识库 · Wiki";
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   font-family: var(--md-text-font);
   font-size: 11px;
   font-weight: 500;
@@ -120,27 +119,27 @@ body {
 }
 .md-typeset h2 {
   font-family: var(--mf-font-serif);
-  font-size: 23px;
+  font-size: 20px;
   line-height: 1.3;
   letter-spacing: -0.005em;
-  margin: 40px 0 12px;
+  margin: 28px 0 8px;
   padding-bottom: 0;
   border-bottom: 0;
   color: var(--mf-ink);
   font-weight: 600;
 }
-.md-typeset h3 { font-size: 17.5px; margin: 26px 0 10px; }
-.md-typeset h4 { font-size: 15.5px; margin: 20px 0 8px; }
+.md-typeset h3 { font-size: 15.5px; margin: 20px 0 7px; }
+.md-typeset h4 { font-size: 14px; margin: 16px 0 6px; }
 
 .md-typeset p,
-.md-typeset li { color: var(--mf-ink); font-size: 15.5px; line-height: 1.72; }
-.md-typeset p { margin: 0 0 0.95em; }
+.md-typeset li { color: var(--mf-ink); font-size: 14px; line-height: 1.65; }
+.md-typeset p { margin: 0 0 0.8em; }
 /* override Material's .md-typeset ol li / ul li (which sets margin 0.5em) */
 .md-typeset ol li,
 .md-typeset ul li { margin-bottom: 0; }
 .md-typeset ol li + li,
-.md-typeset ul li + li { margin-top: 0.22em; }
-.md-typeset ul, .md-typeset ol { padding-left: 22px; margin: 0 0 0.95em; }
+.md-typeset ul li + li { margin-top: 0.18em; }
+.md-typeset ul, .md-typeset ol { padding-left: 22px; margin: 0 0 0.8em; }
 
 .md-typeset a {
   color: var(--mf-accent);
