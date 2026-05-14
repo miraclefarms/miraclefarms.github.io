@@ -98,7 +98,51 @@ HBM → CPU DRAM → NVMe SSD
 
 LMCache 等项目在探索这个方向。详见 [框架对比](frameworks.md)。
 
-## 带宽与命中率的权衡模型
+## CXL 作为 KV Offload 通道
+
+CXL（Compute Express Link）是近年兴起的新型互联技术，对 KV Offload 的工程重心产生了根本性影响。
+
+### CXL 在存储层次中的位置
+
+CXL 连接的内存池处于 DDR 和 NVMe SSD 之间，作为 **warm KV tier**：
+
+| 介质 | 典型容量 | 典型带宽 | 延迟 | KV 角色 |
+|------|----------|----------|------|---------|
+| GPU HBM | 80–192 GB/GPU | 3.35 TB/s | ~1 μs | Hot KV（正在 decode） |
+| CPU DDR | 512 GB–2 TB | 100–200 GB/s | ~100 ns (local) | Warm KV（近期可能复用） |
+| **CXL 内存池** | **2–8 TB** | **~1 TB/s（aggregate）** | **~2 μs（CXL-RPC）** | **Warm KV（跨节点复用）** |
+| NVMe SSD | 4–16 TB | 10–20 GB/s | ~10 μs | Cold KV（存档） |
+| RDMA 远端 | 弹性 | 100–400 GB/s | ~8 μs（RDMA-RC） | Remote KV（跨机传输） |
+
+### Beluga：CXL 内存池化 KV Cache
+
+Beluga（arxiv 2511.20172v2）使用 CXL 2.0 switch 连接的最大 8TB 内存池（1TB/s 聚合带宽），服务 16 台服务器：
+
+- **Cache-hit 场景**：TTFT 1.36s vs RDMA（Mooncake）13.00s，QPS 11.32 vs 1.54 → **7.35× 提升**
+- **关键优势**：load/store 语义可以处理细粒度的 KV cache scatter/gather（Qwen-32B GQA 下每个 16-token Block 含 128 个不连续片段），RDMA 控制开销无法高效处理这种碎片化访问
+- **CXL-RPC**：往返 2.11μs vs RDMA-RC 8.39μs
+
+来源：主站 reading [Beluga：CXL 内存池为什么会改变 KV Cache Offload 的工程重心](/notes/2026/05/13/beluga-cxl-kvcache-memory-pool/)
+
+### CXL 的五层分类
+
+CXL 在 KVCache 生态中的五个应用层次：
+
+| 层次 | 场景 | 代表工作 |
+|------|------|----------|
+| L1: 扩容 | 单机 GPU HBM 不足时 CXL 扩展 | Dynamo KVBM、Penguin MemoryAI |
+| L2: Warm Tier | HBM→CXL 作为多级存储的一层 | Beluga、Predictive Multi-Tier |
+| L3: Prefix Cache | CXL 池作为跨实例共享的 Prefix Cache | TraCT |
+| L4: PD Transfer | PD 分离中通过 CXL 传输 KV | TraCT（TTFT 最高 9.8×, P99 最高 6.2×） |
+| L5: Cache Server | CXL 池作为独立 KVCache 服务 | CXL-SpecKV |
+
+来源：主站 essay [CXL + KVCache 现状调研报告](/notes/2026/05/13/cxl-kvcache-survey/)
+
+### CXL 的限制
+
+- **延迟不适合 GPU 直接 Attention 读取**：CXL 的 ~2μs 延迟远高于 HBM 的 ~1μs，不适合在线 attention kernel 直接访问
+- **适用场景是预取而非在线**：需要在 decode 之前提前将 KV 从 CXL 预取到 HBM
+- **生态尚在早期**：CXL 2.0 switch（XConn XC50256）和软件栈（Dynamo KVBM）都在快速迭代中
 
 一个简化的 Offload 收益模型：
 
@@ -110,3 +154,17 @@ LMCache 等项目在探索这个方向。详见 [框架对比](frameworks.md)。
 ```
 
 实际系统中还需要考虑 Decode 等待时间、批次填充效率、DRAM 占用等因素，判断是否 Offload 是一个多变量的在线决策问题。
+
+## 关联章节
+
+- CXL 在存储层次中的位置：[存储层级](storage-hierarchy.md)
+- Beluga 与 RDMA 方案的对比：[弹性与故障](elasticity.md)
+- PD 分离中的 KV 传输：[PD 分离](pd-disaggregation.md)
+- Agent 场景的 offload 决策：[工作负载维度](workloads.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | 新增 CXL 作为 KV Offload 通道（Beluga 实测数据、五层分类、限制）；补充多级 offload 生态进展

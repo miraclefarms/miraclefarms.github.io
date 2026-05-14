@@ -132,3 +132,43 @@ PCIe/RDMA 实际传输带宽 vs 最大可用带宽的比值。带宽利用率过
 
 !!! note "指标要结合 Workload 解读"
     不同 Benchmark 的结论可能相互矛盾，原因往往是 Workload 不同。在报告性能数据时，必须同时说明 Workload 特征（Prompt 长度分布、Output 长度分布、并发数、Prefix 共享率等）。
+
+## SCBench：KV 生命周期视角的评估框架
+
+SCBench（Microsoft, arxiv 2412.10319）将 KV cache 评估拆解为四个生命阶段，每个阶段对应不同的测试场景：
+
+| 生命周期阶段 | SCBench 对应场景 | 评估内容 |
+|-------------|-----------------|----------|
+| **Generation** | 生成阶段的 KV 写入 | 首次 Prefill 和 Decode 的 KV 产生效率 |
+| **Compression** | KV 压缩/剪枝后保留效果 | 压缩方法在多轮复用下的退化程度 |
+| **Retrieval** | 长上下文中检索特定信息 | 压缩/剪枝方法对远距离信息检索的影响 |
+| **Loading** | KV 重载到新请求 | 跨请求复用时 KV 的有效性 |
+
+**核心发现：**
+- Sub-O(n) 内存方法（StreamingLLM、SnapKV 等）在单轮测试中表现尚可，但在多轮场景下**系统性退化**——压缩是 query-conditioned 的，新 query 可能使之前丢弃的 KV 变得关键
+- O(n) 稀疏注意力方法在多轮复用场景下保持或提升性能
+- Attention 分布在长生成过程中发生漂移，远离早期上下文的注意力可能随时间衰减
+
+**覆盖矩阵：** 8 种方法 × 6 个模型 × 12 个任务，是当前 KV cache 评估最系统化的基准。
+
+来源：主站 reading [SCBench](/notes/2026/04/21/scbench-kv-cache-lifecycle-analysis/)
+
+## Agent + KV Cache 长上下文评估
+
+Agent 场景的 KV cache 评估需要同时关注系统指标和任务成功率：
+
+| 指标类别 | 具体指标 | 重要性 |
+|----------|---------|--------|
+| 系统指标 | Cache hit rate、TTFT、压缩率 | Agent 多轮链路效率 |
+| 任务指标 | Agent 成功率、工具调用准确率 | 功能正确性保证 |
+
+**当前研究空白：** 尚无 benchmark 同时结合系统指标和 agent 成功率。现有工作各自独立——SCBench 侧重系统效率，LoCoBench-Agent 侧重多轮交互，WebAgent 侧重 web 操作——没有形成统一的 agent+cache 评估框架。
+
+来源：主站 essay [KV Cache Agent 长上下文 Benchmark](/notes/2026/04/08/kvcache-agent-long-context-benchmark/)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | 新增 SCBench KV 生命周期评估框架及核心发现；新增 Agent + KV Cache 评估空白分析

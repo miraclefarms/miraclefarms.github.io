@@ -84,9 +84,57 @@ TP 配置不同时，同一 Sequence 的 KVCache 在两端的存储布局不同�
 
 不同 GPU 型号（如 H100 + A100，或 H100 + H800）在 HBM 带宽、显存大小和 RDMA 连接能力上存在差异，进一步复杂化 KV 放置决策。
 
-## 未来方向（待补充）
+## PPD 分离：多轮对话场景的细粒度方案
 
-- KV 压缩传输：传输前对 KV 进行量化（如 FP8 或更低精度），减少传输带宽
-- 流水线传输：Prefill 计算与 KV 传输重叠，隐藏传输延迟
-- 跨节点 Prefix Cache：Decode 节点通过 RDMA 直接读取其他节点的 KV，无需 Prefill
-- 弹性 Prefill 池：根据请求流量动态增减 Prefill 节点数量
+传统的 PD 分离将所有 Prefill 统一发给 Prefill 节点。但在多轮对话中，Turn 2+ 的增量 Prefill（append-prefill）很小——只追加了本轮用户新输入和前一轮模型输出的 token。
+
+**PPD（Prefill-Prefill-Decode Disaggregation）** 的核心洞察：将 Prefill 拆分为 Turn 1 的 full prefill 和 Turn 2+ 的 append-prefill：
+
+- Full prefill（Turn 1）→ 发送到专用的 Prefill 节点
+- Append-prefill（Turn 2+）→ 在 Decode 节点本地处理
+
+**实测数据：**
+- Full prefill 在 Decode 节点会导致约 48% 的 TPOT 恶化（batch size 200）
+- Append-prefill 在 Decode 节点仅导致约 2% 的 TPOT 恶化
+- Turn 2 TTFT 降低 48–73%（当 Decode 节点处理 append-prefill 时）
+- KV 传输负载减少约 75%（不需要每次传输 Turn 1 的 KV）
+
+**工程价值：** PPD 让多轮对话场景的 KV 管理从"每次传输全部上下文"变成"在本地增量构建"，大幅降低了 PD 分离的通信开销。
+
+来源：主站 reading [PPD Disaggregation](/notes/2026/05/08/ppd-disaggregation-multiturn-llm-serving/)
+
+## Prefill-as-a-Service：跨数据中心 Prefill
+
+当 Prefill 和 Decode 不在同一数据中心时，KV Transfer 面临更大的带宽约束。
+
+**Hybrid Attention 降低 KV 传输成本：** 将不同层使用不同的 Attention 机制——部分层用 full attention（需要传输完整 KV），部分层用 linear attention（只需传输小的 recurrent state）。Hybrid attention 将 KV 吞吐从 ~60 Gbps（dense）降至 ~3–8 Gbps，使跨数据中心 Prefill 在带宽上可行。
+
+**PrfaaS 调度策略：** 只将长请求（≥19.4K tokens 阈值）路由到远程 Prefill 集群，短请求本地处理。实测达到 54% 吞吐增益，P90 TTFT 从 9.73s 降至 3.51s（64% 降低）。
+
+来源：主站 reading [Prefill-as-a-Service](/notes/2026/04/19/prefill-as-a-service-cross-datacenter-kvcache/)
+
+## ZeRO-Prefill：MoE 推理中的 KV 放置优化
+
+MoE 模型中，Expert Parallelism（EP）将不同专家权重分布到不同 GPU 上。传统做法是"把 token 路由到专家所在 GPU"——但这意味着 KV cache 也要跟着迁移。
+
+**ZeRO-Prefill 反向思路：** 将专家权重异步 AllGather 到 Prefill 所在 GPU，而不是把 token 送过去。这避免了 KV copy 和 DP attention 的冗余（每个 EP rank 都存一份相同 KV），将 KV 视为"应该留在原地"的状态。
+
+- 65.3% 的生产 token 是 prefill-only（不需要持续 decode）
+- 1.35–1.37× 吞吐提升，MFU 29.8–36.2% vs 基线 ≤20.09%
+- 部署窗口从 ≥4 GPU 扩展到 1–8 GPU
+
+来源：主站 reading [ZeRO-Prefill](/notes/2026/05/14/zeRO-prefill-async-ep-moe-prefill-serving/)
+
+## 关联章节
+
+- KV Transfer 的物理通道：[存储层级](storage-hierarchy.md)
+- 分布式 KV 池与 PD 分离的集成：[Prefix Cache](prefix-cache.md) §分布式
+- PPD 在多轮场景的详细分析：[工作负载维度](workloads.md)
+- TRT-LLM 的 Disaggregated serving 实现：[框架对比](frameworks.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | 新增 PPD 分离（多轮 append-prefill 本地化）、Prefill-as-a-Service（跨数据中心 hybrid attention）、ZeRO-Prefill（MoE 推理 KV 放置）；补充关联章节

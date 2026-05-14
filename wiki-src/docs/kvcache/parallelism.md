@@ -127,3 +127,9 @@ SP/CP 的 prefix cache 是开放问题——目前主流引擎对长上下文 + 
 - 路由与亲和性如何让多副本命中：[路由与亲和性](routing.md)
 - TP 不对称的 PD 分离：[PD 分离](pd-disaggregation.md)
 - SP/CP 与 prefix cache 的开放问题：[维度交叉 §3.3](crossings.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |

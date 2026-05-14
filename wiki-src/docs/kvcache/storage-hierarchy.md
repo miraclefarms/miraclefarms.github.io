@@ -114,8 +114,33 @@ L4 是支持**跨实例 Prefix Cache**和**PD 分离 KV Transfer**的物理基�
 | TCP/IP | 兼容性场景，性能最差 |
 | **CXL（前瞻）** | 内存语义跨设备共享，可能重塑 L2/L3 |
 
+## 6. CXL 存储层（前瞻）
+
+CXL（Compute Express Link）内存池正在成为介于 L2 DRAM 和 L4 远端 RDMA 池之间的新层级：
+
+| 层级 | 典型容量 | 带宽 | 延迟 | 适合角色 |
+|------|----------|------|------|----------|
+| **CXL 内存池** | **2–8 TB**（CXL 2.0 switch） | **~1 TB/s（aggregate）** | **~2 μs（CXL-RPC）** | Warm KV tier，跨节点 prefix cache |
+
+**Beluga 实测对比**（CXL 2.0 switch, 8TB 池, 16 服务器）：
+- Cache-hit TTFT：1.36s（CXL） vs 13.00s（RDMA/Mooncake），7.35× 提升
+- QPS：11.32 vs 1.54
+- CXL-RPC 往返 2.11μs vs RDMA-RC 8.39μs
+
+**关键差异：** CXL 的 load/store 语义天然适合 KV cache 的碎片化访问——Qwen-32B GQA 下每个 16-token Block 含 128 个不连续片段，RDMA 需多次控制消息，CXL 直接内存读写。
+
+来源：主站 reading [Beluga](/notes/2026/05/13/beluga-cxl-kvcache-memory-pool/)，主站 essay [CXL + KVCache 调研](/notes/2026/05/13/cxl-kvcache-survey/)
+
 ## 关联章节
 
 - 跨层级搬运的具体机制：[KV Offload](offload.md)
+- CXL offload 详解及五层分类：[KV Offload](offload.md) §CXL
 - 跨节点 KV 传输的部署侧讨论：[PD 分离](pd-disaggregation.md)
 - L4 远端 KV 池的产品化前瞻：[未来方向](future.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | 新增 CXL 存储层（前瞻），含 Beluga 实测数据与 RDMA 对比；更新关联章节

@@ -130,8 +130,34 @@
 
 工程实践：cache key 中纳入 tenant_id，按 tenant 分桶维护 LRU，独立配额。
 
+## 8. SCBench 的生命周期视角
+
+SCBench（arxiv 2412.10319）从 KV 生命周期的角度重新理解长上下文方法，将 KV 的一生拆解为四个阶段：
+
+| 阶段 | SCBench 场景 | 工程含义 |
+|------|-------------|----------|
+| **Generation** | KV 产生与写入 | Prefill/Decode 时的 KV 分配和填充 |
+| **Compression** | 压缩/剪枝/摘要 | KV 不再增长的收敛过程 |
+| **Retrieval** | 从 KV 中检索信息 | 对远距离历史 token 的注意力查询 |
+| **Loading** | KV 被新请求复用 | 跨请求 Prefix Cache 命中 |
+
+**核心发现：**
+- Sub-O(n) 内存方法在多轮场景下系统性退化——丢弃的 KV 在新的 query 下可能变得关键
+- O(n) 稀疏注意力方法在跨请求复用下保持或提升性能，说明"保留所有 KV 但稀疏读取"比"丢弃 KV"更稳健
+- 这意味着：在多轮和 Agent 场景下，**精确前缀缓存的价值被低估了**
+
+来源：主站 reading [SCBench](/notes/2026/04/21/scbench-kv-cache-lifecycle-analysis/)，主站 essay [KV Cache Agent Benchmark](/notes/2026/04/08/kvcache-agent-long-context-benchmark/)
+
 ## 关联章节
 
 - Block / refcount / COW 的基础机制：[运行时架构](runtime-architecture.md)
 - 不同 workload 对淘汰策略的不同敏感度：[工作负载维度](workloads.md)
 - 跨节点一致性问题在 [PD 分离](pd-disaggregation.md) 中的具体表现
+- SCBench 的评估方法论：[评估方法](evaluation.md) §SCBench
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | 新增 SCBench 生命周期四阶段视角及核心发现（Sub-O(n) 多轮退化、O(n) 稀疏注意力稳健性）；更新关联章节

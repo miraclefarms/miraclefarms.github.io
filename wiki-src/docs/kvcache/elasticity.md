@@ -117,3 +117,9 @@ KV 弹性策略与系统 SLO 直接相关：
 - 抢占的具体机制：[运行时架构 §Scheduler](runtime-architecture.md)、[KV Offload](offload.md)
 - 路由层的扩缩容感知：[路由与亲和性](routing.md)
 - 与不同工作负载的契合度：[工作负载维度](workloads.md)、[维度交叉 §3.3](crossings.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |

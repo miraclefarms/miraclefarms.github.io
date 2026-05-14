@@ -113,8 +113,40 @@ DeepSeek-V2/V3 的路线：将 K/V 投影到一个**低秩潜空间**存储，at
 | SWA | 中（长程信息） | 中 | 低（窗口滑动破坏 prefix） |
 | Mamba | 高（与 Transformer 行为差异大） | 不兼容 | 不适用 |
 
+## 5. Attention Sink：因果解码器中的注意力极端值
+
+Attention Sink 是因果解码器中普遍存在的结构现象——初始 token 获得不成比例的注意力分数，这种行为影响了 KV cache 的驱逐策略设计。
+
+### 形成机制
+
+主站 reading 详细分析了 attention sink 从统计到结构的完整形成链路：
+
+1. **因果 mask** → 早期 token 的 QK 方差失衡（早期 token 只与少数 token 交互，后期 token 与全部位置交互）
+2. **值聚合方差差异** → $W_O$ 投影保留并放大各位置的方差差异
+3. **FFN Super Neuron 放大** → 特定维度（如 Llama-2-7B 中维度 7890）充当"超级神经元"，将 token 级方差差异转化为维度级表征差距
+4. **维度差距锁定 QK** → 后续层的 QK 计算被固化在初始 bias 上
+
+### 可迁移性
+
+Attention sink 不是 token 的固有属性，而是由**位置**决定的：
+- 在任意位置插入 sink 触发 token（如 BOS），sink 会从原始位置迁移到新位置
+- 这为前缀缓存的设计提供了启示：只要 system prompt 以 BOS 开头，prefix cache 的 KV 可以稳定复用
+
+### 对 KVCache 的意义
+
+- StreamingLLM 的"保留 sink token + 滑动窗口"策略利用了 attention sink 的可预测性——初始几个 token 的 KV 必须保留
+- Head-wise RMSNorm（HeadNorm）可降低 sink 效应的幅度，将有效秩从 343.7 提升至 446.0（152M 参数模型，20B tokens 训练），减少信息向少数 token 的过度集中
+
+来源：主站 reading [Attention Sink 的结构起点](/notes/2026/05/11/attention-sink-variance-super-neurons/)
+
 ## 关联章节
 
 - 与稀疏化（[Sparsity](sparsity.md)）的边界：本章是"模型本身就这样设计"，稀疏化是"训练好的模型在推理时丢一部分 KV"
 - 与压缩量化（[Compression & Quantization](compression-quantization.md)）的边界：本章改 KV 的"形状/语义"，压缩量化改 KV 的"位宽/秩"
 - 在 [维度交叉 §3.1](crossings.md) 中讨论 attention 变体与 paged 内存管理、prefix cache 的兼容性
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.2 | 2026-05-14 | 新增 §5 Attention Sink：形成机制（四步放大链路）、可迁移性（mask 干预实验）、对 KVCache 设计的启示（StreamingLLM sink 保留 / HeadNorm 有效秩提升） |

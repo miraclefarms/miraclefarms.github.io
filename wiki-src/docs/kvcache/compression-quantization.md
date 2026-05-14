@@ -77,6 +77,32 @@ paged attention 下，**per-block** 也是常见粒度——每个 KV block 共�
 | **KVQuant** | 4-bit per-channel + outlier 处理 + RoPE 对齐 | [arXiv:2401.18079](https://arxiv.org/abs/2401.18079) |
 | **Atom** | 推理全栈低比特（含 KV）| [arXiv:2310.19102](https://arxiv.org/abs/2310.19102) |
 | **QServe** | W4A8KV4 + Lookahead Search 等 | [arXiv:2405.04532](https://arxiv.org/abs/2405.04532) |
+| **TurboQuant** | 3.5-bit 近似无损，WHT 旋转 + QJL 1-bit 残差，零训练开销 | [arXiv:2504.19874](https://arxiv.org/abs/2504.19874) |
+| **HACK** | 同态 INT2 量化，KV 压缩后不还原直接在 attention 内计算 | [arXiv:2502.03589](https://arxiv.org/abs/2502.03589) |
+
+### 5. TurboQuant：极致低比特 + 零训练开销
+
+TurboQuant 实现了在 LongBench / Needle-in-a-Haystack 上近无损的 ~3.5 bit KV 量化：
+
+- **核心技术**：随机旋转（WHT）+ 标量量化 + QJL 1-bit 残差纠偏
+- **注意力度**：H100 上 4-bit 注意力 logits 比 32-bit 快 8×
+- **框架集成路线**：
+  - SGLang PR #23135：3.88× 压缩，93–105% decode 吞吐（uniform mode 比 codebook mode 快 ~15%）
+  - vLLM PR #40396：v2 添加 FLUTE-style grouped Q heads + vectorized LUT，受 CUDA Graph grid size 约束
+  - TRT-LLM：使用 NVFP4 原生格式（非 TurboQuant），MLA FP4 模型配 BF16 fallback pool
+
+来源：主站 reading [TurboQuant 详解](/notes/2026/03/27/turboquant-kvcache-3bit/)、[框架集成路线图](/notes/2026/04/21/turboquant-vllm-sglang-trtllm-integration/)
+
+### 6. HACK：同态 KV 压缩
+
+HACK 的核心创新是**压缩后的 KV 直接驻留在注意力计算路径上**，不进行逐步解压：
+
+- **同态量化**：KV 保持 2-bit INT2 格式进入 attention kernel，避免 per-step dequantization
+- **JCT 降低**：38.6–61.6% vs 基线（disaggregated serving 场景）
+- **Dequant 成本替换**：CacheGen/KVQuant 的 17–38% JCT dequant 开销被 HACK 的 1.5–3.2% 近似开销替代
+- **分区策略**：Partition size Π=64 平衡精度与 JCT；求和消除 + V tail block FP16 buffer 关键优化
+
+来源：主站 reading [HACK 同态 KV 压缩](/notes/2026/05/08/hack-homomorphic-kv-cache-disaggregated-inference/)
 
 ## C. 系统层面的协同
 
@@ -113,3 +139,9 @@ paged attention 下，**per-block** 也是常见粒度——每个 KV block 共�
 - 量化与 paged 块管理：[Paged KV](paged-kv.md)
 - 量化 KV 在跨节点传输中的角色：[PD 分离](pd-disaggregation.md)
 - 量化对端到端任务精度的影响：[评估方法](evaluation.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.2 | 2026-05-14 | 新增 TurboQuant（3.5-bit 近无损、三框架集成路线）和 HACK（同态 INT2 量化、JCT 38.6–61.6% 降低）代表方法及技术细节 |

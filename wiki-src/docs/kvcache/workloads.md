@@ -57,10 +57,34 @@
     - 实践上：**可以复用截至工具调用前的 prefix**，工具结果及其后的内容必须重新 prefill
 - **多 agent 的 KV 隔离**：每个 agent 的 KV 是独立的，但 prefix 重叠的部分应共享
 
+### 工程实证：Claude Code 的上下文与缓存工程
+
+主站 essay 对 Anthropic 的 prompt caching 接口进行了详细分析，揭示了 Agent 场景的几个关键洞察：
+
+- **90% 的缓存失效来自服务器端路由/驱逐，而非客户端变化**——优化应集中在服务端调度而非客户端 prompt 设计
+- **Cache 价格差 10×**：cache read $0.30/MTok vs full input $3/MTok，命中率是 Agent 推理成本的单变量决定性因素
+- **缓存失效的诊断粒度**：Anthropic 将失效分为 5 类——eviction, ttl_expired, prompt_too_large, rate_limited, usage_capped——每一类对应不同的优化策略
+- **Agent list 位置优化**：将可用工具列表从 tool description 移至 message attachment，消除了 10.2% 的 cache_creation_tokens
+
+来源：主站 essay [Claude Code Context & KV Cache 工程](/notes/2026/05/08/claude-code-context-kvcache-engineering/)
+
+### Mooncake Store 的 Agentic Trace 实测
+
+在 610 条真实 agent trace 上，Mooncake Store 的分布式 KV 池实现：
+- Cache hit rate：1.7% → 92.2%（+54×）
+- Throughput：3.8×
+- P50 TTFT：降低 46×
+- 端到端延迟：降低 8.6×
+
+这说明 Agent 场景的跨请求前缀共享远高于最初预期——一旦系统支持，收益是阶跃式的。
+
+来源：主站 reading [vLLM × Mooncake Store](/notes/2026/05/07/vllm-mooncake-store-distributed-kv-cache/)
+
 ### 推荐配置
 
 - block 粒度细一点（如 16），便于在 tool 调用断点处对齐
 - prefix cache 命中以 sealed block 为单位，部分块未填满时不能命中——这对 agent 类负载很关键
+- 启用分布式 KV 池（Mooncake Store / LMCache）以最大化跨实例命中
 
 ---
 
@@ -163,3 +187,10 @@
 - 各算法路线的细节：[Attention 变体](attention-variants.md)、[稀疏化](sparsity.md)、[压缩与量化](compression-quantization.md)
 - 路由的具体机制：[路由与亲和性](routing.md)
 - 工作负载与维度交叉的进一步讨论：[维度交叉 §3.3 / §3.4](crossings.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
+| v0.2 | 2026-05-14 | Agent 章节纳入 Claude Code 缓存工程实证（90%失效来自服务端路由、10× cache 价格差、5 类失效诊断）及 Mooncake Store agentic trace 实测数据（hit 1.7%→92.2%, 3.8× 吞吐）

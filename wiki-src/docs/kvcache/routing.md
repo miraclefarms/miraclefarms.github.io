@@ -116,3 +116,9 @@ session affinity 是简单的 HTTP 层面就能做（cookie/header），cache-aw
 - 多副本扩缩容时的 cache 迁移：[弹性与故障](elasticity.md)
 - prefix cache 的本地实现：[Prefix Cache](prefix-cache.md)
 - 工作负载特征对路由策略的影响：[工作负载维度](workloads.md)
+
+## 版本历史
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| v0.1 | 2026-05-14 | 框架搭建 |
