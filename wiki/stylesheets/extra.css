@@ -1,12 +1,10 @@
-/* MiracleFarms Wiki — visual alignment with main site */
+/* MiracleFarms Wiki — aligned with main site (assets/css/site.css) */
 
-/* Load main site fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-/* ── Palette variables ───────────────────────────────────────────────────── */
+/* ── Palette — original wiki olive/green tones (intentionally distinct) ── */
 :root,
 [data-md-color-scheme="default"] {
-  /* MiracleFarms palette */
   --mf-bg:            #fbfaed;
   --mf-bg-soft:       #eff3d8;
   --mf-bg-hover:      #e5edc1;
@@ -15,12 +13,13 @@
   --mf-ink-faint:     rgba(39,42,32,0.46);
   --mf-rule:          rgba(77,86,38,0.16);
   --mf-rule-soft:     rgba(77,86,38,0.09);
+  --mf-tag-bg:        rgba(129,157,49,0.13);
   --mf-accent:        #5d741d;
   --mf-accent-soft:   #819d31;
   --mf-accent-warm:   #b9941f;
   --mf-accent-glow:   #dce874;
 
-  /* Override Material default-scheme variables */
+  /* Override Material default-scheme tokens */
   --md-default-bg-color:            #fbfaed;
   --md-default-fg-color:            #272a20;
   --md-default-fg-color--light:     rgba(39,42,32,0.70);
@@ -53,22 +52,19 @@
   --md-footer-fg-color--light:      rgba(251,250,237,0.50);
   --md-footer-fg-color--lighter:    rgba(251,250,237,0.32);
 
-  --md-shadow-z1:    0 0 0 1px rgba(77,86,38,0.08), 0 1px 4px rgba(39,42,32,0.08);
-  --md-shadow-z2:    0 0 0 1px rgba(77,86,38,0.08), 0 4px 16px rgba(39,42,32,0.12);
-  --md-shadow-z3:    0 0 0 1px rgba(77,86,38,0.08), 0 8px 32px rgba(39,42,32,0.14);
+  --md-shadow-z1: 0 0 0 1px rgba(77,86,38,0.08), 0 1px 4px rgba(39,42,32,0.08);
+  --md-shadow-z2: 0 0 0 1px rgba(77,86,38,0.08), 0 4px 16px rgba(39,42,32,0.12);
+  --md-shadow-z3: 0 0 0 1px rgba(77,86,38,0.08), 0 8px 32px rgba(39,42,32,0.14);
 
-  /* Fonts */
-  --md-text-font:     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-                      "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
-  --md-code-font:     "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --md-text-font:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --md-code-font:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --mf-font-serif: "Source Serif 4", "Source Serif Pro", "Noto Serif SC",
+                   "Source Han Serif SC", Georgia, "Songti SC", serif;
 }
 
-/* ── Scroll offset for sticky header ────────────────────────────────────────── */
-html {
-  scroll-padding-top: 72px;
-}
-
-/* ── Base ────────────────────────────────────────────────────────────────── */
+html { scroll-padding-top: 72px; }
 body {
   background: var(--mf-bg);
   color: var(--mf-ink);
@@ -76,64 +72,66 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-
 ::selection { background: rgba(220,232,116,0.42); color: var(--mf-ink); }
 
-/* ── Typography ──────────────────────────────────────────────────────────── */
+
+/* ── Typography — matches main-site .page / .post-body scale ──────────── */
 .md-typeset {
-  font-size: 10px;
+  font-size: 17px;
   line-height: 1.7;
   color: var(--mf-ink);
+  font-family: var(--md-text-font);
 }
 
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3,
 .md-typeset h4 {
-  font-family: "Source Serif 4", "Source Serif Pro", "Noto Serif SC",
-               Georgia, "Songti SC", serif;
-  letter-spacing: 0;
+  font-family: var(--mf-font-serif);
+  letter-spacing: -0.005em;
   font-weight: 600;
   color: var(--mf-ink);
 }
 
+/* Standard article H1 (inside-page) */
 .md-typeset h1 {
-  font-size: 1.4em;
+  font-size: 2rem;
   line-height: 1.2;
-  letter-spacing: 0;
-  margin: .2em 0 .6em;
-  padding-bottom: .25em;
-  border-bottom: 1px solid var(--mf-rule-soft);
-}
-
-.md-typeset h2 {
-  font-size: 1.18em;
-  line-height: 1.3;
-  border-bottom: none;
+  letter-spacing: -0.012em;
+  margin: 0.2em 0 0.5em;
   padding-bottom: 0;
-  margin-top: 1.6em;
-  margin-bottom: .4em;
+  border-bottom: 0;
 }
-
-.md-typeset h3 { font-size: 1.04em; margin-top: 1.2em; margin-bottom: .3em; }
-.md-typeset h4 { font-size: 0.97em; margin-top: 1em; }
+.md-typeset h2 {
+  font-size: 1.45rem;
+  line-height: 1.3;
+  margin: 2em 0 0.4em;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.md-typeset h3 { font-size: 1.15rem; margin: 1.6em 0 0.35em; }
+.md-typeset h4 { font-size: 1rem; margin: 1.3em 0 0.3em; }
 
 .md-typeset p,
-.md-typeset li { color: var(--mf-ink); }
-.md-typeset li { margin-bottom: .25em; }
+.md-typeset li { color: var(--mf-ink); font-size: 17px; line-height: 1.75; }
+.md-typeset li { margin-bottom: .35em; }
 
 .md-typeset a {
   color: var(--mf-accent);
   text-decoration: underline;
   text-decoration-color: rgba(93,116,29,0.35);
   text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
 }
 .md-typeset a:hover {
   text-decoration-color: var(--mf-accent);
   background: transparent;
 }
 
-/* Hide the pilcrow (¶) permalink that appears next to headings */
+.md-typeset strong { font-weight: 650; color: var(--mf-ink); }
+.md-typeset em { color: var(--mf-ink-soft); }
+
+/* Pilcrow permalinks */
 .md-typeset .headerlink {
   opacity: 0;
   margin-left: .35em;
@@ -146,11 +144,11 @@ body {
 .md-typeset h4:hover .headerlink { opacity: .35; }
 .md-typeset .headerlink:hover { opacity: 1 !important; }
 
-/* ── Page shell ──────────────────────────────────────────────────────────── */
-.md-grid {
-  max-width: 48rem;
-}
 
+/* ── Page shell — narrow column like main site .page ──────────────────── */
+.md-grid {
+  max-width: 1100px;
+}
 .md-main {
   background:
     radial-gradient(circle at 50% -120px, rgba(220,232,116,0.32), transparent 340px),
@@ -159,88 +157,123 @@ body {
 .md-main__inner {
   margin-top: 0;
 }
-.md-content__inner {
-  padding-top: 1.35rem;
-  padding-bottom: 4rem;
+.md-content {
+  /* article column constrained like main site .page */
+  max-width: 680px;
+  margin: 0 auto;
 }
-.md-content__inner::before {
-  height: 0.4rem;
+.md-content__inner {
+  padding: 1.3rem 0 5rem;
+  margin: 0;
+}
+.md-content__inner::before { height: 0; }
+
+/* When sidebars are present, give a little breathing room */
+@media (min-width: 76.25em) {
+  .md-content {
+    max-width: 680px;
+  }
 }
 
-/* ── Wiki home ───────────────────────────────────────────────────────────── */
+/* ── Wiki hero — mirrors main-site .pg-meta / .pg-icon / .pg-title ────── */
 .md-typeset .wiki-hero {
   position: relative;
-  margin: .2rem 0 1.7rem;
-  padding: 1.3rem 0 1.8rem;
+  margin: 0 0 1.6rem;
+  padding: 1.5rem 0 1.8rem;
   border-bottom: 1px solid var(--mf-rule-soft);
 }
+
+/* Kicker → like .pg-meta on main site (12px, ink-faint, uppercase-ish) */
 .md-typeset .wiki-kicker {
-  margin: 0 0 1.65rem;
-  color: var(--mf-accent-soft);
+  margin: 0 0 0;
+  color: var(--mf-ink-faint);
   font-family: var(--md-text-font);
-  font-size: .6rem;
-  font-weight: 500;
-  letter-spacing: .14em;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   line-height: 1.4;
-  text-transform: uppercase;
+  text-transform: none;
 }
+
+/* Hero mark → like .pg-icon (32px emoji, top-spacing) */
 .md-typeset .wiki-hero-mark {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  width: 2rem;
-  height: 2rem;
-  margin-bottom: .65rem;
+  width: auto;
+  height: 1em;
+  margin: 2.5rem 0 0;
   color: var(--mf-accent);
-  font-size: 1.65rem;
+  font-size: 32px;
   line-height: 1;
+  opacity: 0.85;
 }
+
+/* Hero h1 → like .pg-title (44px serif) */
 .md-typeset .wiki-hero h1 {
-  max-width: 11em;
-  margin: 0 0 .55rem;
+  max-width: none;
+  margin: 14px 0 10px;
   padding: 0;
   border: 0;
   color: var(--mf-ink);
-  font-size: 1.6rem;
+  font-family: var(--mf-font-serif);
+  font-size: 44px;
+  font-weight: 600;
   line-height: 1.18;
-  letter-spacing: 0;
+  letter-spacing: -0.012em;
 }
-.md-typeset .wiki-hero h1 .headerlink {
-  display: none;
-}
+.md-typeset .wiki-hero h1 .headerlink { display: none; }
+
+/* Hero subtitle paragraphs → like .pg-sub (italic serif 18px) */
 .md-typeset .wiki-hero > p:not(.wiki-kicker) {
-  max-width: 38rem;
-  margin: .45rem 0 0;
+  max-width: none;
+  margin: 4px 0 6px;
   color: var(--mf-ink-soft);
-  font-family: "Source Serif 4", "Source Serif Pro", "Noto Serif SC", Georgia, serif;
-  font-size: .9rem;
-  line-height: 1.72;
+  font-family: var(--mf-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
 }
+.md-typeset .wiki-hero > p:not(.wiki-kicker) + p:not(.wiki-kicker) {
+  color: var(--mf-ink-faint);
+  font-style: normal;
+  font-family: var(--md-text-font);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 6px;
+}
+
+/* Action row → like main-site .pill-row / .pill */
 .md-typeset .wiki-action-row,
 .md-typeset .wiki-action-row p {
   display: flex;
   flex-wrap: wrap;
-  gap: .45rem;
-  margin: 1rem 0 0;
+  gap: 8px;
+  margin: 18px 0 0;
 }
 .md-typeset .wiki-action {
   display: inline-flex;
   align-items: center;
-  min-height: 2rem;
-  padding: .35rem .7rem;
+  gap: 6px;
+  min-height: 0;
+  padding: 5px 10px;
   border: 1px solid var(--mf-rule);
   border-radius: 4px;
-  background: rgba(251,250,237,0.72);
+  background: var(--mf-bg);
   color: var(--mf-ink-soft);
   font-family: var(--md-text-font);
-  font-size: .68rem;
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
   text-decoration: none;
+  cursor: pointer;
+  transition: background 0.1s;
 }
 .md-typeset .wiki-action:hover {
-  background: var(--mf-bg-hover);
+  background: var(--mf-bg-soft);
   color: var(--mf-ink);
+  text-decoration: none;
 }
 .md-typeset .wiki-action-primary {
   border-color: var(--mf-accent);
@@ -251,181 +284,200 @@ body {
   background: #465816;
   color: var(--mf-bg);
 }
+
+
+/* ── Callout — matches main-site .callout ─────────────────────────────── */
 .md-typeset .wiki-callout {
   display: flex;
-  gap: .75rem;
-  margin: 1.4rem 0 2.1rem;
-  padding: .95rem 1.05rem;
+  gap: 14px;
+  margin: 28px 0;
+  padding: 18px 20px 18px 18px;
+  background: var(--mf-bg-soft);
+  border-radius: 2px;
   border-left: 2px solid var(--mf-accent);
-  border-radius: 4px;
-  background: linear-gradient(135deg, rgba(239,243,216,0.86), rgba(251,250,237,0.68));
-  color: var(--mf-ink-soft);
-  font-size: .78rem;
+  color: var(--mf-ink);
+  font-size: 15px;
   line-height: 1.65;
 }
-.md-typeset .wiki-callout p {
-  margin: 0;
-  color: inherit;
-}
-.md-typeset .wiki-callout strong {
-  color: var(--mf-ink);
-}
+.md-typeset .wiki-callout p { margin: 0; color: var(--mf-ink); }
+.md-typeset .wiki-callout p + p { margin-top: 8px; }
+.md-typeset .wiki-callout strong { color: var(--mf-ink); font-weight: 600; }
 .md-typeset .wiki-callout-icon {
   flex: 0 0 auto;
-  margin-top: .15rem;
-  color: var(--mf-accent-soft);
+  margin-top: 0;
+  color: var(--mf-accent);
   font-family: var(--md-code-font);
-  font-size: .82rem;
-  line-height: 1;
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.85;
 }
+
+/* ── Section headings inside the home page — match main-site .h2 ─────── */
+.md-typeset h2 {
+  font-size: 26px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  margin: 48px 0 6px;
+  color: var(--mf-ink);
+  font-weight: 600;
+  font-family: var(--mf-font-serif);
+  border: 0;
+  padding: 0;
+}
+
+/* ── Topic cards — feel like main-site .pagelink rows ─────────────────── */
 .md-typeset .wiki-topic-grid {
-  display: grid;
-  gap: .75rem;
-  margin: .8rem 0 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 8px -8px 24px;
 }
 .md-typeset .wiki-topic-card {
   display: grid;
-  grid-template-columns: 2.6rem minmax(0,1fr) auto;
-  gap: .8rem;
-  align-items: center;
-  padding: .95rem 1rem;
-  border: 1px solid var(--mf-rule);
-  border-radius: 6px;
-  background: rgba(251,250,237,0.78);
+  grid-template-columns: 32px minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 8px 12px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
   color: inherit;
   text-decoration: none;
 }
 .md-typeset .wiki-topic-card:hover {
-  border-color: rgba(93,116,29,0.34);
-  background: rgba(229,237,193,0.78);
+  background: var(--mf-bg-soft);
+  text-decoration: none;
 }
 .md-typeset .wiki-topic-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 30px;
+  height: 30px;
   border-radius: 4px;
-  background: var(--mf-bg-soft);
+  background: var(--mf-tag-bg);
   color: var(--mf-accent);
   font-family: var(--md-code-font);
-  font-size: .76rem;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
 }
 .md-typeset .wiki-topic-body {
-  display: grid;
-  gap: .08rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 .md-typeset .wiki-topic-kicker {
-  color: var(--mf-accent-soft);
+  color: var(--mf-ink-faint);
   font-family: var(--md-text-font);
-  font-size: .58rem;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: .08em;
-  line-height: 1.2;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 .md-typeset .wiki-topic-title {
   color: var(--mf-ink);
-  font-family: "Source Serif 4", "Source Serif Pro", "Noto Serif SC", Georgia, serif;
-  font-size: .8rem;
-  font-weight: 600;
-  line-height: 1.35;
+  font-family: var(--mf-font-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-decoration: underline;
+  text-decoration-color: var(--mf-rule);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.md-typeset .wiki-topic-card:hover .wiki-topic-title {
+  text-decoration-color: var(--mf-ink-faint);
 }
 .md-typeset .wiki-topic-desc {
   color: var(--mf-ink-soft);
-  font-size: .7rem;
+  font-size: 14px;
   line-height: 1.55;
+  margin-top: 4px;
 }
 .md-typeset .wiki-topic-arrow {
-  color: var(--mf-accent-soft);
-  font-size: .95rem;
+  color: var(--mf-ink-faint);
+  font-size: 16px;
+  padding-top: 3px;
 }
+
+/* ── Roadmap items ────────────────────────────────────────────────────── */
 .md-typeset .wiki-roadmap {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .65rem;
-  margin: .8rem 0 1.8rem;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  margin: 12px 0 28px;
 }
 .md-typeset .wiki-roadmap-item {
   display: grid;
-  grid-template-columns: .55rem minmax(0, 1fr);
-  gap: .55rem;
-  padding: .75rem .8rem;
+  grid-template-columns: 10px minmax(0,1fr);
+  gap: 10px;
+  padding: 12px 14px;
   border: 1px solid var(--mf-rule-soft);
-  border-radius: 6px;
-  background: rgba(239,243,216,0.44);
+  border-radius: 4px;
+  background: rgba(241,234,215,0.35);
 }
 .md-typeset .wiki-roadmap-dot {
-  width: .38rem;
-  height: .38rem;
-  margin-top: .45rem;
+  width: 8px;
+  height: 8px;
+  margin-top: 9px;
   border-radius: 50%;
-  background: var(--mf-accent-glow);
+  background: var(--mf-accent-soft);
   box-shadow: 0 0 0 3px rgba(220,232,116,0.18);
 }
 .md-typeset .wiki-roadmap strong {
   color: var(--mf-ink);
-  font-size: .74rem;
+  font-family: var(--mf-font-serif);
+  font-weight: 600;
+  font-size: 15px;
 }
 .md-typeset .wiki-roadmap p {
-  margin: .18rem 0 0;
+  margin: 3px 0 0;
   color: var(--mf-ink-soft);
-  font-size: .68rem;
-  line-height: 1.52;
+  font-size: 13px;
+  line-height: 1.55;
 }
+
+/* ── Link list (footer pills) ─────────────────────────────────────────── */
 .md-typeset .wiki-link-list,
 .md-typeset .wiki-link-list p {
   display: flex;
   flex-wrap: wrap;
-  gap: .45rem;
-  margin: .85rem 0 0;
+  gap: 8px;
+  margin: 14px 0 0;
 }
 .md-typeset .wiki-link-list a {
   display: inline-flex;
   align-items: center;
-  min-height: 1.75rem;
-  padding: .25rem .55rem;
+  min-height: 0;
+  padding: 5px 10px;
   border: 1px solid var(--mf-rule);
   border-radius: 4px;
-  background: rgba(251,250,237,0.70);
+  background: var(--mf-bg);
   color: var(--mf-ink-soft);
   font-family: var(--md-text-font);
-  font-size: .66rem;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 400;
   text-decoration: none;
 }
 .md-typeset .wiki-link-list a:hover {
-  background: var(--mf-bg-hover);
+  background: var(--mf-bg-soft);
   color: var(--mf-ink);
 }
 
-@media (max-width: 640px) {
-  .md-typeset .wiki-hero {
-    padding-top: .9rem;
-  }
-  .md-typeset .wiki-hero h1 {
-    font-size: 2rem;
-  }
-  .md-typeset .wiki-hero > p:not(.wiki-kicker) {
-    font-size: .94rem;
-  }
-  .md-typeset .wiki-callout {
-    padding: .85rem .9rem;
-  }
-  .md-typeset .wiki-topic-card {
-    grid-template-columns: 2.4rem minmax(0,1fr);
-  }
-  .md-typeset .wiki-topic-arrow {
-    display: none;
-  }
-  .md-typeset .wiki-roadmap {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 720px) {
+  .md-typeset .wiki-hero h1 { font-size: 34px; }
+  .md-typeset .wiki-hero > p:not(.wiki-kicker) { font-size: 17px; }
+  .md-typeset .wiki-topic-card { grid-template-columns: 30px minmax(0,1fr); }
+  .md-typeset .wiki-topic-arrow { display: none; }
+  .md-typeset .wiki-roadmap { grid-template-columns: 1fr; }
 }
 
-/* ── Header (custom topbar) ──────────────────────────────────────────────── */
+
+/* ── Topbar — identical sizing/colors to main-site .topbar ────────────── */
 .md-header {
   background: rgba(251,250,237,0.90);
   backdrop-filter: saturate(140%) blur(8px);
@@ -434,7 +486,6 @@ body {
   box-shadow: none;
   color: var(--mf-ink);
 }
-
 .mf-header-inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -445,11 +496,9 @@ body {
   font-family: var(--md-text-font);
   font-size: 14px;
   line-height: 1.7;
-  min-height: 60px;
+  min-height: 0;
   box-sizing: border-box;
 }
-
-/* Brand */
 .mf-brand {
   display: inline-flex;
   align-items: center;
@@ -463,22 +512,15 @@ body {
   white-space: nowrap;
 }
 .mf-brand:hover { background: var(--mf-bg-hover); }
-.mf-brand-mark  { font-size: 16px; line-height: 1; user-select: none; }
-.mf-brand-name  {
-  font-family: "Source Serif 4", Georgia, serif;
-  letter-spacing: 0;
+.mf-brand-mark { font-size: 16px; line-height: 1; user-select: none; }
+.mf-brand-name {
+  font-family: var(--mf-font-serif);
+  letter-spacing: -0.005em;
   font-weight: 600;
 }
-.mf-brand-tag   { color: var(--mf-ink-faint); font-weight: 400; margin-left: 2px; }
-
-.mf-nav-spacer  { flex: 1; }
-
-/* Nav links */
-.mf-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
+.mf-brand-tag { color: var(--mf-ink-faint); font-weight: 400; margin-left: 2px; }
+.mf-nav-spacer { flex: 1; }
+.mf-nav-links { display: flex; align-items: center; gap: 2px; }
 .mf-nav-links a {
   padding: 6px 10px;
   border-radius: 4px;
@@ -490,10 +532,9 @@ body {
   white-space: nowrap;
   font-size: 14px;
 }
-.mf-nav-links a:hover  { background: var(--mf-bg-hover); color: var(--mf-ink); }
+.mf-nav-links a:hover { background: var(--mf-bg-hover); color: var(--mf-ink); }
 .mf-nav-links a.mf-active { color: var(--mf-ink); background: var(--mf-bg-hover); }
 .mf-nav-links svg { flex: 0 0 auto; }
-
 .mf-nav-sep {
   width: 1px;
   height: 14px;
@@ -501,8 +542,6 @@ body {
   margin: 0 6px;
   flex: 0 0 auto;
 }
-
-/* Icon buttons (search, hamburger) */
 .mf-icon-btn {
   color: var(--mf-ink-soft) !important;
   width: 32px;
@@ -519,17 +558,13 @@ body {
   flex: 0 0 auto;
 }
 .mf-icon-btn:hover { background: var(--mf-bg-hover); color: var(--mf-ink) !important; }
-.mf-icon-btn svg   { width: 18px; height: 18px; fill: currentColor; }
-
-/* Hamburger: only on mobile */
+.mf-icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
 .mf-hamburger { display: none; }
 
-/* ── Navigation tabs ─────────────────────────────────────────────────────── */
-/* The Material `navigation.tabs` band duplicates the breadcrumb (md-path)
-   directly below it, so hide the band entirely for a clean hero. */
+/* Hide Material's default top tabs row (duplicates breadcrumb) */
 .md-tabs { display: none !important; }
 
-/* ── Breadcrumb (page hero) ──────────────────────────────────────────────── */
+/* ── Breadcrumb ───────────────────────────────────────────────────────── */
 .md-path {
   font-size: 12px;
   color: var(--mf-ink-faint);
@@ -552,20 +587,15 @@ body {
 }
 .md-path__link:hover { color: var(--mf-accent); }
 
-/* ── Sidebar (primary, left) ─────────────────────────────────────────────── */
-.md-sidebar {
-  background: var(--mf-bg);
-}
-.md-sidebar--primary {
-  border-right: 1px solid var(--mf-rule);
-}
+/* ── Sidebar (left, primary nav) ──────────────────────────────────────── */
+.md-sidebar { background: var(--mf-bg); }
+.md-sidebar--primary { border-right: 1px solid var(--mf-rule-soft); }
 .md-sidebar__scrollwrap { background: var(--mf-bg); }
 
-.md-nav { font-size: 13.5px; }
+.md-nav { font-size: 14px; }
 .md-nav__item { border: 0; }
 .md-nav__list { padding: 0; }
 
-/* Section title labels inside the drawer (hidden on desktop) */
 .md-nav--primary > .md-nav__title {
   background: transparent !important;
   color: var(--mf-ink);
@@ -579,7 +609,6 @@ body {
   box-shadow: none;
 }
 
-/* Generic link rows */
 .md-nav__link {
   color: var(--mf-ink-soft);
   font-size: 13.5px;
@@ -596,10 +625,9 @@ body {
   background: rgba(93,116,29,0.08);
 }
 
-/* Top-level section parent (e.g. "KVCache"): heading-style row */
 .md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__link,
 .md-nav--primary > .md-nav__list > .md-nav__item--section > .md-nav__container > .md-nav__link {
-  font-family: "Source Serif 4", Georgia, serif;
+  font-family: var(--mf-font-serif);
   font-size: 14px;
   font-weight: 600;
   color: var(--mf-ink);
@@ -609,13 +637,10 @@ body {
   text-transform: none;
 }
 
-/* Children of a section: indent + slightly smaller */
 .md-nav--primary .md-nav[data-md-level="1"] > .md-nav__list > .md-nav__item > .md-nav__link {
   padding-left: 1em;
   font-size: 13px;
 }
-
-/* Nested section labels (算法维度, 系统维度, etc.) — sub-heading style */
 .md-nav--primary .md-nav[data-md-level="1"] .md-nav__item--section > label.md-nav__link {
   color: var(--mf-ink-faint);
   font-weight: 600;
@@ -626,37 +651,18 @@ body {
   margin-top: 0.4em;
   cursor: pointer;
 }
-.md-nav--primary .md-nav[data-md-level="1"] .md-nav__item--section > label.md-nav__link:hover {
-  color: var(--mf-ink-soft);
-  background: transparent;
-}
-
-/* Deeper indentation for nested section children (level 2) */
 .md-nav--primary .md-nav[data-md-level="2"] > .md-nav__list > .md-nav__item > .md-nav__link {
   padding-left: 2.2em;
   font-size: 12.5px;
 }
 
-/* Nested level title inside the drawer (mobile only) */
-.md-nav--primary .md-nav .md-nav__title {
-  background: transparent !important;
-  color: var(--mf-ink-faint);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-}
-
-/* ── Table of contents (right sidebar) ──────────────────────────────────── */
-.md-sidebar--secondary {
-  border-left: 1px solid var(--mf-rule-soft);
-}
-
+/* TOC right rail */
+.md-sidebar--secondary { border-left: 1px solid var(--mf-rule-soft); }
 .md-nav--secondary > .md-nav__title {
   background: transparent !important;
   color: var(--mf-ink-faint);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: .25em 0 .55em;
@@ -667,9 +673,8 @@ body {
   line-height: 1.4;
 }
 .md-nav--secondary > .md-nav__title .md-nav__icon { display: none; }
-
 .md-nav--secondary .md-nav__link {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--mf-ink-soft);
   padding: .2em .5em;
   line-height: 1.55;
@@ -678,44 +683,47 @@ body {
 .md-nav--secondary .md-nav__link--active:hover {
   color: var(--mf-accent) !important;
   background: transparent;
-  font-weight: 600;
+  font-weight: 500;
 }
-/* Indent nested TOC items */
-.md-nav--secondary .md-nav .md-nav__link { padding-left: 1.4em; font-size: 12px; }
+.md-nav--secondary .md-nav .md-nav__link { padding-left: 1.4em; font-size: 11.5px; }
 
-/* ── Code ────────────────────────────────────────────────────────────────── */
+
+/* ── Code ─────────────────────────────────────────────────────────────── */
 .md-typeset code {
   background: var(--mf-bg-soft);
   color: var(--mf-ink);
-  border-radius: 3px;
-  font-size: 0.84em;
-  padding: .1em .35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  padding: 0.12em 0.36em;
   border: 1px solid var(--mf-rule);
+  font-family: var(--md-code-font);
+}
+.md-typeset pre {
+  background: var(--mf-bg-soft);
+  border: 1px solid var(--mf-rule);
+  border-radius: 6px;
+  margin: 22px 0 28px;
+  line-height: 1.68;
 }
 .md-typeset pre > code {
   background: transparent;
   border: 0;
   padding: 0;
-  font-size: 10px;
-  line-height: 1.6;
+  font-family: var(--md-code-font);
+  font-size: 14px;
+  line-height: 1.68;
 }
-.md-typeset pre {
-  background: var(--mf-bg-soft);
-  border: 1px solid var(--mf-rule);
-  border-radius: 4px;
-}
-
-/* Copy button */
 .md-clipboard { color: var(--mf-ink-faint); }
 .md-clipboard:hover { color: var(--mf-ink); }
 
-/* ── Admonitions ─────────────────────────────────────────────────────────── */
+/* ── Admonitions / details ────────────────────────────────────────────── */
 .md-typeset .admonition,
 .md-typeset details {
   background: var(--mf-bg-soft);
   border-color: var(--mf-accent);
   border-radius: 4px;
-  font-size: 0.93em;
+  font-size: 0.95em;
+  box-shadow: none;
 }
 .md-typeset .admonition-title,
 .md-typeset summary {
@@ -725,45 +733,59 @@ body {
 }
 .md-typeset .admonition-title::before,
 .md-typeset summary::before { color: var(--mf-accent); }
-
-/* Note/info variant */
 .md-typeset .admonition.note,
-.md-typeset .admonition.info {
-  border-color: var(--mf-accent-soft);
-}
+.md-typeset .admonition.info { border-color: var(--mf-accent-soft); }
 .md-typeset .admonition.note .admonition-title,
 .md-typeset .admonition.info .admonition-title {
   background: rgba(129,157,49,0.12);
   color: var(--mf-accent-soft);
 }
 
-/* ── Tables ──────────────────────────────────────────────────────────────── */
+/* ── Tables ───────────────────────────────────────────────────────────── */
 .md-typeset table:not([class]) {
   background: var(--mf-bg);
   border: 1px solid var(--mf-rule);
   border-radius: 4px;
-  font-size: 8px;
+  font-size: 14px;
+  overflow: hidden;
 }
 .md-typeset table:not([class]) th {
   background: var(--mf-bg-soft);
   color: var(--mf-ink);
   font-weight: 600;
   border-bottom: 1px solid var(--mf-rule);
+  padding: 10px 12px;
+  font-size: 13px;
 }
 .md-typeset table:not([class]) td {
   border-bottom: 1px solid var(--mf-rule-soft);
   color: var(--mf-ink);
+  padding: 10px 12px;
 }
 .md-typeset table:not([class]) tr:hover td { background: rgba(77,86,38,0.035); }
 
-/* ── Search ──────────────────────────────────────────────────────────────── */
-.md-header .md-search {
-  height: 36px;
-  padding: 0;
+/* ── Blockquote ───────────────────────────────────────────────────────── */
+.md-typeset blockquote {
+  margin: 28px 0;
+  padding: 14px 16px 14px 18px;
+  border-left: 2px solid var(--mf-accent);
+  background: var(--mf-bg-soft);
+  border-radius: 0 4px 4px 0;
+  color: var(--mf-ink-soft);
 }
-.md-header .md-search__inner {
-  height: 36px;
+.md-typeset blockquote p { margin-bottom: 0.8em; }
+.md-typeset blockquote p:last-child { margin-bottom: 0; }
+
+/* ── HR ───────────────────────────────────────────────────────────────── */
+.md-typeset hr {
+  border: 0;
+  border-top: 1px solid var(--mf-rule-soft);
+  margin: 36px 0;
 }
+
+/* ── Search ───────────────────────────────────────────────────────────── */
+.md-header .md-search { height: 36px; padding: 0; }
+.md-header .md-search__inner { height: 36px; }
 .md-search__form {
   background: var(--mf-bg-soft);
   border: 1px solid var(--mf-rule);
@@ -774,25 +796,26 @@ body {
 .md-search__input::placeholder { color: var(--mf-ink-faint); }
 .md-search-result { background: var(--mf-bg); }
 .md-search-result__article { border-top: 1px solid var(--mf-rule-soft); }
-.md-search-result__title { color: var(--mf-ink); font-family: "Source Serif 4", Georgia, serif; }
+.md-search-result__title { color: var(--mf-ink); font-family: var(--mf-font-serif); }
 .md-search-result__teaser { color: var(--mf-ink-soft); }
 [data-md-toggle="search"]:checked ~ .md-header .md-search__form { background: var(--mf-bg); }
 
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-.md-footer {
-  background: #272a20;
-  color: rgba(251,250,237,0.70);
-}
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.md-footer { background: #272a20; color: rgba(251,250,237,0.70); }
 .md-footer-meta { background: rgba(0,0,0,0.18); }
 .md-footer__link { color: rgba(251,250,237,0.55); }
 .md-footer__link:hover { color: rgba(251,250,237,0.9); }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
+/* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 76.1875em) {
   .mf-hamburger { display: inline-flex; }
   .mf-brand-tag { display: none; }
 }
+@media (max-width: 720px) {
+  .mf-header-inner { padding: 10px 20px; gap: 10px; }
+  .mf-brand-tag { display: none; }
+}
 @media (max-width: 600px) {
   .mf-header-inner { padding: 10px 16px; gap: 8px; }
-  .mf-nav-links    { display: none; }
+  .mf-nav-links { display: none; }
 }
