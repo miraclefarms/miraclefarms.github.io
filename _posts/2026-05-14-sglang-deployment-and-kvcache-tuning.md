@@ -1,14 +1,20 @@
 ---
 title: SGLang 部署方式、KV Cache 调参与最佳实践
 date: 2026-05-14 12:00:00 +0800
+updated: 2026-05-15
 author: MiracleFarms
 kind: field-note
 category: Field Note
-intro: 基于 SGLang v0.5.11 源码阅读与官方文档，梳理部署方式全景、KV Cache 全部可调参数及其调优空间、调度与并行策略、监控指标和常见生产陷阱。
-tags: [SGLang, KV Cache, Inference]
+intro: 基于 SGLang v0.5.11 源码阅读与官方文档，梳理部署方式全景、KV Cache 全部可调参数及其调优空间、调度与并行策略、监控指标和常见生产陷阱；2026-05-15 更新 HiCache Mooncake SSD offload、decode-side radix cache、prefill delayer 与多节点 PD 排障。
+tags: [SGLang, KV Cache, Inference, Scheduling]
 ---
 
-> **版本声明**：本文分析基于 SGLang commit `50f405816e`（v0.5.11，2026-05-14）；除非特别说明，以下描述均基于此版本。
+> **版本历史**
+>
+> | 版本 | 日期 | 说明 |
+> |------|------|------|
+> | v1.0 | 2026-05-14 | 初稿，基于 SGLang v0.5.11（commit `50f405816e`），覆盖七种部署入口、KV Cache 20+ 参数体系、调度与并行策略、监控与生产陷阱 |
+> | v1.1 | 2026-05-15 | 新增：HiCache Mooncake SSD offload、decode-side radix cache、prefill delayer 调度特性、动态 HiCache backend 加载；新增多节点 PD disaggregation bootstrap port 排障条目；更新版本对齐信息至 latest main |
 
 SGLang 在生产环境的部署和调参复杂度高于第一眼的印象——它同时提供七种部署入口、20+ 个 KV cache 相关参数、十几种 attention backend 选择，以及五维并行的叠加能力。把 `mem_fraction_static`、`chunked_prefill_size` 和 `schedule_conservativeness` 三个参数的联动关系吃透，是吞吐量不掉的底线——这三个值看似正交，实际上共同决定了 KV cache 池大小、预填充分块粒度和调度器对新请求的拥抱程度。任何一个偏离最优值，吞吐可能掉 30% 以上。
 
@@ -44,6 +50,10 @@ sglang serve meta-llama/Llama-3.1-8B-Instruct \
 **sgl-router**<a href="https://github.com/sgl-project/sglang/tree/main/sgl-router">[5]</a> 是 SGLang 推荐的多实例数据并行方案（替代直接用 `--dp-size`），路由策略包括 round-robin、follow-bootstrap-room、token-aware balancing。相比框架内 DP，router 的隔离性更强，一个实例崩溃不影响其他。
 
 Disaggregated serving（P/D 分离）用 `--disaggregation-mode prefill` 或 `--disaggregation-mode decode` 分别启动 prefill 和 decode 服务器，KV cache 通过 Mooncake（默认）、NIXL 或 Ascend 做跨节点 RDMA 传输。Prefill 节点可以通过 `--enable-hierarchical-cache` 扩展 HiCache，decode 节点通过 `--disaggregation-decode-enable-offload-kvcache` 异步 offload KV cache 给 prefill 复用<a href="https://docs.sglang.ai/advanced_features/pd_disaggregation.html">[6]</a>。
+
+**（v1.1 新增）** v0.5.11 引入了一项对 disaggregated serving 重要的增强：`--disaggregation-decode-enable-radix-cache` 让 decode 节点也维护独立的 radix tree 前缀缓存。此前 decode 端不做前缀复用，每次新的 decode 请求都从零开始；开启后固定 system prompt 或多轮对话场景下的 decode 前缀命中率可获得与 unified serving 接近的效果，TTFT 改善幅度取决于前缀长度和命中率。这与 prefill 端 HiCache 是互补关系——prefill 端缓存减少了重计算，decode 端缓存减少了冷启动。
+
+多节点 PD 部署有一个易踩的坑：`--disaggregation-bootstrap-port` 在 prefill 多节点场景下各 rank 会各自选择一个本地可用端口，导致非 leader 节点注册到 leader 的 port 不一致而连接失败。解法是显式指定 `--disaggregation-bootstrap-port` 为固定值<a href="https://github.com/sgl-project/sglang/pull/24378">[15]</a>。
 
 Embedding 模式下使用 `--is-embedding`，配合 `--chunked-prefill-size -1` 和 `--disable-radix-cache`、`--prefill-only-disable-kv-cache`，彻底跳过 KV cache 物理分配，最大化吞吐。
 
@@ -113,6 +123,8 @@ sglang serve model-path \
 
 Storage 层支持 Mooncake（RDMA 分布式存储）、HF3FS、NIXL、AIBrix 等。预取策略 `best_effort`（需要时及时终止）、`wait_complete`（完整加载、最高复用率）、`timeout`（超时平衡）。Prefetch timeout 的计算公式：`2.0 + 0.1 × (tokens / 1024)` 秒，最大 30 秒。
 
+**（v1.1 新增）** Mooncake storage backend 现已支持 SSD offload<a href="https://github.com/sgl-project/sglang/pull/24277">[16]</a>，允许将冷 KV cache 从 RDMA 内存池卸载到本地 SSD，在存储容量和访问延迟之间提供一层中间缓存。同时 HiCache 新增 dynamic backend loading——通过 `--hicache-storage-backend dynamic` + `--hicache-storage-backend-extra-config '{"module_path":"...","class_name":"..."}'` 加载自定义 storage backend，无需在 SGLang 仓库中注册代码。
+
 HiCache 运行时可动态挂载/卸载 storage backend（不需要重启），通过 HTTP admin 端点操作<a href="https://docs.sglang.ai/advanced_features/hicache_storage_runtime_attach_detach.html">[9]</a>。异构 TP 场景（prefill tp=4, decode tp=8）需要通过 `--hicache-storage-backend-extra-config '{"tp_lcm_size": 8}'` 设置 TP 的最小公倍数，让 head 分片在跨集群间可对齐。
 
 ### 2.6 SWA 与 Mixed Attention 模型
@@ -144,6 +156,8 @@ HiCache 运行时可动态挂载/卸载 storage backend（不需要重启），�
 - **routing-key**：优先匹配运行中 batch 的路由键
 
 `--enable-priority-scheduling` 启用后，高优先级请求可以抢占低优先级的运行中请求——当优先级差值超过 `--priority-scheduling-preemption-threshold`（默认 10）且 KV cache 空间不足时触发。目前仅支持 fcfs 和 lof 策略组合。
+
+**（v1.1 新增）** `--enable-prefill-delayer` 是针对 DP attention 场景的调度优化。在 DP attention 模式下，不同 DP rank 的 prefill 和 decode batch 可能不同步——一个 rank 在处理 prefill 时另一个 rank 已经在等它完成才能进入下一轮 decode，产生 GPU idle bubble。Prefill delayer 通过延迟 prefill 的执行（最多 `--prefill-delayer-max-delay-passes` 个 forward pass，默认 30）来对齐各 rank 的节奏，减少 DP attention 场景下的 GPU 空闲时间。`--prefill-delayer-token-usage-low-watermark` 设置触发预填充延迟的 KV cache 使用率低水位线。
 
 ### 3.2 Chunked Prefill
 
@@ -234,6 +248,10 @@ DeepSeek-R1-0528（TP=8, EP=8）在 FP8 KV cache 下实测吞吐约 11,000+ tok/
 
 **Attention backend 不支持 KV cache dtype**。`fa3` + `fp8_e5m2` 会自动降级为 `triton`（性能低一个数量级），`trtllm_mla` 只支持 `fp8_e4m3`、`fp4_e2m1`、`bf16`。启用量化 KV cache 前务必确认 attention backend 兼容性。
 
+**（v1.1 新增）** **多节点 PD disaggregation 未显式指定 `--disaggregation-bootstrap-port`**。prefill 多节点部署时，各 scheduler 进程各自选择本地可用端口作为 bootstrap port，导致非 leader 节点的注册请求发到 leader 的错误端口，decode 端无法找到对应 prefill rank 而报错。在所有 prefill/decode 节点上显式指定同一个固定端口即可解决<a href="https://github.com/sgl-project/sglang/pull/24378">[15]</a>。
+
+**（v1.1 新增）** **`--enable-memory-saver` 在碎片化程度较低的场景可能无益**。`TorchMemorySaverAdapter` 通过减少 PyTorch 分配器碎片降低 OOM 风险，但引入额外 CPU 开销。如果 `available_gpu_mem` 已经稳定在 5–8 GB 且没有发生过 OOM，开启 memory saver 反而可能轻微拖慢推理。仅在显存紧张或发生过偶发 OOM 后启用。
+
 ---
 
 ## 参考资料
@@ -266,8 +284,14 @@ DeepSeek-R1-0528（TP=8, EP=8）在 FP8 KV cache 下实测吞吐约 11,000+ tok/
 
 [14] [SGLang GitHub Issues: KV Cache Tuning](https://github.com/sgl-project/sglang/issues?q=is%3Aissue+kv+cache+tuning)
 
+[15] [fix(disagg): broadcast bootstrap port across multi-node prefill ranks](https://github.com/sgl-project/sglang/pull/24378)
+
+[16] [[HiCache] enable ssd offload support for mooncake store](https://github.com/sgl-project/sglang/pull/24277)
+
 ### 版本对齐信息
 
 | 依赖 | 版本/Commit | 日期 |
 |------|-----------|------|
 | SGLang | `50f405816e` (v0.5.11) | 2026-05-14 |
+| PR #24277（HiCache Mooncake SSD） | merged `be156d6804` | 2026-05-14 |
+| PR #24378（PD bootstrap fix） | merged `4be25f2428` | 2026-05-14 |
