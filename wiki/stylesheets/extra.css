@@ -718,6 +718,8 @@ body {
   border-radius: 6px;
   margin: 22px 0 28px;
   line-height: 1.68;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .md-typeset pre > code {
   background: transparent;
@@ -833,6 +835,8 @@ body {
 @media (max-width: 76.1875em) {
   .mf-hamburger { display: inline-flex; }
   .mf-brand-tag { display: none; }
+  /* restore horizontal padding lost when sidebars collapse */
+  .md-content__inner { padding-left: 20px; padding-right: 20px; }
 }
 @media (max-width: 720px) {
   .mf-header-inner { padding: 10px 20px; gap: 10px; }
@@ -841,4 +845,16 @@ body {
 @media (max-width: 600px) {
   .mf-header-inner { padding: 10px 16px; gap: 8px; }
   .mf-nav-links { display: none; }
+  .md-content__inner { padding-left: 16px; padding-right: 16px; }
+  /* slightly tighter headings on small phone */
+  .md-typeset h2 { font-size: 17px; margin: 20px 0 6px; }
+  .md-typeset h3 { font-size: 14px; margin: 16px 0 5px; }
+  /* code blocks: negative margin to full-bleed + horizontal scroll */
+  .md-typeset pre {
+    margin-left: -16px;
+    margin-right: -16px;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 }
