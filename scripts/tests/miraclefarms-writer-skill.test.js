@@ -13,6 +13,13 @@ const wechatFormatPath = path.join(
   'references',
   'wechat-format.md',
 );
+const wechatFormatterPath = path.join(
+  projectRoot,
+  '.codex',
+  'skills',
+  'wechat-formatter',
+  'SKILL.md',
+);
 
 function read(filePath) {
   return fs.readFileSync(filePath, 'utf8');
@@ -62,6 +69,28 @@ test('wechat-format strengthens the brief lead with current-topic tension', () =
   assert.match(wechatFormat, /导语.*热点|热点.*导语/u);
   assert.match(wechatFormat, /DeepSeek|GPT-OSS|Blackwell|新模型|新硬件/u);
   assert.match(wechatFormat, /为什么今天值得读|为什么读者现在需要关心/u);
+});
+
+test('wechat-format strengthens essay longform leads with current hotspots', () => {
+  const wechatFormat = read(wechatFormatPath);
+  const wechatFormatter = read(wechatFormatterPath);
+
+  assert.match(wechatFormat, /Essay.*导语.*当前热点|当前热点.*Essay.*导语|技术长文.*导语.*当前热点/u);
+  assert.match(wechatFormat, /Codex|Claude Code|Cursor Background Agents|coding agent|长上下文 agent/u);
+  assert.match(wechatFormat, /为什么这篇现在值得读|为什么现在值得读|继续阅读/u);
+
+  assert.match(wechatFormatter, /Essay.*导语.*当前热点|当前热点.*Essay.*导语|题图下方导语要连接当前热点/u);
+  assert.match(wechatFormatter, /Codex|Claude Code|Cursor Background Agents|coding agent|长上下文 agent/u);
+});
+
+test('wechat-format requires WeChat articles to bold key points', () => {
+  const skill = read(skillPath);
+  const wechatFormat = read(wechatFormatPath);
+  const wechatFormatter = read(wechatFormatterPath);
+
+  assert.match(skill, /微信公众号.*bold|公众号.*视觉锚点|核心判断、关键数字、关键机制名/u);
+  assert.match(wechatFormat, /重点加粗|bold.*核心判断|核心判断、关键数字、关键机制名/u);
+  assert.match(wechatFormatter, /正文必须标注重点|bold.*核心判断|关键数字、关键机制名/u);
 });
 
 test('wechat-format references the versioned cover prompt template file and the current locked default template', () => {

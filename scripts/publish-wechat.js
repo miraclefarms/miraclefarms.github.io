@@ -597,6 +597,35 @@ function listWechatFilesForDate(targetDate) {
     .map(file => path.join(wechatDir, file));
 }
 
+function resolveExplicitWechatFiles(args = []) {
+  const files = [];
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--file') {
+      const next = args[i + 1];
+      if (!next) {
+        throw new Error('--file requires a path');
+      }
+      files.push(next);
+      i++;
+      continue;
+    }
+
+    if (arg.startsWith('--file=')) {
+      const next = arg.slice('--file='.length);
+      if (!next) {
+        throw new Error('--file requires a path');
+      }
+      files.push(next);
+    }
+  }
+
+  return Array.from(new Set(files.map(file => (
+    path.isAbsolute(file) ? file : path.join(PROJECT_ROOT, file)
+  )))).sort();
+}
+
 function scanWechatDir(record, files) {
   const unpublished = [];
 
@@ -623,32 +652,44 @@ function scanWechatDir(record, files) {
 
 async function main() {
   dotenv.config();
-  const hookMode = process.argv.includes('--hook');
+  const explicitWechatFiles = resolveExplicitWechatFiles(process.argv.slice(2));
+  const explicitPublish = explicitWechatFiles.length > 0;
+  const hookMode = !explicitPublish && process.argv.includes('--hook');
   const targetDate = getTargetDate();
   const changedFiles = hookMode ? listFilesInPush() : [];
   const expectedWechatFiles = hookMode ? resolveExpectedWechatFiles(changedFiles, targetDate) : [];
   const publishExpected = hookMode && expectedWechatFiles.length > 0;
   const publishRecord = loadPublishRecord();
-  const targetWechatFiles = publishExpected ? expectedWechatFiles : listWechatFilesForDate(targetDate);
-  const missingExpectedFiles = expectedWechatFiles.filter(filePath => !fs.existsSync(filePath));
+  const targetWechatFiles = explicitPublish
+    ? explicitWechatFiles
+    : publishExpected
+      ? expectedWechatFiles
+      : listWechatFilesForDate(targetDate);
+  const missingExpectedFiles = (explicitPublish ? explicitWechatFiles : expectedWechatFiles)
+    .filter(filePath => !fs.existsSync(filePath));
   const unpublished = scanWechatDir(publishRecord, targetWechatFiles.filter(filePath => fs.existsSync(filePath)));
 
-  if (publishExpected && missingExpectedFiles.length > 0) {
+  if ((publishExpected || explicitPublish) && missingExpectedFiles.length > 0) {
     return {
       success: 0,
       failed: missingExpectedFiles.length,
       fatal: `Expected WeChat article file(s) missing: ${missingExpectedFiles.map(filePath => path.relative(PROJECT_ROOT, filePath)).join(', ')}`,
       publishExpected,
+      explicitPublish,
       targetDate,
     };
   }
 
   if (unpublished.length === 0) {
-    console.error(`No unpublished wechat articles found for ${targetDate}.`);
+    const targetLabel = explicitPublish
+      ? explicitWechatFiles.map(filePath => path.relative(PROJECT_ROOT, filePath)).join(', ')
+      : targetDate;
+    console.error(`No unpublished wechat articles found for ${targetLabel}.`);
     return {
       success: 0,
       failed: 0,
       publishExpected,
+      explicitPublish,
       targetDate,
     };
   }
@@ -665,6 +706,7 @@ async function main() {
       failed: unpublished.length,
       fatal: message,
       publishExpected,
+      explicitPublish,
       targetDate,
     };
   }
@@ -680,6 +722,7 @@ async function main() {
       failed: unpublished.length,
       fatal: message,
       publishExpected,
+      explicitPublish,
       targetDate,
     };
   }
@@ -707,6 +750,7 @@ async function main() {
     success: 0,
     failed: 0,
     publishExpected,
+    explicitPublish,
     targetDate,
   };
 
@@ -813,6 +857,7 @@ module.exports = {
   main,
   prepareArticleBodyForPublish,
   resolveExpectedWechatFiles,
+  resolveExplicitWechatFiles,
   runCli,
 };
 

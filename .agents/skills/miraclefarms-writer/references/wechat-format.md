@@ -109,7 +109,7 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 ---
 # {描述性中文标题}
 
-> {引导语：一句话点明文章的核心判断，不超过 80 字}
+> {引导语：结合当前热点 + 文章核心判断，点明为什么这篇现在值得读，不超过 100 字}
 
 ---
 
@@ -159,6 +159,8 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 - **正文配图必须为 PNG / JPG / WEBP 格式**。微信 `uploadimg` 接口不接受 SVG。如果 GitHub.io 版原图是 SVG，必须先转成 PNG 再在微信版里引用。转换方法：`node -e "require('sharp')('input.svg').png().toFile('output.png', (e,i)=>console.log(e||i))"`（`sharp` 已在 repo 的 npm 依赖中）
 - 不要把 GitHub.io 站点的公开 URL 当成默认做法；技术长文路径应优先交给发布脚本处理本地图片上传
 - Essay 的微信公众号技术长文使用**经典蓝**主题，不沿用 brief 的翡翠绿
+- **题图下方导语要有当前热点张力**：Essay 长文不能只把 intro 改短，也不能只复述标题。导语必须把文章主题接到读者正在关心的窗口上，例如 Codex、Claude Code、Cursor Background Agents、DeepSeek、Blackwell、新模型首发、长上下文 agent、远端 coding agent 等。写法是“当前发生了什么压力 / 窗口 → 本文解释哪条底层机制 → 读者为什么要继续读”。如果没有新增外部材料，也要用文章已有主题和当前领域共识构造阅读动机；如果显式提到新的当前事件，需在参考章节追加来源。
+- **Essay 长文必须有重点加粗**：公众号版需要视觉锚点。每个 H2 通常保留 1-3 处 bold，优先标记核心判断、关键数字、关键机制名和读者应带走的结论。不要整段加粗，不要只加粗孤立名词；加粗短句要能独立传达信息。
 
 ---
 
@@ -190,6 +192,7 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 - 每个 H2 下通常 2-5 段，图片应紧跟第一次深入分析该机制 / 实验的位置
 - 可以适度收短句子，但不要把技术长文改成营销摘要
 - 一篇 essay 的微信公众号技术长文通常保留 2-4 张图；如果 GitHub.io 版某张图明显承担关键论证，就不应在微信版里消失
+- 每节至少检查一次是否存在可加粗的“读者应该记住的句子”。如果整节没有任何 bold，要么该节确实是过渡节，要么需要补一处核心判断加粗。
 - **不要使用 Markdown bullet list（`- ` 或 `* ` 列表）**。微信公众号编辑器对标准列表的渲染不稳定，可能出现缩进丢失、圆点符号缺失或整体格式错乱。需要并列展开的内容一律改用连续段落：使用"第一点……""第二点……""第三点……"的衔接句式，或用"首先……其次……最后……"的过渡语，将内容嵌入段落流中
 
 ### 持续更新标签
@@ -239,6 +242,8 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 - Brief 的 H2 直接写分类名，没有 `$` 包裹，没有用中文数字编号
 - Brief 正文 body 没有 H1，大标题只在 front matter `title` 中出现
 - Brief 题图下方导语结合了当天热点，并回答了“为什么读者现在需要关心”
+- Essay 技术长文题图下方导语结合了当前热点或当前工程压力，并回答了“为什么这篇现在值得读”
+- 微信公众号正文有适量 bold 标注重点：核心判断、关键数字、关键机制名和主要结论清晰可扫读
 - 结尾有 `> 一句话结论：**...**` blockquote
 - 改写后仍然保留原文的核心判断，而不是只剩新闻摘要
 - 正文没有使用 Markdown bullet list（`- ` 或 `* `），并列内容已改用连续段落展开
