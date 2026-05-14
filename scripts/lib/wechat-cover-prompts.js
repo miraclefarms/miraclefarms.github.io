@@ -3,6 +3,19 @@ const path = require('node:path');
 
 const TEMPLATE_FILE = path.join('scripts', 'config', 'wechat-cover-prompt-templates.json');
 
+const PROMPT_METADATA_PATTERNS = [
+  /9\s*:\s*16/giu,
+  /16\s*:\s*9/giu,
+  /竖版/giu,
+  /横版/giu,
+  /中文信息图/giu,
+  /信息图/giu,
+  /题图提示词/giu,
+  /提示词/giu,
+  /硬性约束/giu,
+  /最终图片/giu,
+];
+
 function loadWechatCoverPromptTemplates(projectRoot) {
   const registryPath = path.join(projectRoot, TEMPLATE_FILE);
   return JSON.parse(fs.readFileSync(registryPath, 'utf8'));
@@ -124,15 +137,37 @@ function resolveCoverPromptDate({ date, frontMatter = {}, bodyMarkdown = '' } = 
 }
 
 function buildCoverPromptText({ title, digest, mainBodySummary }) {
-  return [title, digest, mainBodySummary]
+  return sanitizeCoverPromptText([title, digest, mainBodySummary]
     .filter(Boolean)
-    .join('\n');
+    .join('\n'));
+}
+
+function sanitizeCoverPromptText(input = '') {
+  const lines = String(input)
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      let next = line;
+      for (const pattern of PROMPT_METADATA_PATTERNS) {
+        next = next.replace(pattern, '');
+      }
+      return next
+        .replace(/^[。；，、\s:：-]+/, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    })
+    .filter(Boolean)
+    .filter(line => !/^(生成|请|要求|禁止|不要|必须|允许|控制在|直接输出)/u.test(line));
+
+  return lines.join('\n').trim();
 }
 
 function renderCoverPromptTemplate(templatePrompt, { coverPromptText = '', date = '' } = {}) {
   const dateText = date ? `\n${date}` : '';
   return templatePrompt
-    .replace(/\[题图提示词\]/g, coverPromptText)
+    .replace(/\[题图提示词\]/g, sanitizeCoverPromptText(coverPromptText))
     .replace(/\[当天日期\]/g, dateText)
     .trim();
 }
@@ -258,4 +293,5 @@ module.exports = {
   renderCoverPromptTemplate,
   resolveWechatCoverImageConfig,
   resolveWechatCoverPromptTemplate,
+  sanitizeCoverPromptText,
 };

@@ -95,6 +95,7 @@ ai-morning-report/
 | 03-write | front matter 缺少 title/date/intro | 停止 |
 | 04-cover | 图片生成失败 | 告警，继续 |
 | 05-publish | git push 失败 | 停止（不推微信）|
+| 07-wechat-push | 微信草稿箱 API 失败 | 停止，并在日志中打印添加 IP 白名单后可复制执行的重推命令 |
 | 08-x-push | X 生成或发布失败 | 告警，保留 GitHub.io/微信结果 |
 
 ## WeChat CSS 主题管理

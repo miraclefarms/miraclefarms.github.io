@@ -6,6 +6,7 @@ kind: brief
 category: Brief
 series: ai-infra-daily-brief
 intro: vLLM 用 QuantKey/QuantSpec 重写量化配置架构，SGLang 与 TRT-LLM 同日合入 NVFP4 支持——量化从逐格式硬编码适配转向可组合、可 per-layer 覆盖的规格系统，NVFP4 成为首个跨框架量产验证的量化格式。
+tags: [Quantization, KV Cache, Speculative Decoding, Attention, MoE]
 ---
 
 ![题图](/assets/2026-05-14-ai-infra-daily-brief/cover.png)
@@ -42,29 +43,55 @@ SGLang 正式集成 tokenspeed_mla 作为 prefill/decode 内核，覆盖 fp8 KV 
 ## 参考来源
 
 [1] [vLLM #41566: Rework quantization_config to use QuantKey](https://github.com/vllm-project/vllm/pull/41566)
+
 [2] [vLLM #35859: Support loading Quark NVFP4 checkpoints](https://github.com/vllm-project/vllm/pull/35859)
+
 [3] [vLLM #42464: Patch SlidingWindowSpec for nvfp4 kv](https://github.com/vllm-project/vllm/pull/42464)
+
 [5] [SGLang #24816: Add FlashInfer SM90 MXFP4 MoE backend](https://github.com/sgl-project/sglang/pull/24816)
+
 [7] [SGLang #25190: Fix nvfp4 hot-reload crash](https://github.com/sgl-project/sglang/pull/25190)
+
 [8] [TRT-LLM #14026: Support NVFP4 dsv4](https://github.com/NVIDIA/TensorRT-LLM/pull/14026)
+
 [10] [vLLM #40020: Add multi-tier KV cache offloading framework](https://github.com/vllm-project/vllm/pull/40020)
+
 [11] [vLLM #42507: Add req_id to ReqContext for per-request tracking](https://github.com/vllm-project/vllm/pull/42507)
+
 [12] [LMCache #3038: Fully async PD backend](https://github.com/LMCache/LMCache/pull/3038)
+
 [13] [LMCache #2966: Add batched_contains() for NixlDynamicStorageBackend](https://github.com/LMCache/LMCache/pull/2966)
+
 [14] [Mooncake #1719: Add ObjectDataType enum for type-aware metadata](https://github.com/kvcache-ai/Mooncake/pull/1719)
+
 [15] [Mooncake #2080: Add DSA-like workload allocation strategy](https://github.com/kvcache-ai/Mooncake/pull/2080)
+
 [17] [vLLM #39487: Support custom callable proposer backend for speculative decoding](https://github.com/vllm-project/vllm/pull/39487)
+
 [18] [vLLM #39949: Support hybrid attention models in extract_hidden_states](https://github.com/vllm-project/vllm/pull/39949)
+
 [19] [vLLM #42536: Remove verifier model type check](https://github.com/vllm-project/vllm/pull/42536)
+
 [21] [TokenSpeed #78: Fuse embeds and hidden norm in MLA eagle3](https://github.com/lightseekorg/tokenspeed/pull/78)
+
 [22] [TokenSpeed #124: Enable AR-Norm fusion and fused FP8 decode for MLA Eagle3](https://github.com/lightseekorg/tokenspeed/pull/124)
+
 [23] [TokenSpeed #126: Optimize lm_head](https://github.com/lightseekorg/tokenspeed/pull/126)
+
 [26] [SGLang #24925: Integrate tokenspeed_mla prefill/decode kernels](https://github.com/sgl-project/sglang/pull/24925)
+
 [27] [SGLang #25001: MLA attention LoRA q_b_proj / kv_b_proj support](https://github.com/sgl-project/sglang/pull/25001)
+
 [28] [SGLang #24148: Add _skip_rope_for_aiter_fused_mla](https://github.com/sgl-project/sglang/pull/24148)
+
 [29] [vLLM #41946: Add aiter mhc support](https://github.com/vllm-project/vllm/pull/41946)
+
 [33] [TokenSpeed #97: ts serve — smg gateway + gRPC engine](https://github.com/lightseekorg/tokenspeed/pull/97)
+
 [34] [TokenSpeed #114: Default SMG serve port to 8000](https://github.com/lightseekorg/tokenspeed/pull/114)
+
 [36] [TokenSpeed #127: Print TokenSpeed banner on ts serve startup](https://github.com/lightseekorg/tokenspeed/pull/127)
+
 [37] [TokenSpeed #128: Accept positional model arg in ts serve](https://github.com/lightseekorg/tokenspeed/pull/128)
+
 [39] [TokenSpeed #77: Optimize mamba prefix cache performance](https://github.com/lightseekorg/tokenspeed/pull/77)

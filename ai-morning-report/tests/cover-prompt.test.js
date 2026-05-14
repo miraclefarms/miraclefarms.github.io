@@ -6,7 +6,7 @@ const path = require('node:path');
 
 const projectRoot = path.resolve(__dirname, '..', '..');
 
-test('stage 04 fallback prompt asks for a Chinese infographic cover', async () => {
+test('stage 04 fallback cover brief does not include visible production constraints', async () => {
   const originalAiCli = process.env.AI_CLI;
   const originalOpenRouterKey = process.env.OPENROUTER_API_KEY;
 
@@ -33,9 +33,9 @@ test('stage 04 fallback prompt asks for a Chinese infographic cover', async () =
     const fallbackPrompt = fs.readFileSync(path.join(assetsDir, 'cover-prompt.txt'), 'utf8');
 
     assert.equal(result, null);
-    assert.match(fallbackPrompt, /中文信息图/);
-    assert.match(fallbackPrompt, /简体中文/);
-    assert.match(fallbackPrompt, /禁止出现英文长句/);
+    assert.match(fallbackPrompt, /主标题：KV Cache 调度进入/);
+    assert.match(fallbackPrompt, /可视元素：/);
+    assert.doesNotMatch(fallbackPrompt, /9:16|竖版|中文信息图|题图提示词|硬性约束|最终图片/);
     assert.doesNotMatch(fallbackPrompt, /Create a hand-drawn|concise English|English cursive/i);
   } finally {
     if (originalAiCli === undefined) {
@@ -69,4 +69,20 @@ test('stage 04 final prompt renders daily newspaper template placeholders', () =
   assert.match(prompt, /The text: 今日核心判断：推理调度进入日报头版。\n2026-05-11/);
   assert.doesNotMatch(prompt, /\[题图提示词\]|\[当天日期\]/);
   assert.doesNotMatch(prompt, /硬性约束：最终图片必须是中文信息图/);
+});
+
+test('stage 04 final prompt strips prompt metadata before filling the newspaper template', () => {
+  const { buildFinalPrompt } = require('../src/stages/04-cover');
+  const template = {
+    prompt: 'Newspaper page uses this article brief, not literal instructions: [题图提示词][当天日期]',
+  };
+  const prompt = buildFinalPrompt(
+    '生成 9:16 竖版中文信息图。硬性约束：最终图片必须是中文信息图。\n主标题：量化管线量产元年\n关键信息：NVFP4 跨框架就位。',
+    template,
+    '2026-05-14',
+  );
+
+  assert.match(prompt, /主标题：量化管线量产元年/);
+  assert.match(prompt, /关键信息：NVFP4 跨框架就位/);
+  assert.doesNotMatch(prompt, /9:16|竖版|中文信息图|硬性约束|最终图片/);
 });

@@ -29,6 +29,16 @@ test('daily pipeline archives and persists the generated WeChat markdown under d
   assert.match(runDaily, /git -C "\$\{PROJECT_ROOT\}" push/);
 });
 
+test('daily pipeline prints a complete manual retry command when WeChat draft push fails', () => {
+  const runDaily = fs.readFileSync(path.join(projectRoot, 'ai-morning-report', 'bin', 'run-daily.sh'), 'utf8');
+
+  assert.match(runDaily, /log_wechat_retry_command\(\)/);
+  assert.match(runDaily, /添加 IP 白名单后可手动重新执行/);
+  assert.ok(runDaily.includes('node \\"${STAGES_DIR}/07-wechat-push.js\\" \\"${WECHAT_MD_PATH}\\" \\"${COVER_PATH}\\"'));
+  assert.ok(runDaily.includes('git -C \\"${PROJECT_ROOT}\\" add \\"${WECHAT_MD_PATH}\\"'));
+  assert.ok(runDaily.includes('git -C \\"${PROJECT_ROOT}\\" commit -m \\"Archive ${DATE} WeChat draft\\"'));
+});
+
 test('X setup docs and env example use ENABLE_X_PUSH instead of legacy SKIP_X', () => {
   const files = [
     '.env.example',

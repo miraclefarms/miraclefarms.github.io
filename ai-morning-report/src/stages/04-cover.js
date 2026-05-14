@@ -18,10 +18,22 @@ const path = require('path');
 const https = require('https');
 
 const CHINESE_INFOGRAPHIC_GUARDRAILS = [
-  '硬性约束：最终图片必须是中文信息图。',
-  '所有可见文字必须使用简体中文；允许 AI、GPU、KV、LLM、PR、API 等必要技术缩写。',
-  '禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。',
+  'Visible text should be concise Chinese editorial words derived from the article, with only necessary abbreviations such as AI, GPU, KV, LLM, PR, and API.',
+  'Do not render production instructions, aspect-ratio notes, layout metadata, watermarks, logos, random letters, or prompt wording as newspaper text.',
 ].join('\n');
+
+const PROMPT_METADATA_PATTERNS = [
+  /9\s*:\s*16/giu,
+  /16\s*:\s*9/giu,
+  /竖版/giu,
+  /横版/giu,
+  /中文信息图/giu,
+  /信息图/giu,
+  /题图提示词/giu,
+  /提示词/giu,
+  /硬性约束/giu,
+  /最终图片/giu,
+];
 
 function parseFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
@@ -83,7 +95,7 @@ function templateHasContentSlots(templatePrompt = '') {
 function renderCoverPromptTemplate(templatePrompt, { coverPromptText = '', date = '' } = {}) {
   const dateText = date ? `\n${date}` : '';
   return templatePrompt
-    .replace(/\[题图提示词\]/g, coverPromptText)
+    .replace(/\[题图提示词\]/g, sanitizeCoverPromptText(coverPromptText))
     .replace(/\[当天日期\]/g, dateText)
     .trim();
 }
@@ -106,7 +118,7 @@ async function generateCoverPrompt(date, postContent, projectRoot) {
   }
 
   const body = extractBody(postContent);
-  const prompt = `你是一个技术配图提示词专家。请阅读以下 AI Infra 早报全文，生成一段用于 AI 图片生成的提示词。
+  const prompt = `你是一个技术编辑。请阅读以下 AI Infra 早报全文，生成一段给题图生成模型使用的"内容简报"。
 
 **重要约束：不要读取任何文件，不要创建任何文件，不要使用任何工具。只需要将提示词作为纯文本输出。**
 
@@ -114,10 +126,9 @@ async function generateCoverPrompt(date, postContent, projectRoot) {
 - 提示词用中文撰写
 - 控制在 500 字符以内
 - 突出当天最重要的 PR 内容或整体技术趋势
-- 生成 9:16 竖版中文信息图，而不是英文信息图
-- 画面中的标题、分区标签、说明短语必须使用简体中文
-- 可保留 AI、GPU、KV、LLM、PR、API 等必要技术缩写，但禁止出现英文长句、英文花体、拼音、乱码、水印或 Logo
-- 风格：米白/米色纸张质感背景，手绘插画风格，红黑配色点缀，留白充足
+- 只输出可被画面转化的文章内容：主标题、3-5 个短标签、关键图形元素
+- 不要输出比例、版式、风格、颜色、语言、水印、Logo、禁止事项等图片生成元指令
+- 不要出现"9:16"、"竖版"、"中文信息图"、"题图提示词"、"硬性约束"、"最终图片"等词
 - 不要描述具体的人脸
 
 以下为今日早报正文：
@@ -138,6 +149,28 @@ ${body}
   }
 }
 
+function sanitizeCoverPromptText(input = '') {
+  const lines = String(input)
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      let next = line;
+      for (const pattern of PROMPT_METADATA_PATTERNS) {
+        next = next.replace(pattern, '');
+      }
+      return next
+        .replace(/^[。；，、\s:：-]+/, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    })
+    .filter(Boolean)
+    .filter(line => !/^(生成|请|要求|禁止|不要|必须|允许|控制在|直接输出)/u.test(line));
+
+  return lines.join('\n').trim();
+}
+
 function buildFinalPrompt(aiPrompt, template, date = '') {
   if (template?.prompt && templateHasContentSlots(template.prompt)) {
     return renderCoverPromptTemplate(template.prompt, {
@@ -154,8 +187,9 @@ function buildFinalPrompt(aiPrompt, template, date = '') {
 
   parts.push(CHINESE_INFOGRAPHIC_GUARDRAILS);
 
-  if (aiPrompt) {
-    parts.push(`文章主题提示：\n${aiPrompt}`);
+  const cleanPrompt = sanitizeCoverPromptText(aiPrompt || '');
+  if (cleanPrompt) {
+    parts.push(`Article brief:\n${cleanPrompt}`);
   }
 
   return parts.join('\n\n');
@@ -239,9 +273,14 @@ async function generateCover(date, postFile, assetsDir, projectRoot) {
 
     if (!aiPrompt) {
       const cleanTitle = (frontMatter.title || '').replace(/AI Infra 早报｜/, '').trim();
-      aiPrompt = `生成 9:16 竖版中文信息图题图。主题："${cleanTitle}"。画面使用米白或浅米色纸张质感背景，温暖克制的手绘技术编辑风格，红黑色重点标注，分成 2-4 个信息区块。标题和区块短语必须使用简体中文；允许 AI、GPU、KV、LLM、PR、API 等必要技术缩写；禁止出现英文长句、英文花体、拼音、水印、Logo、乱码或无意义字符。使用简单手绘图标、箭头、缓存块、芯片或数据流示意，不要具体人脸。`;
+      aiPrompt = [
+        `主标题：${cleanTitle}`,
+        `关键信息：${frontMatter.intro || cleanTitle}`,
+        '可视元素：芯片、数据流、缓存块、管线、箭头、配置卡片',
+      ].join('\n');
       console.log('[cover] Using fallback prompt');
     }
+    aiPrompt = sanitizeCoverPromptText(aiPrompt);
 
     const promptPath = path.join(assetsDir, 'cover-prompt.txt');
     fs.writeFileSync(promptPath, aiPrompt, 'utf8');
@@ -298,4 +337,8 @@ if (require.main === module) {
     });
 }
 
-module.exports = { buildFinalPrompt, generateCover };
+module.exports = {
+  buildFinalPrompt,
+  generateCover,
+  sanitizeCoverPromptText,
+};

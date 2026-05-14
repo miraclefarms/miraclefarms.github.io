@@ -319,6 +319,9 @@ if (require.main === module) {
     .then(() => console.log('[wechat-push] Done'))
     .catch((err) => {
       console.error('[wechat-push] Failed:', err.message);
+      if (/40164|invalid ip|not in whitelist|IP.*白名单/i.test(err.message)) {
+        console.error('[wechat-push] 当前出口 IP 不在公众号后台白名单。添加白名单后，重新执行上面的 07-wechat-push 命令即可。');
+      }
       process.exit(1);
     });
 }

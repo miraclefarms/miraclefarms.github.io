@@ -298,6 +298,25 @@ function resolveArticleTitle(frontMatter, body) {
   return frontMatter.title || extractMarkdownTitle(body) || 'Untitled';
 }
 
+function prepareArticleBodyForPublish(body) {
+  const lines = body.replace(/\r\n/g, '\n').split('\n');
+  const index = lines.findIndex(line => /^#\s+(.+?)\s*$/.test(line));
+  if (index < 0) {
+    return { removedTitle: '', body };
+  }
+
+  const removedTitle = lines[index].replace(/^#\s+/, '').trim();
+  lines.splice(index, 1);
+  while (lines[index] === '') {
+    lines.splice(index, 1);
+  }
+
+  return {
+    removedTitle,
+    body: lines.join('\n').replace(/^\n+/, ''),
+  };
+}
+
 function normalizeContentForHash(content) {
   if (!content.startsWith('---\n')) {
     return content;
@@ -699,7 +718,7 @@ async function main() {
       const title = resolveArticleTitle(frontMatter, body);
       const author = frontMatter.author || '';
       const digest = frontMatter.intro || '';
-      let articleBody = body;
+      let articleBody = prepareArticleBodyForPublish(body).body;
       let persistedContent = content;
       let persistedContentHash = contentHash;
       let articleThumbMediaId = effectiveThumbMediaId;
@@ -711,10 +730,10 @@ async function main() {
           frontMatter,
           title,
           digest,
-          bodyMarkdown: body,
+          bodyMarkdown: articleBody,
         });
         const markdownImagePath = toMarkdownRelativePath(filePath, generatedImagePath);
-        articleBody = insertGeneratedTitleImageMarkdown(body, markdownImagePath);
+        articleBody = insertGeneratedTitleImageMarkdown(articleBody, markdownImagePath);
         persistedContent = replaceMarkdownBody(content, articleBody);
         fs.writeFileSync(filePath, persistedContent);
         persistedContentHash = computeContentHash(persistedContent);
@@ -792,6 +811,7 @@ function runCli() {
 module.exports = {
   getTargetDate,
   main,
+  prepareArticleBodyForPublish,
   resolveExpectedWechatFiles,
   runCli,
 };

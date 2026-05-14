@@ -13,8 +13,9 @@
 
 - 微信公众号题图提示词不再直接内嵌在文章正文里，默认改由版本化模板文件统一管理：
   - `scripts/config/wechat-cover-prompt-templates.json`
-- **Brief 默认模板**：`daily-morning-paper-v1`，会把 `[题图提示词]` 和 `[当天日期]` 渲染进一张带折痕、照片、引语和版式设计的日报桌面照片（竖版 9:16）
-- **Essay 长文默认模板**：`book-on-desk-v1`，会把 `[题图提示词]` 渲染进一本展开平放在桌面上的科技图书，页面包含与文章主题相关的排版设计、图表和引语（横版 16:9），不体现具体时间
+- **Brief 默认模板**：`daily-morning-paper-v1`，会把文章内容简报和日期交给一张带折痕、照片、引语和版式设计的日报桌面照片；模板只使用内容简报作为语义来源，禁止把比例、版式或提示词元信息印成报纸正文
+- 当前默认锁定这一套模板，除非 front matter 显式指定其他 `wechat_cover_prompt_template`
+- **Essay 长文默认模板**：`book-on-desk-v1`，会把文章内容简报交给一本展开平放在桌面上的科技图书，页面包含与文章主题相关的排版设计、图表和引语，不体现具体时间
 - 模板文件除了 prompt 文案，也负责声明生成参数（例如 `aspectRatio`）；发布脚本会直接读取它，避免“模板写竖图、接口还在发横图”的上下游错位
 - Essay 长文如需使用 `book-on-desk-v1`，在 front matter 中写入 `wechat_cover_prompt_template: book-on-desk-v1`
 - 如果未来确实需要按文章覆盖模板，再额外引入 front matter 字段；在那之前，写作者默认依赖模板文件即可
@@ -36,11 +37,15 @@
 ## 文章结构模板（Brief 类型）
 
 ```markdown
-# 今日焦点：{核心主题描述}
+---
+title: 今日焦点：{核心主题描述}
+wechat_variant: brief
+intro: {一句话摘要，40-80 字，用于公众号摘要栏}
+---
 
 **📅 YYYY-MM-DD**
 
-> {引导语：一句话点明当天核心趋势，不超过 80 字}
+> {引导语：结合当天热点点明为什么现在值得读，不超过 90 字}
 
 ---
 
@@ -68,6 +73,13 @@
 
 [2] {条目标题}：{完整 URL}
 ```
+
+### Brief 标题与导语
+
+- **Brief 的标题写在 front matter 的 `title` 字段里**，正文 body 禁止重复标题，不写 `# 今日焦点...` 或其他 H1。这样草稿箱标题和正文不会出现同一个大标题。
+- 题图下方的导语不是 intro 的压缩版，也不是标题改写。它必须结合当天热点，抓住读者已经关心的模型、框架或硬件窗口，例如 DeepSeek、GPT-OSS、Blackwell、新模型首发、新硬件量产、跨框架同日就位。
+- 导语要回答“为什么今天值得读 / 为什么读者现在需要关心”：把技术变化和现实压力连起来，例如“新模型上线窗口正在压缩，今天这些 PR 决定 NVFP4 能不能从实验格式进入默认服务”。
+- 避免“X 正在成为关键趋势”这类抽象句；优先使用具体名字、具体压力和具体后果。
 
 ### H2 分类名约定
 
@@ -153,6 +165,7 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 ## 正文规则
 
 - 不使用 Markdown 链接，不使用 HTML anchor
+- 正文 body 禁止重复标题：Brief / Essay 都不在正文里写 H1，标题只放在 front matter `title` 或公众号草稿标题中
 - GitHub.io 版里的 `[[N]](url)` 或 `<a href="url">[N]</a>`，统一改写成纯文本引用 `[N]`
 - 引用号直接跟在相关内容后即可，不要求放进粗体标题内
 - 图可以保留；图注写法与 GitHub.io 版一致
@@ -224,6 +237,8 @@ source_url: https://miraclefarms.github.io/notes/YYYY/MM/DD/{slug}/
 - URL 只出现在 `## 参考` 章节，格式为 `[N] 标题：URL`
 - 没有把 URL 混进标题或图注
 - Brief 的 H2 直接写分类名，没有 `$` 包裹，没有用中文数字编号
+- Brief 正文 body 没有 H1，大标题只在 front matter `title` 中出现
+- Brief 题图下方导语结合了当天热点，并回答了“为什么读者现在需要关心”
 - 结尾有 `> 一句话结论：**...**` blockquote
 - 改写后仍然保留原文的核心判断，而不是只剩新闻摘要
 - 正文没有使用 Markdown bullet list（`- ` 或 `* `），并列内容已改用连续段落展开

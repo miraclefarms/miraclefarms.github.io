@@ -48,10 +48,26 @@ test('wechat-format requires essay WeChat versions to keep the same inline figur
   );
 });
 
+test('wechat-format requires brief WeChat bodies to avoid repeating the title', () => {
+  const wechatFormat = read(wechatFormatPath);
+
+  assert.match(wechatFormat, /Brief.*front matter.*title|title.*front matter.*Brief/u);
+  assert.match(wechatFormat, /正文 body 禁止重复标题|body 禁止重复标题/u);
+  assert.doesNotMatch(wechatFormat, /```markdown\n# 今日焦点/u);
+});
+
+test('wechat-format strengthens the brief lead with current-topic tension', () => {
+  const wechatFormat = read(wechatFormatPath);
+
+  assert.match(wechatFormat, /导语.*热点|热点.*导语/u);
+  assert.match(wechatFormat, /DeepSeek|GPT-OSS|Blackwell|新模型|新硬件/u);
+  assert.match(wechatFormat, /为什么今天值得读|为什么读者现在需要关心/u);
+});
+
 test('wechat-format references the versioned cover prompt template file and the current locked default template', () => {
   const wechatFormat = read(wechatFormatPath);
 
   assert.match(wechatFormat, /scripts\/config\/wechat-cover-prompt-templates\.json/u);
-  assert.match(wechatFormat, /hand-drawn-infographic-card-v1/u);
+  assert.match(wechatFormat, /daily-morning-paper-v1/u);
   assert.match(wechatFormat, /当前默认锁定这一套模板|当前先锁定这一个模板/u);
 });

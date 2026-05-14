@@ -68,6 +68,11 @@ commit_wechat_archive() {
   git -C "${PROJECT_ROOT}" push
 }
 
+log_wechat_retry_command() {
+  log "添加 IP 白名单后可手动重新执行："
+  log "cd \"${PROJECT_ROOT}\" && node \"${STAGES_DIR}/07-wechat-push.js\" \"${WECHAT_MD_PATH}\" \"${COVER_PATH}\" && git -C \"${PROJECT_ROOT}\" add \"${WECHAT_MD_PATH}\" && if [ -d \"${WECHAT_ARCHIVE_ASSET_DIR}\" ]; then git -C \"${PROJECT_ROOT}\" add \"${WECHAT_ARCHIVE_ASSET_DIR}\"; fi && if ! git -C \"${PROJECT_ROOT}\" diff --cached --quiet; then git -C \"${PROJECT_ROOT}\" commit -m \"Archive ${DATE} WeChat draft\"; fi && git -C \"${PROJECT_ROOT}\" push"
+}
+
 FINAL_STATUS="SUCCESS"
 TOTAL_STAGES=7
 if [ "${ENABLE_X_PUSH:-0}" = "1" ]; then
@@ -164,6 +169,7 @@ else
       "${WECHAT_MD_PATH}" \
       "${COVER_PATH}"; then
     log "FAILED at stage 7 (wechat-push)"
+    log_wechat_retry_command
     FINAL_STATUS="FAILED"
     log "=== ${FINAL_STATUS} ==="
     exit 1

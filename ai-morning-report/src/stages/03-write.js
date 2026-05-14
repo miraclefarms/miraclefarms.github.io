@@ -12,6 +12,22 @@ const { runAI, findSkill } = require('../lib/cli-adapter');
 
 const REQUIRED_FM_FIELDS = ['title', 'date', 'intro'];
 
+const TAG_RULES = [
+  ['Quantization', /\b(?:NVFP4|MXFP4|FP4|FP8|INT8|INT4|quant(?:ization)?|Quark)\b|量化/giu],
+  ['KV Cache', /\bKV\b|KV\s*cache|cache\s*offload|prefix\s*cache|缓存|offload/giu],
+  ['Speculative Decoding', /speculative|推测解码|投机解码|\bEAGLE\b|drafter|proposer|verifier/giu],
+  ['Attention', /\bMLA\b|attention|FlashAttention|RoPE|sliding\s*window|注意力/giu],
+  ['MoE', /\bMoE\b|expert|专家|路由/giu],
+  ['Disaggregation', /disaggregation|prefill|decode|P\/D|\bPD\b|NIXL/giu],
+  ['Networking', /\bRDMA\b|InfiniBand|network|网络|3FS/giu],
+  ['Training', /training|训练|RLHF|GRPO|Megatron/giu],
+  ['Agents', /\bagent\b|Claude Code|Cursor|SWE-bench/giu],
+  ['Evaluation', /benchmark|eval|SWE-bench|评测|测试集/giu],
+  ['Multimodal', /multimodal|多模态|vision|image|audio|视觉|音频/giu],
+  ['Long Context', /long context|长上下文|context window|长文本/giu],
+  ['CXL', /\bCXL\b|memory pooling|内存池/giu],
+];
+
 function extractAndValidate(raw) {
   let text = raw.replace(/\r\n/g, '\n');
 
@@ -58,6 +74,71 @@ function tryReadFallbackFile(date, projectRoot) {
   return null;
 }
 
+function splitFrontMatter(content) {
+  const match = content.match(/^(---\n)([\s\S]*?)(\n---\n)([\s\S]*)$/);
+  if (!match) return null;
+  return {
+    open: match[1],
+    frontMatter: match[2],
+    close: match[3],
+    body: match[4],
+  };
+}
+
+function countMatches(text, pattern) {
+  const matches = text.match(pattern);
+  return matches ? matches.length : 0;
+}
+
+function inferBriefTags(content) {
+  const scores = TAG_RULES
+    .map(([tag, pattern], index) => ({
+      tag,
+      index,
+      score: countMatches(content, pattern),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(item => item.tag);
+
+  const tags = scores.slice(0, 5);
+  if (tags.length === 0) return ['Inference'];
+  if (tags.length === 1 && tags[0] !== 'Inference') tags.push('Inference');
+  return tags;
+}
+
+function ensureBriefTags(content) {
+  const parts = splitFrontMatter(content);
+  if (!parts) return content;
+  if (/^tags:\s*/m.test(parts.frontMatter)) return content;
+
+  const tags = inferBriefTags(content);
+  const tagsLine = `tags: [${tags.join(', ')}]`;
+  const nextFrontMatter = /^intro:/m.test(parts.frontMatter)
+    ? parts.frontMatter.replace(/^intro:.*$/m, `$&\n${tagsLine}`)
+    : `${parts.frontMatter}\n${tagsLine}`;
+
+  return `${parts.open}${nextFrontMatter}${parts.close}${parts.body}`;
+}
+
+function normalizeReferenceSourceSpacing(content) {
+  const sectionMatch = content.match(/^## 参考来源\s*$/m);
+  if (!sectionMatch || sectionMatch.index == null) return content;
+
+  const before = content.slice(0, sectionMatch.index);
+  const section = content.slice(sectionMatch.index);
+  const normalizedSection = section
+    .replace(/\n(?=\[\d+\]\s+\[)/g, '\n\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]+$/gm, '');
+
+  return `${before}${normalizedSection}`;
+}
+
+function normalizeBriefOutput(content) {
+  return ensureBriefTags(normalizeReferenceSourceSpacing(content));
+}
+
 async function write(date, materialFile, projectRoot) {
   if (!fs.existsSync(materialFile)) {
     throw new Error(`Material file not found: ${materialFile}`);
@@ -82,9 +163,10 @@ ${material}
 - 输出必须直接以 --- 开始（YAML front matter），不要任何前置说明、不要"好的"、不要解释、不要代码块包裹
 - 输出第一行必须是 ---
 
-front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（荔枝不耐思）、kind（brief）、category（Brief）、series（ai-infra-daily-brief）、intro
+front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（荔枝不耐思）、kind（brief）、category（Brief）、series（ai-infra-daily-brief）、intro、tags
+tags 必须是 2-5 个主题分类标签，格式为 YAML 行内列表，例如：tags: [Quantization, KV Cache, Speculative Decoding]。优先从这些规范标签中选择：Agents, Attention, CXL, Disaggregation, Evaluation, Inference, KV Cache, Long Context, MoE, Multimodal, Networking, Quantization, SGLang, Speculative Decoding, TRT-LLM, Training, Transformers, llama.cpp, vLLM。
 正文结构：开头综述段（无 H2）→ H2 章节（中文数字编号：一、二、三、）→ 可选"今天真正值得记住的判断"→ 分隔线 → ## 参考来源
-引用格式：正文用 [[N]](url)，参考来源用 [N] [标题](url)
+引用格式：正文用 [[N]](url)，参考来源用 [N] [标题](url)。参考来源每一条之间必须空一行，不能连续贴在同一个 Markdown 段落里。
 所有 URL 必须来自素材包中的真实链接，不要编造。重点内容加粗。控制在 800-1500 字。`;
 
   console.log('[write] Calling AI...');
@@ -104,6 +186,8 @@ front matter 必须包含：title、date（${date} 08:00:00 +0800）、author（
       throw validateErr;
     }
   }
+
+  result = normalizeBriefOutput(result);
 
   const postsDir = path.join(projectRoot, '_posts');
   fs.mkdirSync(postsDir, { recursive: true });
@@ -127,4 +211,10 @@ if (require.main === module) {
   });
 }
 
-module.exports = { write };
+module.exports = {
+  ensureBriefTags,
+  inferBriefTags,
+  normalizeBriefOutput,
+  normalizeReferenceSourceSpacing,
+  write,
+};

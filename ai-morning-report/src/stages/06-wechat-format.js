@@ -62,6 +62,57 @@ function insertArchiveCoverMarkdown(markdown, imageUrl, projectRoot) {
   return `${match[1]}${insertTitleImage(match[2], imageUrl)}`;
 }
 
+function parseFrontMatterBlock(markdown) {
+  const match = markdown.match(/^(---\n)([\s\S]*?)(\n---\n)([\s\S]*)$/);
+  if (!match) return null;
+  return {
+    open: match[1],
+    frontMatter: match[2],
+    close: match[3],
+    body: match[4],
+  };
+}
+
+function frontMatterHasField(frontMatter, key) {
+  return new RegExp(`^${key}:\\s*`, 'm').test(frontMatter);
+}
+
+function addFrontMatterField(frontMatter, key, value) {
+  if (frontMatterHasField(frontMatter, key)) return frontMatter;
+  return `${frontMatter}\n${key}: ${value}`;
+}
+
+function removeFirstH1(body) {
+  const lines = body.replace(/\r\n/g, '\n').split('\n');
+  const index = lines.findIndex(line => /^#\s+(.+?)\s*$/.test(line));
+  if (index < 0) return { title: '', body };
+
+  const title = lines[index].replace(/^#\s+/, '').trim();
+  lines.splice(index, 1);
+  while (lines[index] === '') lines.splice(index, 1);
+  return {
+    title,
+    body: lines.join('\n').replace(/^\n+/, ''),
+  };
+}
+
+function normalizeWechatMarkdown(markdown) {
+  const clean = markdown
+    .replace(/\r\n/g, '\n')
+    .replace(/^```[a-z]*\n/, '')
+    .replace(/\n```\s*$/, '\n')
+    .trimEnd();
+  const parts = parseFrontMatterBlock(clean);
+  if (!parts) return clean;
+
+  const removed = removeFirstH1(parts.body);
+  const nextFrontMatter = removed.title
+    ? addFrontMatterField(parts.frontMatter, 'title', removed.title)
+    : parts.frontMatter;
+
+  return `${parts.open}${nextFrontMatter}${parts.close}${removed.body.trimStart()}`;
+}
+
 function copyCoverToArchive(date, archiveDir, archiveMdPath, coverImagePath) {
   if (!coverImagePath || !fs.existsSync(coverImagePath)) return null;
 
@@ -99,14 +150,11 @@ async function wechatFormat(date, postFile, outputDir, projectRoot, coverImagePa
 ${postContent}
 </github-post>
 
-按照上面 wechat-formatter skill 的规则输出完整 markdown（含 front matter）。直接开始，不要任何前缀。`;
+按照上面 wechat-formatter skill 的规则输出完整 markdown（含 front matter）。Brief front matter 必须包含 title；正文 body 不要写 # 大标题，直接从日期、导语或正文开始。导语要结合当天热点模型、框架或硬件变化，说明为什么读者今天就该关心。直接开始，不要任何前缀。`;
 
   console.log('[wechat-format] Step A: AI rewriting for WeChat...');
   const rawMd = await runAI({ prompt, skillPath });
-  const wechatMd = rawMd
-    .replace(/\r\n/g, '\n')
-    .replace(/^```[a-z]*\n/, '')
-    .replace(/\n```\s*$/, '\n');
+  const wechatMd = normalizeWechatMarkdown(rawMd);
 
   fs.mkdirSync(outputDir, { recursive: true });
   const mdPath = path.join(outputDir, `${date}-ai-infra-daily-brief-wechat.md`);
@@ -154,4 +202,7 @@ if (require.main === module) {
     });
 }
 
-module.exports = { wechatFormat };
+module.exports = {
+  normalizeWechatMarkdown,
+  wechatFormat,
+};

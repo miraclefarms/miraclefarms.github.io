@@ -4,7 +4,7 @@ const path = require('node:path');
 
 const projectRoot = path.resolve(__dirname, '..', '..');
 
-test('cover prompt templates are stored in a versioned template file with a locked Chinese default', () => {
+test('cover prompt templates are stored in a versioned template file with a locked daily paper default', () => {
   const {
     loadWechatCoverPromptTemplates,
     resolveWechatCoverPromptTemplate,
@@ -13,13 +13,14 @@ test('cover prompt templates are stored in a versioned template file with a lock
   const registry = loadWechatCoverPromptTemplates(projectRoot);
   const template = resolveWechatCoverPromptTemplate({}, registry);
 
-  assert.equal(registry.version, 4);
-  assert.equal(registry.defaultTemplateId, 'hand-drawn-infographic-card-v1');
-  assert.equal(template.id, 'hand-drawn-infographic-card-v1');
+  assert.equal(registry.version, 5);
+  assert.equal(registry.defaultTemplateId, 'daily-morning-paper-v1');
+  assert.equal(template.id, 'daily-morning-paper-v1');
   assert.equal(template.imageConfig.aspectRatio, '9:16');
-  assert.match(template.prompt, /中文信息图/);
-  assert.match(template.prompt, /简体中文/);
-  assert.match(template.prompt, /禁止出现英文长句/);
+  assert.match(template.prompt, /article brief/i);
+  assert.match(template.prompt, /not literal/i);
+  assert.match(template.prompt, /concise Chinese/i);
+  assert.doesNotMatch(template.prompt, /verbatim|中文信息图|9:16 vertical/i);
   assert.doesNotMatch(template.prompt, /English cursive|concise English phrases/i);
 });
 
@@ -46,15 +47,16 @@ test('daily morning paper template renders prompt text and date placeholders', (
   });
 
   assert.equal(template.imageConfig.aspectRatio, '9:16');
-  assert.match(prompt, /Put this whole text, verbatim, into a photo of A daily morning paper/);
-  assert.match(prompt, /The text: AI Infra 早报｜推理调度进入日报头版/);
+  assert.match(prompt, /daily morning newspaper/i);
+  assert.match(prompt, /article brief/i);
+  assert.match(prompt, /AI Infra 早报｜推理调度进入日报头版/);
   assert.match(prompt, /KV cache 与路由策略成为今天的主线。/);
   assert.match(prompt, /2026-05-11/);
   assert.doesNotMatch(prompt, /\[题图提示词\]|\[当天日期\]/);
-  assert.doesNotMatch(prompt, /文章标题：|正文摘要：/);
+  assert.doesNotMatch(prompt, /Put this whole text, verbatim|The text:/);
 });
 
-test('cover prompt builder uses Chinese labels and avoids conflicting old English requirements', () => {
+test('cover prompt builder uses article content without visible prompt metadata', () => {
   const {
     buildWechatCoverPrompt,
     loadWechatCoverPromptTemplates,
@@ -69,10 +71,11 @@ test('cover prompt builder uses Chinese labels and avoids conflicting old Englis
     registry,
   });
 
-  assert.match(prompt, /中文信息图/);
-  assert.match(prompt, /文章标题：/);
-  assert.match(prompt, /文章摘要：/);
-  assert.match(prompt, /正文摘要：/);
+  assert.match(prompt, /Prefill-as-a-Service/);
+  assert.match(prompt, /hybrid attention/);
+  assert.match(prompt, /跨数据中心 prefill/);
+  assert.match(prompt, /article brief/i);
+  assert.doesNotMatch(prompt, /9:16|竖版|中文信息图|题图提示词|硬性约束|最终图片/);
   assert.doesNotMatch(prompt, /landscape 16:9/i);
   assert.doesNotMatch(prompt, /no text, no letters/i);
   assert.doesNotMatch(prompt, /Article title:|Article summary:|Main body summary:/);
@@ -99,8 +102,9 @@ test('cover image request inherits aspect ratio from the locked template instead
   assert.equal(payload.model, 'openrouter/mock-image-model');
   assert.equal(payload.image_config.aspect_ratio, '9:16');
   assert.equal(payload.image_config.image_size, '1536x1024');
-  assert.match(payload.messages[0].content, /中文信息图/);
-  assert.match(payload.messages[0].content, /简体中文/);
+  assert.match(payload.messages[0].content, /article brief/i);
+  assert.match(payload.messages[0].content, /concise Chinese/i);
+  assert.doesNotMatch(payload.messages[0].content, /9:16|竖版|中文信息图|题图提示词|硬性约束|最终图片/);
 });
 
 test('title image insertion works even when articles no longer contain inline Chinese\/English prompt blocks', () => {
@@ -154,9 +158,9 @@ test('legacy inline prompt blocks remain compatible with the new template-driven
   });
   const rewritten = insertGeneratedTitleImageMarkdown(markdown, 'assets/2026-04-18/legacy-cover.png');
 
-  assert.match(prompt, /旧版英文视觉备注/);
-  assert.match(prompt, /旧版中文视觉备注/);
-  assert.match(prompt, /最终画面文字必须使用简体中文/);
+  assert.match(prompt, /旧稿标题/);
+  assert.match(prompt, /article brief/i);
+  assert.doesNotMatch(prompt, /旧版英文视觉备注|旧版中文视觉备注|16:9|无文字|English:/);
   assert.doesNotMatch(rewritten, /^>\s*中文[:：]/m);
   assert.doesNotMatch(rewritten, /^>\s*English[:：]/m);
   assert.match(rewritten, /!\[题图\]\(assets\/2026-04-18\/legacy-cover\.png\)/);
