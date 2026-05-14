@@ -16,7 +16,7 @@
         <link rel="prev" href="../workload-reasoning/">
       
       
-        <link rel="next" href="../evaluation/">
+        <link rel="next" href="../crossing-algo-system/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>维度交叉 - Miracle Farms Wiki</title>
+        <title>总览 - Miracle Farms Wiki</title>
       
     
     
@@ -1336,6 +1336,77 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    维度交叉
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    维度交叉
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -1351,7 +1422,7 @@
   <span class="md-ellipsis">
     
   
-    维度交叉
+    总览
   
 
     
@@ -1369,7 +1440,7 @@
   <span class="md-ellipsis">
     
   
-    维度交叉
+    总览
   
 
     
@@ -1395,263 +1466,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#31" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 算法 × 系统
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.1 算法 × 系统">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kv-offload" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化在 offload / 跨节点传输中的角色
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv-paged" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        稀疏 KV 与 Paged 内存管理的兼容性
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mla-prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MLA / 线性注意力下的 prefix cache 语义
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#32" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 系统 × 部署
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.2 系统 × 部署">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-prefix-cache-p-d" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离下 prefix cache 应该归 P 还是归 D
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv-l4-cachel1l2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cache-aware-routing-paged" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cache-aware routing 与 paged 内存管理的协同
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#33" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.3 部署 × 工作负载
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.3 部署 × 工作负载">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#agent-pd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Agent 场景与 PD 分离的契合度
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#coding-sp-prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coding 长上下文下 SP 与 prefix cache 的取舍
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reasoning-decode-pd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reasoning 长 decode 场景是否还需要 PD 分离
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#34" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.4 算法 × 工作负载
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.4 算法 × 工作负载">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        多轮对话适合哪类稀疏
+        本章结构
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rag-kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RAG 场景下位置不变性压缩 / 块级 KV 的可行性
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#coding-kv-kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coding 场景下增量 KV 与跨层共享 KV 的组合
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#35" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.5 四维联动的真实落地范式
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.5 四维联动的真实落地范式">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mooncake" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mooncake 范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sglang" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SGLang 范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vllm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        vLLM 生态范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        其他范式（待补充）
+        为什么维度交叉是高价值问题
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1680,6 +1512,154 @@
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossing-algo-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法 × 系统
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossing-system-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统 × 部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossing-deployment-workload/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署 × 工作负载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossing-algo-workload/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法 × 工作负载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crossing-paradigms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    四维联动范式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -2490,263 +2470,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#31" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.1 算法 × 系统
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.1 算法 × 系统">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kv-offload" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化在 offload / 跨节点传输中的角色
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv-paged" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        稀疏 KV 与 Paged 内存管理的兼容性
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mla-prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MLA / 线性注意力下的 prefix cache 语义
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#32" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.2 系统 × 部署
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.2 系统 × 部署">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-prefix-cache-p-d" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离下 prefix cache 应该归 P 还是归 D
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv-l4-cachel1l2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cache-aware-routing-paged" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cache-aware routing 与 paged 内存管理的协同
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#33" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.3 部署 × 工作负载
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.3 部署 × 工作负载">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#agent-pd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Agent 场景与 PD 分离的契合度
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#coding-sp-prefix-cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coding 长上下文下 SP 与 prefix cache 的取舍
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reasoning-decode-pd" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reasoning 长 decode 场景是否还需要 PD 分离
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#34" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.4 算法 × 工作负载
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.4 算法 × 工作负载">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        多轮对话适合哪类稀疏
+        本章结构
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rag-kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RAG 场景下位置不变性压缩 / 块级 KV 的可行性
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#coding-kv-kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Coding 场景下增量 KV 与跨层共享 KV 的组合
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#35" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3.5 四维联动的真实落地范式
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3.5 四维联动的真实落地范式">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mooncake" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mooncake 范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sglang" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SGLang 范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vllm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        vLLM 生态范式
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        其他范式（待补充）
+        为什么维度交叉是高价值问题
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2827,6 +2568,24 @@
   
 
       
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    维度交叉
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
     </ol>
   </nav>
 
@@ -2842,158 +2601,52 @@
 <p>真实生产系统不在任何单一维度内闭合，而是四维空间里的一个点。本章列出最重要的交叉问题，作为深入调研的"高价值地带"。</p>
 </blockquote>
 <p>四个维度（<a href="../attention-variants/">算法</a> × <a href="../storage-hierarchy/">系统</a> × <a href="../pd-disaggregation/">部署</a> × <a href="../workloads/">工作负载</a>）两两交叉，得到六组组合。下面挑出每组里最值得关注的几个具体问题。</p>
-<h2 id="31">3.1 算法 × 系统<a class="headerlink" href="#31" title="Permanent link">&para;</a></h2>
-<h3 id="kv-offload">KV 量化在 offload / 跨节点传输中的角色<a class="headerlink" href="#kv-offload" title="Permanent link">&para;</a></h3>
-<ul>
-<li>量化后的 KV 在 PCIe / RDMA 上等效带宽变大（FP8 = BF16 的 2×）</li>
-<li>但接收端的 attention kernel 必须支持量化 KV，否则要 dequantize 浪费收益</li>
-<li><strong>干净的设计</strong>：传输路径与计算路径都用同一套量化格式</li>
-<li>实践陷阱：<a href="../lifecycle/">量化方案版本号必须纳入 cache key</a>，否则换方案后字节内容不匹配</li>
-</ul>
-<h3 id="kv-paged">稀疏 KV 与 Paged 内存管理的兼容性<a class="headerlink" href="#kv-paged" title="Permanent link">&para;</a></h3>
-<ul>
-<li><a href="../paged-kv/">Paged</a> 的核心假设：每 block 的 token 是连续的、固定大小的</li>
-<li>大多数稀疏方案（<a href="../sparsity/">H2O</a>、SnapKV）剪掉的是序列中<strong>任意位置</strong>的 token，剪完之后 block 内有"空洞"</li>
-<li>三种应对：<ol>
-<li><strong>保留空洞</strong>：浪费 slot，碎片增加</li>
-<li><strong>压实</strong>：把幸存 token 移到 block 头部，但要更新 block table 的 token-id 映射</li>
-<li><strong>稀疏感知 kernel</strong>：接受 block 内非连续，靠 mask 过滤——增加 kernel 复杂度</li>
-</ol>
-</li>
-<li>工业上目前 SWA + attention sink 是最容易兼容的稀疏方案，token 级重要性剪枝部署时多用方案 2 或 3</li>
-</ul>
-<h3 id="mla-prefix-cache">MLA / 线性注意力下的 prefix cache 语义<a class="headerlink" href="#mla-prefix-cache" title="Permanent link">&para;</a></h3>
-<ul>
-<li><a href="../attention-variants/">MLA</a> 缓存的是 latent 向量而非原 K/V——理论上仍可按 token 序列哈希复用</li>
-<li>但 paged kernel、prefix tree 都建在"token block 含 K/V"的假设上，需重写</li>
-<li>线性注意力 / Mamba：状态是<strong>累计的</strong>，无法按 token 序列分段→ <strong>无 prefix cache 可言</strong></li>
-</ul>
-<h2 id="32">3.2 系统 × 部署<a class="headerlink" href="#32" title="Permanent link">&para;</a></h2>
-<h3 id="pd-prefix-cache-p-d">PD 分离下 prefix cache 应该归 P 还是归 D<a class="headerlink" href="#pd-prefix-cache-p-d" title="Permanent link">&para;</a></h3>
-<p>三种放置：</p>
+<hr />
+<h2 id="_2">本章结构<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>方案</th>
-<th>位置</th>
-<th>优缺点</th>
+<th>子页面</th>
+<th>核心问题</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>归 P</strong></td>
-<td>Prefill 节点维护 prefix cache</td>
-<td>命中后直接跳过 prefill；但 P 节点要维持 KV，资源占用增加</td>
+<td><a href="../crossing-algo-system/">算法 × 系统</a></td>
+<td>KV 量化在传输中的角色；稀疏 KV 与 Paged 管理的兼容性；MLA / SSM 下的 prefix cache 语义</td>
 </tr>
 <tr>
-<td><strong>归 D</strong></td>
-<td>Decode 节点维护 prefix cache</td>
-<td>D 反正要 KV，自然落点；但 P 节点的算力可能浪费在重算</td>
+<td><a href="../crossing-system-deployment/">系统 × 部署</a></td>
+<td>PD 分离下 prefix cache 归 P 还是归 D；L4 KV 池与本地 cache 的层级协议；cache-aware routing 接口标准化</td>
 </tr>
 <tr>
-<td><strong>独立 KV 池（L4）</strong></td>
-<td>跨 P/D 共享的 cache</td>
-<td>灵活、可共享；但增加一跳网络延迟</td>
+<td><a href="../crossing-deployment-workload/">部署 × 工作负载</a></td>
+<td>Agent 与 PD 分离的契合度；Coding 下 SP 与 prefix cache 的取舍；Reasoning 是否需要 PD 分离</td>
+</tr>
+<tr>
+<td><a href="../crossing-algo-workload/">算法 × 工作负载</a></td>
+<td>多轮对话适合哪类稀疏；RAG 的位置不变性压缩可行性；Coding 下增量 KV + 跨层共享的组合</td>
+</tr>
+<tr>
+<td><a href="../crossing-paradigms/">四维联动范式</a></td>
+<td>Mooncake / SGLang / vLLM 生态 / TRT-LLM 四种工业范式的四维分解与选型参考</td>
 </tr>
 </tbody>
 </table>
-<p>主流路线：<strong>归 D + 共享 L4</strong> 的混合（Mooncake 风格）。</p>
-<h3 id="kv-l4-cachel1l2">跨节点 KV 池（L4）与本地 cache（L1/L2）的层级关系<a class="headerlink" href="#kv-l4-cachel1l2" title="Permanent link">&para;</a></h3>
+<hr />
+<h2 id="_3">为什么维度交叉是高价值问题<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>单维度的优化（更好的稀疏算法、更快的 Paged 内存、更精细的路由）往往有清晰的论文和工程实现。
+真正困难的是<strong>跨维度的组合</strong>：</p>
 <ul>
-<li>L4 是"权威 cache"——跨副本共享，命中率最高</li>
-<li>L1/L2 是"本地 cache"——访问最快，但冷启动后空</li>
-<li>层级协议：L1 miss → L2 miss → L4 fetch → 反向回填</li>
-<li>设计取舍：回填策略（write-through vs write-back）、淘汰一致性</li>
+<li>算法优化 A 在系统 B 上是否仍然有效？</li>
+<li>部署策略 C 对工作负载 D 是收益还是负担？</li>
 </ul>
-<h3 id="cache-aware-routing-paged">Cache-aware routing 与 paged 内存管理的协同<a class="headerlink" href="#cache-aware-routing-paged" title="Permanent link">&para;</a></h3>
-<ul>
-<li>路由层基于"副本上有什么 prefix"决策，需要 paged 元数据反向暴露</li>
-<li>引擎：暴露 <code>(prefix_hash → block_count)</code> 给 router</li>
-<li>Router：用这些信息选副本</li>
-<li>接口标准化是关键开放问题——目前各引擎暴露格式不一</li>
-</ul>
-<h2 id="33">3.3 部署 × 工作负载<a class="headerlink" href="#33" title="Permanent link">&para;</a></h2>
-<h3 id="agent-pd">Agent 场景与 PD 分离的契合度<a class="headerlink" href="#agent-pd" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Agent 是"短而多"的请求——单步 decode 通常 &lt; 100 token</li>
-<li>PD 分离的固定开销（KV 传输、调度协议）摊薄不了，相对劣势</li>
-<li><strong>结论</strong>：纯 Agent 负载不一定上 PD 分离，混部反而经济</li>
-</ul>
-<h3 id="coding-sp-prefix-cache">Coding 长上下文下 SP 与 prefix cache 的取舍<a class="headerlink" href="#coding-sp-prefix-cache" title="Permanent link">&para;</a></h3>
-<ul>
-<li>SP/CP 把 KV 沿序列切到多卡，每卡只有部分 KV</li>
-<li>prefix cache 通常按"完整 prefix"组织，与 SP 的切分不对齐</li>
-<li>当前主流方案：长上下文场景<strong>优先保证 SP，prefix cache 命中率次要</strong></li>
-<li>研究方向：SP-aware 的分布式 prefix cache</li>
-</ul>
-<h3 id="reasoning-decode-pd">Reasoning 长 decode 场景是否还需要 PD 分离<a class="headerlink" href="#reasoning-decode-pd" title="Permanent link">&para;</a></h3>
-<ul>
-<li>reasoning 的特征：prefill 短、decode 极长（数十万 token）</li>
-<li>PD 分离主要解决"prefill 和 decode 互相挤占"的问题</li>
-<li>当 decode 时间 ≫ prefill 时间，挤占的边际成本变小，PD 分离的必要性下降</li>
-<li><strong>结论</strong>：纯 reasoning 负载下 PD 分离收益有限，混合负载下仍有价值</li>
-</ul>
-<h2 id="34">3.4 算法 × 工作负载<a class="headerlink" href="#34" title="Permanent link">&para;</a></h2>
-<h3 id="_2">多轮对话适合哪类稀疏<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
-<ul>
-<li>历史轮次衰减：早期内容重要性逐渐下降</li>
-<li>适配方案：<strong>StreamingLLM 风格</strong>——保留 attention sink + 滑动窗口，老内容自然丢弃</li>
-<li>不适配：H2O 等"重要性评分"方案——多轮场景下评分窗口很难定义</li>
-</ul>
-<h3 id="rag-kv">RAG 场景下位置不变性压缩 / 块级 KV 的可行性<a class="headerlink" href="#rag-kv" title="Permanent link">&para;</a></h3>
-<ul>
-<li>同一文档块在不同 prompt 中位置不同——传统 K/V（含 RoPE）位置敏感</li>
-<li>解法方向：<ul>
-<li><strong>预压缩</strong>：<a href="https://arxiv.org/abs/2311.04934">Prompt Cache</a> 把文档块压成位置无关的 KV summary</li>
-<li><strong>位置再校准</strong>：<a href="https://arxiv.org/abs/2405.16444">CacheBlend</a> 在加载时重算 RoPE</li>
-<li><strong>质量代价</strong>：通常有 1-3 个 BLEU / EM 点的精度损失</li>
-</ul>
-</li>
-<li>实用前提：<strong>业务能容忍质量损失</strong></li>
-</ul>
-<h3 id="coding-kv-kv">Coding 场景下增量 KV 与跨层共享 KV 的组合<a class="headerlink" href="#coding-kv-kv" title="Permanent link">&para;</a></h3>
-<ul>
-<li>编辑前的 prefix 完全可复用——传统 prefix cache 已经覆盖</li>
-<li>编辑点之后必须重 prefill——每层都要算</li>
-<li><a href="../sparsity/">YOCO / CLA</a> 类 layer-shared KV 在这里有意外收益：<strong>跨层共享意味着重 prefill 也只算一份</strong></li>
-<li>这是个尚未被充分挖掘的组合方向</li>
-</ul>
-<h2 id="35">3.5 四维联动的真实落地范式<a class="headerlink" href="#35" title="Permanent link">&para;</a></h2>
-<p>把所有维度拼起来，可以看到工业界的几种典型"全栈范式"：</p>
-<h3 id="mooncake">Mooncake 范式<a class="headerlink" href="#mooncake" title="Permanent link">&para;</a></h3>
-<p><strong>PD 分离 + 全局 KV 池 + 调度器统一感知</strong></p>
-<ul>
-<li>算法侧：MLA / GQA + FP8 KV</li>
-<li>系统侧：四级存储，KV 池作为独立产品</li>
-<li>部署侧：PD 分离 + cache-aware 全局路由</li>
-<li>工作负载：通用，多轮 + RAG + coding 都覆盖</li>
-</ul>
-<h3 id="sglang">SGLang 范式<a class="headerlink" href="#sglang" title="Permanent link">&para;</a></h3>
-<p><strong>RadixAttention + 结构化生成</strong></p>
-<ul>
-<li>算法侧：标准 GQA，主要靠系统优化</li>
-<li>系统侧：radix tree 组织的细粒度 prefix cache</li>
-<li>部署侧：cache-aware router</li>
-<li>工作负载：结构化输出（JSON、约束生成）+ 多轮</li>
-</ul>
-<h3 id="vllm">vLLM 生态范式<a class="headerlink" href="#vllm" title="Permanent link">&para;</a></h3>
-<p><strong>Paged + LMCache + 分布式扩展</strong></p>
-<ul>
-<li>算法侧：GQA + 可选 FP8/INT8</li>
-<li>系统侧：PagedAttention + LMCache 的多级存储</li>
-<li>部署侧：vLLM Production Stack 提供路由 + 自动扩缩容</li>
-<li>工作负载：通用 API 服务</li>
-</ul>
-<h3 id="_3">其他范式（待补充）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>TensorRT-LLM 范式</strong>：NVIDIA 全栈优化</li>
-<li><strong>AIBrix 范式</strong>：K8s 原生的弹性 + cache aware</li>
-<li><strong>Dynamo 范式</strong>：NVIDIA 推出的分布式推理基础设施</li>
-</ul>
+<p>这类问题的答案是"视情况而定"——而"情况"本身就是四维空间里的坐标。</p>
+<hr />
 <h2 id="_4">关联章节<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <ul>
 <li>各范式背后的具体框架：<a href="../frameworks/">框架对比</a></li>
-<li>评估这些跨维度组合的方法学：<a href="../evaluation/">评估方法</a></li>
+<li>评估跨维度组合的方法学：<a href="../evaluation/">评估方法</a></li>
 <li>未来可能的新范式：<a href="../future/">未来方向</a></li>
 </ul>
 <h2 id="_5">版本历史<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
@@ -3010,6 +2663,11 @@
 <td>v0.1</td>
 <td>2026-05-14</td>
 <td>框架搭建</td>
+</tr>
+<tr>
+<td>v0.2</td>
+<td>2026-05-14</td>
+<td>拆分为子页面，本页保留总览与导航</td>
 </tr>
 </tbody>
 </table>

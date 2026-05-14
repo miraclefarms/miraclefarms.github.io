@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/framework-trtllm/">
+        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/crossing-deployment-workload/">
       
       
-        <link rel="prev" href="../framework-sglang/">
+        <link rel="prev" href="../crossing-system-deployment/">
       
       
-        <link rel="next" href="../framework-lmcache/">
+        <link rel="next" href="../crossing-algo-workload/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>TensorRT-LLM - Miracle Farms Wiki</title>
+        <title>部署 × 工作负载 - Miracle Farms Wiki</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tensorrt-llm" class="md-skip">
+        <a href="#_1" class="md-skip">
           跳转至
         </a>
       
@@ -1332,6 +1332,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1361,11 +1363,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" checked>
         
           
           <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="">
@@ -1386,7 +1388,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_8">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1485,10 +1487,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../crossing-deployment-workload/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署 × 工作负载
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1504,6 +1533,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agent-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 场景与 PD 分离的契合度
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coding-sp-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coding 长上下文下 SP 与 Prefix Cache 的取舍
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reasoning-decode-pd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reasoning 长 Decode 场景是否还需要 PD 分离
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1977,8 +2081,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2008,11 +2110,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
         
           
           <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="">
@@ -2033,7 +2135,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_11">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2132,37 +2234,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    TensorRT-LLM
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../framework-trtllm/" class="md-nav__link">
         
   
   
@@ -2178,181 +2253,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kvcache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KVCache 架构
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="KVCache 架构">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kvcachemanager" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KVCacheManager
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#blockkey" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        BlockKey 多维编码
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        三层存储
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#priority-based-lru" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority-based LRU
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-reuse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prefix Reuse 优化
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        主要特性
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="主要特性">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-disaggregated-serving" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离（Disaggregated Serving）
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        多模态 KV
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与开源框架的关键差异
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        关联章节
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        版本历史
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2581,132 +2481,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kvcache" class="md-nav__link">
+  <a href="#agent-pd" class="md-nav__link">
     <span class="md-ellipsis">
       
-        KVCache 架构
+        Agent 场景与 PD 分离的契合度
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="KVCache 架构">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kvcachemanager" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KVCacheManager
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#blockkey" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        BlockKey 多维编码
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        三层存储
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#priority-based-lru" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority-based LRU
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-reuse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prefix Reuse 优化
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#coding-sp-prefix-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        主要特性
+        Coding 长上下文下 SP 与 Prefix Cache 的取舍
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="主要特性">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-disaggregated-serving" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离（Disaggregated Serving）
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        多模态 KV
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#reasoning-decode-pd" class="md-nav__link">
     <span class="md-ellipsis">
       
-        与开源框架的关键差异
+        Reasoning 长 Decode 场景是否还需要 PD 分离
       
     </span>
   </a>
@@ -2714,7 +2514,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         关联章节
@@ -2725,7 +2525,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本历史
@@ -2796,10 +2596,10 @@
     
     
       <li class="md-path__item">
-        <a href="../frameworks/" class="md-path__link">
+        <a href="../crossings/" class="md-path__link">
           
   <span class="md-ellipsis">
-    框架对比
+    维度交叉
   </span>
 
         </a>
@@ -2818,144 +2618,119 @@
 
 
 
-<h1 id="tensorrt-llm">TensorRT-LLM<a class="headerlink" href="#tensorrt-llm" title="Permanent link">&para;</a></h1>
-<p><a href="https://github.com/NVIDIA/TensorRT-LLM">TensorRT-LLM</a> 是 NVIDIA 官方推理框架，以极致的 GPU 性能优化和与 NVIDIA 硬件的深度整合为目标。</p>
-<div class="admonition warning">
-<p class="admonition-title">内容时效性</p>
-<p>TRT-LLM 更新极快。请以项目的最新文档和 Release Notes 为准。</p>
-</div>
-<hr />
-<h2 id="kvcache">KVCache 架构<a class="headerlink" href="#kvcache" title="Permanent link">&para;</a></h2>
-<h3 id="kvcachemanager">KVCacheManager<a class="headerlink" href="#kvcachemanager" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的分页 KV 管理核心组件：</p>
+<h1 id="_1">部署 × 工作负载<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>部署架构（PD 分离、并行切分、路由）不是中立的——它对不同工作负载的收益相差巨大。</p>
+</blockquote>
+<h2 id="agent-pd">Agent 场景与 PD 分离的契合度<a class="headerlink" href="#agent-pd" title="Permanent link">&para;</a></h2>
+<p><strong>Agent 的请求特征：</strong></p>
 <ul>
-<li><strong>两阶段 Claim</strong>：<code>addSequenceBatch()</code> 先锁定可复用的 Block，再批量 onboard，解决 C++ 环境下的 TOCTOU 竞态问题</li>
-<li>Block size 可配置</li>
-<li>支持 Chunked Context：长 Prompt 切分成 chunks 处理，与 KVCache 管理协同</li>
+<li>单步 decode 通常 &lt; 100 token（工具调用结果短、指令简洁）</li>
+<li>每次 LLM 调用是独立的请求，请求频率高但单次体量小</li>
+<li>多次调用之间有 prefill（注入 tool result），但 prefill 也不长</li>
 </ul>
-<h3 id="blockkey">BlockKey 多维编码<a class="headerlink" href="#blockkey" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的 Block 哈希包含多个维度，实现多维缓存隔离：</p>
+<p><strong>PD 分离的固定开销：</strong></p>
 <ul>
-<li>LoRA ID：不同 LoRA adapter 的 block 不互相污染</li>
-<li>多模态哈希：图像/视频 token 的 block 单独标识</li>
-<li><code>cache_salt</code>：租户/用户级别的隔离</li>
+<li>KV 从 P 传输到 D：每次 prefill 后都有一次传输，无论 KV 大小</li>
+<li>调度协议开销：P/D 之间的请求协调、连接复用等</li>
+<li>当 decode 很短（&lt; 100 token）时，固定开销占端到端时间的比例很高</li>
 </ul>
-<h3 id="_1">三层存储<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
-<p>GPU HBM → Host DRAM → NVMe（通过 GDS）：</p>
-<ul>
-<li>事件驱动路由：自动迁移 Block 到合适的 tier</li>
-<li>GDS（GPUDirect Storage）：NVMe 直接与 GPU 交换数据，绕过 CPU</li>
-</ul>
-<h3 id="priority-based-lru">Priority-based LRU<a class="headerlink" href="#priority-based-lru" title="Permanent link">&para;</a></h3>
-<p>高优先级 Block 获得保留槽位，不参与普通 LRU 驱逐：</p>
-<ul>
-<li>实测：命中率 +20% vs 纯 LRU（在优先级分化明显的 workload 下）</li>
-<li>应用场景：系统 prompt block 设为高优先级，用户历史 block 普通优先级</li>
-</ul>
-<h3 id="prefix-reuse">Prefix Reuse 优化<a class="headerlink" href="#prefix-reuse" title="Permanent link">&para;</a></h3>
-<p>PR #13139 将每个 pending request 的 radix tree 遍历从 5 次收敛为单次 <code>analyzePrefixReuse()</code>，减少调度开销。</p>
-<hr />
-<h2 id="_2">主要特性<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="pd-disaggregated-serving">PD 分离（Disaggregated Serving）<a class="headerlink" href="#pd-disaggregated-serving" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的 disaggregated serving 是当前最成熟的生产级实现之一：</p>
-<p><strong>实测数据：</strong></p>
+<p><strong>结论：</strong></p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th>硬件</th>
-<th>吞吐提升</th>
-<th>备注</th>
+<th>负载类型</th>
+<th>PD 分离收益</th>
+<th>原因</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DeepSeek R1</td>
-<td>GB200</td>
-<td>1.4–1.8×</td>
-<td>基础 PD 分离</td>
+<td>纯 Agent（短 decode）</td>
+<td>低</td>
+<td>固定开销摊薄不了，decode 挤占 prefill 的问题不严重</td>
 </tr>
 <tr>
-<td>Qwen 3</td>
-<td>—</td>
-<td>最高 6.11×</td>
-<td>含 MTP 优化</td>
+<td>混合（Agent + 长对话）</td>
+<td>中等</td>
+<td>PD 分离保护长对话的 decode，Agent 混入损失可接受</td>
 </tr>
 <tr>
-<td>+ MTP</td>
-<td>—</td>
-<td>额外 +1.6–2.5×</td>
-<td>多 token 预测</td>
+<td>长推理（Reasoning）</td>
+<td>低</td>
+<td>decode 远长于 prefill，挤占问题自然不严重</td>
+</tr>
+<tr>
+<td>API 服务（均匀混合）</td>
+<td>高</td>
+<td>经典受益场景</td>
 </tr>
 </tbody>
 </table>
-<p><strong>KV 传输：</strong></p>
-<ul>
-<li>NIXL 传输后端</li>
-<li>GH200 NVLink-C2C：900 GB/s = 7× PCIe Gen5 的带宽</li>
-<li>跨节点 KV 传输在 NVLink-C2C 场景下几乎无瓶颈</li>
-</ul>
-<h3 id="kv">KV 量化<a class="headerlink" href="#kv" title="Permanent link">&para;</a></h3>
-<ul>
-<li>FP8 KV Cache：原生支持，完整的 kernel 优化</li>
-<li>NVFP4：NVIDIA 自研格式，适配 Blackwell 架构</li>
-<li>MLA FP4 模型有 BF16 fallback pool</li>
-</ul>
-<h3 id="kv_1">多模态 KV<a class="headerlink" href="#kv_1" title="Permanent link">&para;</a></h3>
-<p>BlockKey 的多模态哈希支持图像/视频 token 的 block 独立管理，为多模态 prefix cache 奠定基础。</p>
+<p>纯 Agent 负载建议<strong>不做 PD 分离，统一混合部署</strong>，用 cache-aware routing + 分布式 KV 池替代。</p>
 <hr />
-<h2 id="_3">与开源框架的关键差异<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>TRT-LLM 与 vLLM/SGLang 的主要区别：</p>
+<h2 id="coding-sp-prefix-cache">Coding 长上下文下 SP 与 Prefix Cache 的取舍<a class="headerlink" href="#coding-sp-prefix-cache" title="Permanent link">&para;</a></h2>
+<p><strong>冲突的来源：</strong></p>
+<p>Sequence Parallelism（SP）/ Context Parallelism（CP）把 prompt 沿序列维度切到多张卡：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>卡 0: token[0:32768]   → KV[0:32768]
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>卡 1: token[32768:65536] → KV[32768:65536]
+</code></pre></div>
+<p>Prefix cache 的命中逻辑是"从 token[0] 开始的连续 prefix"——但分切后，每张卡只有部分 prefix，无法独立判断命中。</p>
+<p><strong>当前主流做法：优先保证 SP，prefix cache 命中率次要</strong></p>
+<p>原因：</p>
+<ul>
+<li>100K+ token 的 coding 请求，如果不用 SP，单卡 HBM 直接 OOM</li>
+<li>SP 是功能保证，prefix cache 是性能优化——功能优先</li>
+<li>实践中，同一用户的请求通常路由到同一组 SP 副本（session affinity），避免 SP 分片不一致</li>
+</ul>
+<p><strong>研究方向：SP-aware 的分布式 prefix cache</strong></p>
+<ul>
+<li>把 prefix tree 建在"SP 分片"粒度上</li>
+<li>每个 SP 副本组有自己的 prefix tree，跨组之间通过 L4 协调</li>
+<li>当前尚无生产级实现</li>
+</ul>
+<hr />
+<h2 id="reasoning-decode-pd">Reasoning 长 Decode 场景是否还需要 PD 分离<a class="headerlink" href="#reasoning-decode-pd" title="Permanent link">&para;</a></h2>
+<p><strong>Reasoning 的资源画像：</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>典型请求：prefill 1K token → decode 30K token
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>时间比：T_prefill ≈ 0.5s，T_decode ≈ 60s
+</code></pre></div>
+<p>PD 分离的核心价值是：当 prefill 和 decode 互相抢占 GPU 时，分开到不同节点，各自专注。</p>
+<p><strong>当 decode 时间 ≫ prefill 时间时：</strong></p>
+<ul>
+<li>prefill 在 decode 资源上的占比极低（&lt; 1%）</li>
+<li>即便 prefill 偶尔抢占了 decode slot，影响也微乎其微</li>
+<li>PD 分离带来的固定 KV 传输开销（每次 prefill 后一次传输）却是真实成本</li>
+</ul>
+<p><strong>结论：</strong></p>
 <table>
 <thead>
 <tr>
-<th>维度</th>
-<th>TRT-LLM</th>
-<th>vLLM / SGLang</th>
+<th>场景</th>
+<th>PD 分离建议</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>目标</td>
-<td>NVIDIA 硬件极致性能</td>
-<td>通用性 + 生态</td>
+<td>纯 Reasoning 负载</td>
+<td><strong>不推荐</strong>——收益有限，传输开销显著</td>
 </tr>
 <tr>
-<td>开发语言</td>
-<td>主要 C++，Python 接口</td>
-<td>主要 Python</td>
-</tr>
-<tr>
-<td>自定义灵活性</td>
-<td>较低（依赖 NVIDIA 工具链）</td>
-<td>较高</td>
-</tr>
-<tr>
-<td>PD 分离成熟度</td>
-<td>生产级（NIXL + NVLink-C2C）</td>
-<td>进行中 / 较成熟</td>
-</tr>
-<tr>
-<td>BlockKey 多维度</td>
-<td>✅（LoRA ID + 多模态 + salt）</td>
-<td>部分支持</td>
-</tr>
-<tr>
-<td>与 NVIDIA 生态集成</td>
-<td>深度（Dynamo、GDS、NVLink）</td>
-<td>有限</td>
+<td>混合（Reasoning + Chat）</td>
+<td><strong>推荐</strong>——Chat 的 prefill 会严重影响 Reasoning 的 decode，PD 分离隔离两者</td>
 </tr>
 </tbody>
 </table>
+<p>纯 Reasoning 集群建议用<strong>大 batch decode 池 + DRAM offload</strong>替代 PD 分离。</p>
 <hr />
-<h2 id="_4">关联章节<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_2">关联章节<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ul>
-<li>两阶段 Claim 的 KV 分配机制：<a href="../paged-kv/">Paged KV</a></li>
-<li>PD 分离与 NIXL 传输：<a href="../pd-disaggregation/">PD 分离</a></li>
-<li>框架总览与对比表：<a href="../frameworks/">框架对比</a></li>
+<li>PD 分离的架构与 KV 传输开销：<a href="../pd-disaggregation/">PD 分离</a></li>
+<li>Coding 场景的 SP/CP 配置：<a href="../parallelism/">并行切分</a>、<a href="../workload-coding/">Coding 工作负载</a></li>
+<li>Reasoning 场景的容量与抢占策略：<a href="../workload-reasoning/">Reasoning 工作负载</a></li>
+<li>Agent 场景的分布式 KV 池方案：<a href="../workload-agent/">Agent 工作负载</a></li>
 </ul>
-<p>来源：主站 essay <a href="/notes/2026/05/09/trtllm-kvcache-runtime-architecture/">TRT-LLM KVCache Runtime 架构</a></p>
-<h2 id="_5">版本历史<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_3">版本历史<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2968,7 +2743,7 @@
 <tr>
 <td>v0.1</td>
 <td>2026-05-14</td>
-<td>从框架对比总览拆分，整理 KVCacheManager / BlockKey / PD 分离 / NIXL 等核心特性</td>
+<td>从维度交叉总览拆分，补充各场景 PD 分离收益对比表与 SP/prefix cache 冲突分析</td>
 </tr>
 </tbody>
 </table>

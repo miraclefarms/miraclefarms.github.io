@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/framework-trtllm/">
+        <link rel="canonical" href="https://miraclefarms.github.io/wiki/kvcache/crossing-algo-system/">
       
       
-        <link rel="prev" href="../framework-sglang/">
+        <link rel="prev" href="../crossings/">
       
       
-        <link rel="next" href="../framework-lmcache/">
+        <link rel="next" href="../crossing-system-deployment/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>TensorRT-LLM - Miracle Farms Wiki</title>
+        <title>算法 × 系统 - Miracle Farms Wiki</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tensorrt-llm" class="md-skip">
+        <a href="#_1" class="md-skip">
           跳转至
         </a>
       
@@ -1332,6 +1332,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1361,11 +1363,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" checked>
         
           
           <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="">
@@ -1386,7 +1388,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_8">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1429,10 +1431,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../crossing-algo-system/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法 × 系统
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1448,6 +1477,109 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kv-offload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KV 量化在 Offload / 跨节点传输中的角色
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kv-paged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        稀疏 KV 与 Paged 内存管理的兼容性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mla-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLA / 线性注意力下的 Prefix Cache 语义
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MLA / 线性注意力下的 Prefix Cache 语义">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mlamulti-head-latent-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLA（Multi-head Latent Attention）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mambaretnet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        线性注意力 / 状态空间模型（Mamba、RetNet）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关联章节
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        版本历史
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1977,8 +2109,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2008,11 +2138,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
         
           
           <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="">
@@ -2033,7 +2163,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_11">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2132,37 +2262,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    TensorRT-LLM
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../framework-trtllm/" class="md-nav__link">
         
   
   
@@ -2178,181 +2281,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="目录">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      目录
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kvcache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KVCache 架构
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="KVCache 架构">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kvcachemanager" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KVCacheManager
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#blockkey" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        BlockKey 多维编码
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        三层存储
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#priority-based-lru" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority-based LRU
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-reuse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prefix Reuse 优化
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        主要特性
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="主要特性">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-disaggregated-serving" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离（Disaggregated Serving）
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        多模态 KV
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与开源框架的关键差异
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        关联章节
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        版本历史
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2581,22 +2509,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kvcache" class="md-nav__link">
+  <a href="#kv-offload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        KVCache 架构
+        KV 量化在 Offload / 跨节点传输中的角色
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="KVCache 架构">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kv-paged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        稀疏 KV 与 Paged 内存管理的兼容性
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mla-prefix-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLA / 线性注意力下的 Prefix Cache 语义
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MLA / 线性注意力下的 Prefix Cache 语义">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kvcachemanager" class="md-nav__link">
+  <a href="#mlamulti-head-latent-attention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        KVCacheManager
+        MLA（Multi-head Latent Attention）
       
     </span>
   </a>
@@ -2604,43 +2554,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#blockkey" class="md-nav__link">
+  <a href="#mambaretnet" class="md-nav__link">
     <span class="md-ellipsis">
       
-        BlockKey 多维编码
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        三层存储
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#priority-based-lru" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority-based LRU
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefix-reuse" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prefix Reuse 优化
+        线性注意力 / 状态空间模型（Mamba、RetNet）
       
     </span>
   </a>
@@ -2656,67 +2573,6 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        主要特性
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="主要特性">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pd-disaggregated-serving" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PD 分离（Disaggregated Serving）
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        KV 量化
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        多模态 KV
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        与开源框架的关键差异
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
         关联章节
       
     </span>
@@ -2725,7 +2581,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         版本历史
@@ -2796,10 +2652,10 @@
     
     
       <li class="md-path__item">
-        <a href="../frameworks/" class="md-path__link">
+        <a href="../crossings/" class="md-path__link">
           
   <span class="md-ellipsis">
-    框架对比
+    维度交叉
   </span>
 
         </a>
@@ -2818,144 +2674,91 @@
 
 
 
-<h1 id="tensorrt-llm">TensorRT-LLM<a class="headerlink" href="#tensorrt-llm" title="Permanent link">&para;</a></h1>
-<p><a href="https://github.com/NVIDIA/TensorRT-LLM">TensorRT-LLM</a> 是 NVIDIA 官方推理框架，以极致的 GPU 性能优化和与 NVIDIA 硬件的深度整合为目标。</p>
-<div class="admonition warning">
-<p class="admonition-title">内容时效性</p>
-<p>TRT-LLM 更新极快。请以项目的最新文档和 Release Notes 为准。</p>
-</div>
+<h1 id="_1">算法 × 系统<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>算法改变 KV 的形状和语义，系统负责 KV 的存储和传输——两者的接口不对齐时，算法收益会在系统层被抵消。</p>
+</blockquote>
+<h2 id="kv-offload">KV 量化在 Offload / 跨节点传输中的角色<a class="headerlink" href="#kv-offload" title="Permanent link">&para;</a></h2>
+<p>量化后的 KV 在传输路径上有直接的带宽收益：</p>
+<ul>
+<li>FP8 = BF16 的 2×（每 token 字节数减半）</li>
+<li>INT4 = BF16 的 4×</li>
+</ul>
+<p>但带宽收益能否落地，取决于<strong>接收端的 attention kernel 是否原生支持量化 KV</strong>：</p>
+<ul>
+<li>如果接收端需要 dequantize 才能计算，节省的传输带宽部分被 dequantize 计算抵消</li>
+<li><strong>干净的设计</strong>：传输路径与计算路径用同一套量化格式，避免格式转换</li>
+</ul>
+<p><strong>实践陷阱：量化方案版本需要纳入 cache key</strong></p>
+<p>如果系统在某次部署中从 BF16 切换到 FP8 KV，但 prefix cache 里仍然存有旧格式的 block，会出现字节内容不匹配——旧 block 命中后直接用，attention 计算结果错误。</p>
+<p>正确做法：把量化格式（精度、量化粒度）的版本号编码进 block hash，切换格式时整个 cache 自动失效。详见 <a href="../lifecycle/">生命周期与淘汰</a>。</p>
 <hr />
-<h2 id="kvcache">KVCache 架构<a class="headerlink" href="#kvcache" title="Permanent link">&para;</a></h2>
-<h3 id="kvcachemanager">KVCacheManager<a class="headerlink" href="#kvcachemanager" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的分页 KV 管理核心组件：</p>
-<ul>
-<li><strong>两阶段 Claim</strong>：<code>addSequenceBatch()</code> 先锁定可复用的 Block，再批量 onboard，解决 C++ 环境下的 TOCTOU 竞态问题</li>
-<li>Block size 可配置</li>
-<li>支持 Chunked Context：长 Prompt 切分成 chunks 处理，与 KVCache 管理协同</li>
-</ul>
-<h3 id="blockkey">BlockKey 多维编码<a class="headerlink" href="#blockkey" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的 Block 哈希包含多个维度，实现多维缓存隔离：</p>
-<ul>
-<li>LoRA ID：不同 LoRA adapter 的 block 不互相污染</li>
-<li>多模态哈希：图像/视频 token 的 block 单独标识</li>
-<li><code>cache_salt</code>：租户/用户级别的隔离</li>
-</ul>
-<h3 id="_1">三层存储<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
-<p>GPU HBM → Host DRAM → NVMe（通过 GDS）：</p>
-<ul>
-<li>事件驱动路由：自动迁移 Block 到合适的 tier</li>
-<li>GDS（GPUDirect Storage）：NVMe 直接与 GPU 交换数据，绕过 CPU</li>
-</ul>
-<h3 id="priority-based-lru">Priority-based LRU<a class="headerlink" href="#priority-based-lru" title="Permanent link">&para;</a></h3>
-<p>高优先级 Block 获得保留槽位，不参与普通 LRU 驱逐：</p>
-<ul>
-<li>实测：命中率 +20% vs 纯 LRU（在优先级分化明显的 workload 下）</li>
-<li>应用场景：系统 prompt block 设为高优先级，用户历史 block 普通优先级</li>
-</ul>
-<h3 id="prefix-reuse">Prefix Reuse 优化<a class="headerlink" href="#prefix-reuse" title="Permanent link">&para;</a></h3>
-<p>PR #13139 将每个 pending request 的 radix tree 遍历从 5 次收敛为单次 <code>analyzePrefixReuse()</code>，减少调度开销。</p>
-<hr />
-<h2 id="_2">主要特性<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="pd-disaggregated-serving">PD 分离（Disaggregated Serving）<a class="headerlink" href="#pd-disaggregated-serving" title="Permanent link">&para;</a></h3>
-<p>TRT-LLM 的 disaggregated serving 是当前最成熟的生产级实现之一：</p>
-<p><strong>实测数据：</strong></p>
+<h2 id="kv-paged">稀疏 KV 与 Paged 内存管理的兼容性<a class="headerlink" href="#kv-paged" title="Permanent link">&para;</a></h2>
+<p>Paged KV 的核心假设：<strong>每 block 的 token 是连续的、固定大小的</strong>。</p>
+<p>大多数稀疏方案（H2O、SnapKV、PyramidKV）剪掉的是序列中<strong>任意位置</strong>的 token，剪完之后 block 内有"空洞"，破坏了 Paged 的假设。</p>
+<p><strong>三种应对方案：</strong></p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th>硬件</th>
-<th>吞吐提升</th>
-<th>备注</th>
+<th>方案</th>
+<th>做法</th>
+<th>优点</th>
+<th>缺点</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DeepSeek R1</td>
-<td>GB200</td>
-<td>1.4–1.8×</td>
-<td>基础 PD 分离</td>
+<td>保留空洞</td>
+<td>block 内 invalid slot 标记为 0</td>
+<td>实现最简单</td>
+<td>浪费 HBM slot，碎片增加</td>
 </tr>
 <tr>
-<td>Qwen 3</td>
-<td>—</td>
-<td>最高 6.11×</td>
-<td>含 MTP 优化</td>
+<td>压实（Compaction）</td>
+<td>幸存 token 移到 block 头部</td>
+<td>无碎片浪费</td>
+<td>需要更新 block table 的 token-id 映射，开销大</td>
 </tr>
 <tr>
-<td>+ MTP</td>
-<td>—</td>
-<td>额外 +1.6–2.5×</td>
-<td>多 token 预测</td>
+<td>稀疏感知 kernel</td>
+<td>接受 block 内非连续，靠 mask 过滤</td>
+<td>最灵活</td>
+<td>kernel 复杂度高，工程成本大</td>
 </tr>
 </tbody>
 </table>
-<p><strong>KV 传输：</strong></p>
+<p><strong>实际部署的选择：</strong></p>
 <ul>
-<li>NIXL 传输后端</li>
-<li>GH200 NVLink-C2C：900 GB/s = 7× PCIe Gen5 的带宽</li>
-<li>跨节点 KV 传输在 NVLink-C2C 场景下几乎无瓶颈</li>
+<li>SWA（Sliding Window Attention）+ Attention Sink：保留的 token 在 block 边界对齐，与 paged 兼容性最好，工业部署最广泛</li>
+<li>Token 级重要性剪枝（H2O、SnapKV）：通常用压实方案，但需要 kernel 支持变长有效 block</li>
 </ul>
-<h3 id="kv">KV 量化<a class="headerlink" href="#kv" title="Permanent link">&para;</a></h3>
-<ul>
-<li>FP8 KV Cache：原生支持，完整的 kernel 优化</li>
-<li>NVFP4：NVIDIA 自研格式，适配 Blackwell 架构</li>
-<li>MLA FP4 模型有 BF16 fallback pool</li>
-</ul>
-<h3 id="kv_1">多模态 KV<a class="headerlink" href="#kv_1" title="Permanent link">&para;</a></h3>
-<p>BlockKey 的多模态哈希支持图像/视频 token 的 block 独立管理，为多模态 prefix cache 奠定基础。</p>
 <hr />
-<h2 id="_3">与开源框架的关键差异<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>TRT-LLM 与 vLLM/SGLang 的主要区别：</p>
-<table>
-<thead>
-<tr>
-<th>维度</th>
-<th>TRT-LLM</th>
-<th>vLLM / SGLang</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>目标</td>
-<td>NVIDIA 硬件极致性能</td>
-<td>通用性 + 生态</td>
-</tr>
-<tr>
-<td>开发语言</td>
-<td>主要 C++，Python 接口</td>
-<td>主要 Python</td>
-</tr>
-<tr>
-<td>自定义灵活性</td>
-<td>较低（依赖 NVIDIA 工具链）</td>
-<td>较高</td>
-</tr>
-<tr>
-<td>PD 分离成熟度</td>
-<td>生产级（NIXL + NVLink-C2C）</td>
-<td>进行中 / 较成熟</td>
-</tr>
-<tr>
-<td>BlockKey 多维度</td>
-<td>✅（LoRA ID + 多模态 + salt）</td>
-<td>部分支持</td>
-</tr>
-<tr>
-<td>与 NVIDIA 生态集成</td>
-<td>深度（Dynamo、GDS、NVLink）</td>
-<td>有限</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="_4">关联章节<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="mla-prefix-cache">MLA / 线性注意力下的 Prefix Cache 语义<a class="headerlink" href="#mla-prefix-cache" title="Permanent link">&para;</a></h2>
+<h3 id="mlamulti-head-latent-attention">MLA（Multi-head Latent Attention）<a class="headerlink" href="#mlamulti-head-latent-attention" title="Permanent link">&para;</a></h3>
+<p>MLA 缓存的不是原始 K/V，而是压缩的 <strong>latent 向量</strong>（低秩表示），每次 attention 时才解压：</p>
 <ul>
-<li>两阶段 Claim 的 KV 分配机制：<a href="../paged-kv/">Paged KV</a></li>
-<li>PD 分离与 NIXL 传输：<a href="../pd-disaggregation/">PD 分离</a></li>
-<li>框架总览与对比表：<a href="../frameworks/">框架对比</a></li>
+<li>理论上 prefix cache 仍然可用：给定相同的 token prefix，latent 结果相同，按 token 序列哈希仍然有效</li>
+<li>但现有的 paged kernel 和 prefix tree 都建在"block 存 K/V"的假设上——需要重写存储结构，把 block 内容改为 latent 格式</li>
+<li><strong>当前进展</strong>：vLLM / SGLang 已适配 MLA 推理，但 MLA 的 prefix cache 语义尚未完全标准化</li>
 </ul>
-<p>来源：主站 essay <a href="/notes/2026/05/09/trtllm-kvcache-runtime-architecture/">TRT-LLM KVCache Runtime 架构</a></p>
-<h2 id="_5">版本历史<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="mambaretnet">线性注意力 / 状态空间模型（Mamba、RetNet）<a class="headerlink" href="#mambaretnet" title="Permanent link">&para;</a></h3>
+<p>这类模型用<strong>累计状态（state）</strong>替代所有历史 KV：</p>
+<ul>
+<li>state 是对全部历史 token 的<strong>不可逆压缩</strong>，无法分段取 prefix</li>
+<li>给定"前 N 个 token 的 state"，无法分离出"前 K 个 token 的 state"（K &lt; N）</li>
+<li><strong>结论：线性注意力 / SSM 没有传统意义上的 prefix cache</strong></li>
+</ul>
+<p>混合架构（Attention 层 + SSM 层交替）则同时有两套状态管理，prefix cache 仅作用于 Attention 层，SSM 层的 state 仍是不可分段的。</p>
+<hr />
+<h2 id="_2">关联章节<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>KV 量化的具体方法：<a href="../compression-quantization/">压缩与量化</a></li>
+<li>Paged KV 的 block 管理机制：<a href="../paged-kv/">Paged KV</a></li>
+<li>cache key 与生命周期的设计：<a href="../lifecycle/">生命周期与淘汰</a></li>
+<li>MLA / 线性注意力的算法细节：<a href="../attention-variants/">Attention 变体</a></li>
+<li>稀疏化方法：<a href="../sparsity/">稀疏化</a></li>
+</ul>
+<h2 id="_3">版本历史<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2968,7 +2771,7 @@
 <tr>
 <td>v0.1</td>
 <td>2026-05-14</td>
-<td>从框架对比总览拆分，整理 KVCacheManager / BlockKey / PD 分离 / NIXL 等核心特性</td>
+<td>从维度交叉总览拆分，补充三种稀疏兼容方案对比表与 MLA/SSM 语义分析</td>
 </tr>
 </tbody>
 </table>
