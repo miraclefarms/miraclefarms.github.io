@@ -33,6 +33,18 @@
          <lastmod>2026-05-14</lastmod>
     </url>
     <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/evaluation-benchmarks/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/evaluation-metrics/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/evaluation-scenarios/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
          <loc>https://miraclefarms.github.io/wiki/kvcache/evaluation/</loc>
          <lastmod>2026-05-14</lastmod>
     </url>
@@ -41,7 +53,43 @@
          <lastmod>2026-05-14</lastmod>
     </url>
     <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/framework-lmcache/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/framework-mooncake/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/framework-sglang/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/framework-trtllm/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/framework-vllm/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
          <loc>https://miraclefarms.github.io/wiki/kvcache/frameworks/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/future-algorithm/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/future-deployment/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/future-system/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/future-workloads/</loc>
          <lastmod>2026-05-14</lastmod>
     </url>
     <url>
@@ -98,6 +146,26 @@
     </url>
     <url>
          <loc>https://miraclefarms.github.io/wiki/kvcache/storage-hierarchy/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/workload-agent/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/workload-coding/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/workload-multiturn/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/workload-rag/</loc>
+         <lastmod>2026-05-14</lastmod>
+    </url>
+    <url>
+         <loc>https://miraclefarms.github.io/wiki/kvcache/workload-reasoning/</loc>
          <lastmod>2026-05-14</lastmod>
     </url>
     <url>
