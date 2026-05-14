@@ -47,13 +47,35 @@ nav:
           - 并行切分: kvcache/parallelism.md
           - 路由与亲和性: kvcache/routing.md
           - 弹性与故障: kvcache/elasticity.md
-      - 工作负载维度: kvcache/workloads.md
+      - 工作负载维度:
+          - 总览: kvcache/workloads.md
+          - 多轮对话: kvcache/workload-multiturn.md
+          - Agent 协作: kvcache/workload-agent.md
+          - Coding / 长上下文: kvcache/workload-coding.md
+          - RAG / 检索增强: kvcache/workload-rag.md
+          - Reasoning / Long CoT: kvcache/workload-reasoning.md
       - 维度交叉: kvcache/crossings.md
-      - 评估方法: kvcache/evaluation.md
-      - 未来方向: kvcache/future.md
-      - 框架对比: kvcache/frameworks.md
-      - 术语表: kvcache/glossary.md
-      - 参考资料: kvcache/references.md
+      - 评估方法:
+          - 总览: kvcache/evaluation.md
+          - 指标体系: kvcache/evaluation-metrics.md
+          - Benchmark 与工具: kvcache/evaluation-benchmarks.md
+          - 场景评估矩阵: kvcache/evaluation-scenarios.md
+      - 未来方向:
+          - 总览: kvcache/future.md
+          - 算法侧: kvcache/future-algorithm.md
+          - 系统侧: kvcache/future-system.md
+          - 部署侧: kvcache/future-deployment.md
+          - 工作负载演进: kvcache/future-workloads.md
+      - 框架对比:
+          - 总览与对比表: kvcache/frameworks.md
+          - vLLM: kvcache/framework-vllm.md
+          - SGLang: kvcache/framework-sglang.md
+          - TensorRT-LLM: kvcache/framework-trtllm.md
+          - LMCache: kvcache/framework-lmcache.md
+          - Mooncake: kvcache/framework-mooncake.md
+      - 附录:
+          - 术语表: kvcache/glossary.md
+          - 参考资料: kvcache/references.md
 
 markdown_extensions:
   - admonition
