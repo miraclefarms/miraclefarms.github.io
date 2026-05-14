@@ -54,7 +54,13 @@ nav:
           - Coding / 长上下文: kvcache/workload-coding.md
           - RAG / 检索增强: kvcache/workload-rag.md
           - Reasoning / Long CoT: kvcache/workload-reasoning.md
-      - 维度交叉: kvcache/crossings.md
+      - 维度交叉:
+          - 总览: kvcache/crossings.md
+          - 算法 × 系统: kvcache/crossing-algo-system.md
+          - 系统 × 部署: kvcache/crossing-system-deployment.md
+          - 部署 × 工作负载: kvcache/crossing-deployment-workload.md
+          - 算法 × 工作负载: kvcache/crossing-algo-workload.md
+          - 四维联动范式: kvcache/crossing-paradigms.md
       - 评估方法:
           - 总览: kvcache/evaluation.md
           - 指标体系: kvcache/evaluation-metrics.md
