@@ -9,7 +9,11 @@ layout: default
         <span class="dot">›</span>
         {% if page.kind == 'brief' %}
         <a href="{{ '/briefs/' | relative_url }}">Briefs</a>
-        {% elsif page.kind == 'essay' or page.kind == 'field-note' %}
+        {% elsif page.kind == 'reading' %}
+        <a href="{{ '/readings/' | relative_url }}">Readings</a>
+        {% elsif page.kind == 'field-note' %}
+        <a href="{{ '/fields/' | relative_url }}">Fields</a>
+        {% elsif page.kind == 'essay' %}
         <a href="{{ '/essays/' | relative_url }}">Essays</a>
         {% else %}
         <a href="{{ '/foundations/' | relative_url }}">Foundations</a>
@@ -41,7 +45,7 @@ layout: default
         {% if page.series %}
         <span class="series-chip">{{ page.series }}</span>
         {% endif %}
-        {% if page.kind == 'essay' or page.kind == 'reading' %}
+        {% if page.kind == 'essay' or page.kind == 'reading' or page.kind == 'field-note' %}
         <span id="post-word-count" class="post-word-count-chip"></span>
         {% endif %}
       </div>

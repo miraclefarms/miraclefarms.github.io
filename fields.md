@@ -1,15 +1,14 @@
 ---
 layout: default
-title: Essays
-description: MiracleFarms Essays — AI Infrastructure 的长文与系统性文章。
-permalink: /essays/
+title: Fields
+description: MiracleFarms Fields — AI Infra 实验与论文复现的动手研究日志。
+permalink: /fields/
 ---
 
-{% assign essays = site.posts | where: 'kind', 'essay' | sort: 'date' | reverse %}
-{% assign all_posts = essays %}
+{% assign field_notes = site.posts | where: 'kind', 'field-note' | sort: 'date' | reverse %}
 
 {% assign all_tag_str = "" %}
-{% for post in all_posts %}
+{% for post in field_notes %}
   {% for tag in post.tags %}
     {% assign all_tag_str = all_tag_str | append: "," | append: tag %}
   {% endfor %}
@@ -20,33 +19,33 @@ permalink: /essays/
   <div class="pg-meta">
     <a href="{{ '/' | relative_url }}">MiracleFarms</a>
     <span class="dot">›</span>
-    <span>Essays</span>
+    <span>Fields</span>
   </div>
 
-  <div class="pg-icon" aria-hidden="true">🌾</div>
-  <h1 class="pg-title">Essays</h1>
-  <p class="pg-sub">长文：AI Infra 的系统性观察与判断。</p>
+  <div class="pg-icon" aria-hidden="true">🔬</div>
+  <h1 class="pg-title">Fields</h1>
+  <p class="pg-sub">实验与复现：动手做的 AI Infra 研究。</p>
   <p class="pg-sub-small">
-    相对于 Briefs 的"一日一观察"，Essays 把多条线索拼回到一个工程问题上——结构化、可引用、长期维护。
+    Readings 是读别人写的东西；Fields 是自己动手做的东西——论文复现、工具基准测试、调试记录。一手数据，不是综述。
   </p>
 
   <aside class="callout">
-    <span class="ico" aria-hidden="true">📚</span>
+    <span class="ico" aria-hidden="true">🔬</span>
     <div>
       <p>
-        共 <strong>{{ all_posts.size }}</strong> 篇 · 主题覆盖 <strong>Inference / Agents / Memory / Evaluation / Reliability</strong>。每一篇都尝试在一个具体边界上给出可复盘的判断，而不是综述。
+        共 <strong>{{ field_notes.size }}</strong> 篇 · 覆盖 <strong>Inference / KV Cache / Agents / Evaluation</strong>。每篇聚焦一次实际动手的研究记录，可复现、可引用。
       </p>
     </div>
   </aside>
 
-  <div class="filterbar" role="toolbar" aria-label="筛选与视图" id="essays-filterbar">
+  <div class="filterbar" role="toolbar" aria-label="筛选与视图" id="fields-filterbar">
     <span class="lbl">Filter:</span>
     <button class="fchip on" data-tag="" type="button">
-      全部 <span class="count">{{ all_posts.size }}</span>
+      全部 <span class="count">{{ field_notes.size }}</span>
     </button>
     {% for tag in tag_list %}
     {% if tag != "" %}
-    {% assign t_count = all_posts | where_exp: "p", "p.tags contains tag" | size %}
+    {% assign t_count = field_notes | where_exp: "p", "p.tags contains tag" | size %}
     <button class="fchip" data-tag="{{ tag }}" type="button">
       {{ tag }} <span class="count">{{ t_count }}</span>
     </button>
@@ -65,16 +64,31 @@ permalink: /essays/
     </span>
   </div>
 
-  <div id="essays-list-view">
-    <div class="pagelist" role="list">
-    {% for post in all_posts %}
-      {% assign sort_ts = post.updated | default: post.date | date: '%s' %}
-      <a class="pagelink essay-item" href="{{ post.url | relative_url }}" role="listitem"
-         data-tags="{{ post.tags | join: ',' }}"
-         data-sortdate="{{ sort_ts }}">
+  <div id="fields-list-view">
+    {% assign prev_year = "" %}
+    {% for post in field_notes %}
+      {% assign yr = post.date | date: "%Y" %}
+      {% if yr != prev_year %}
+        {% unless forloop.first %}</div></section>{% endunless %}
+        {% assign yr_count = 0 %}
+        {% for p in field_notes %}
+          {% assign pyr = p.date | date: "%Y" %}
+          {% if pyr == yr %}{% assign yr_count = yr_count | plus: 1 %}{% endif %}
+        {% endfor %}
+        <section class="field-year-group" data-year="{{ yr }}">
+        <div class="year-row">
+          <span class="yr">{{ yr }}</span>
+          <span class="ln"></span>
+          <span class="yr-count" data-total="{{ yr_count }}">{{ yr_count }} 篇</span>
+        </div>
+        <div class="pagelist" role="list">
+        {% assign prev_year = yr %}
+      {% endif %}
+      <a class="pagelink field-item" href="{{ post.url | relative_url }}" role="listitem"
+         data-tags="{{ post.tags | join: ',' }}">
         <span class="pl-handle" aria-hidden="true">⋮⋮</span>
         <span class="pl-ico" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
         </span>
         <div class="pl-body">
           <div class="pl-title">{{ post.title }}</div>
@@ -88,35 +102,24 @@ permalink: /essays/
             {% endfor %}
           </div>
         </div>
-        <div class="pl-date{% if post.updated %} pl-date-updated{% endif %}">
-          {% if post.updated %}
-            {{ post.updated | date: "%Y.%m.%d" }}<span class="pl-date-pip" title="Updated">↑</span>
-          {% else %}
-            {{ post.date | date: "%Y.%m.%d" }}
-          {% endif %}
-        </div>
+        <div class="pl-date">{{ post.date | date: "%Y.%m.%d" }}</div>
       </a>
     {% endfor %}
-    </div>
+    </div></section>
   </div>
 
-  <div id="essays-table-view" style="display:none">
+  <div id="fields-table-view" style="display:none">
     <table class="ntable" role="table">
       <thead>
         <tr>
-          <th class="col-date" style="width:110px">
+          <th class="col-date" style="width:120px">
             <span class="col-ico">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-            </span>Published
-          </th>
-          <th class="col-date col-updated" style="width:110px">
-            <span class="col-ico">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v7l4 2"/><circle cx="12" cy="12" r="9"/></svg>
-            </span>Updated
+            </span>Date
           </th>
           <th class="col-title">
             <span class="col-ico">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4z"/><path d="M5 17a3 3 0 013-3h11"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
             </span>Title
           </th>
           <th class="col-tags" style="width:200px">
@@ -127,13 +130,9 @@ permalink: /essays/
         </tr>
       </thead>
       <tbody>
-        {% for post in all_posts %}
-        {% assign sort_ts = post.updated | default: post.date | date: '%s' %}
-        <tr class="essay-table-row" data-tags="{{ post.tags | join: ',' }}" data-sortdate="{{ sort_ts }}">
+        {% for post in field_notes %}
+        <tr class="field-table-row" data-tags="{{ post.tags | join: ',' }}">
           <td class="col-date">{{ post.date | date: "%Y.%m.%d" }}</td>
-          <td class="col-date col-updated">
-            {% if post.updated %}{{ post.updated | date: "%Y.%m.%d" }}{% else %}<span style="color:var(--ink-faint)">—</span>{% endif %}
-          </td>
           <td class="col-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></td>
           <td class="col-tags">
             {% for tag in post.tags %}
@@ -146,14 +145,14 @@ permalink: /essays/
     </table>
   </div>
 
-  <div id="essays-empty" class="empty" style="display:none">没有匹配的 essay。</div>
+  <div id="fields-empty" class="empty" style="display:none">没有匹配的 field note。</div>
 
   <hr class="divider">
 
-  <p class="h2-sub">Reading note</p>
-  <h2 class="h2">关于 Essays 的写作</h2>
+  <p class="h2-sub">Field note</p>
+  <h2 class="h2">关于 Fields 的定位</h2>
   <p class="muted">
-    Essays 的更新频率明显低于 Briefs——它们通常需要数周到数月的观察沉淀，并经过一次以上的重写。我们倾向于把已经被多个 brief 反复触及的主题，整理成一篇可以长期被引用的 essay。
+    Fields 是 MiracleFarms 里最靠近原始数据的地方。Brief 捕捉"今天发生了什么"，Reading 消化"别人怎么写的"，Essay 给出"这意味着什么"——而 Fields 回答"我自己跑出来的结果是什么"。实验记录、复现笔记、基准测试、工具调试：这里写的东西都经过了亲手验证。
   </p>
 
   <footer class="pg-footer">
@@ -164,24 +163,13 @@ permalink: /essays/
 
 <script>
 (function() {
-  var chips      = document.querySelectorAll('#essays-filterbar .fchip');
-  var viewBtns   = document.querySelectorAll('#essays-filterbar .viewtabs button');
-  var listView   = document.getElementById('essays-list-view');
-  var tableView  = document.getElementById('essays-table-view');
-  var emptyMsg   = document.getElementById('essays-empty');
+  var chips      = document.querySelectorAll('#fields-filterbar .fchip');
+  var viewBtns   = document.querySelectorAll('#fields-filterbar .viewtabs button');
+  var listView   = document.getElementById('fields-list-view');
+  var tableView  = document.getElementById('fields-table-view');
+  var emptyMsg   = document.getElementById('fields-empty');
   var activeTag  = '';
   var activeView = 'list';
-
-  // Sort list and table by effective date (updated ?? date) descending on load
-  function sortByEffectiveDate(container, selector) {
-    var items = Array.from(container.querySelectorAll(selector));
-    items.sort(function(a, b) {
-      return parseInt(b.dataset.sortdate || '0') - parseInt(a.dataset.sortdate || '0');
-    });
-    items.forEach(function(item) { container.appendChild(item); });
-  }
-  sortByEffectiveDate(listView.querySelector('.pagelist'), '.essay-item');
-  sortByEffectiveDate(tableView.querySelector('tbody'), '.essay-table-row');
 
   function matchesTag(el) {
     if (!activeTag) return true;
@@ -190,9 +178,11 @@ permalink: /essays/
   }
 
   function applyFilter() {
-    var listItems = listView.querySelectorAll('.essay-item');
-    var tableRows = tableView.querySelectorAll('.essay-table-row');
+    var listItems  = listView.querySelectorAll('.field-item');
+    var tableRows  = tableView.querySelectorAll('.field-table-row');
+    var yearGroups = listView.querySelectorAll('.field-year-group');
     var visible = 0;
+
     listItems.forEach(function(el) {
       var show = matchesTag(el);
       el.style.display = show ? '' : 'none';
@@ -200,6 +190,18 @@ permalink: /essays/
     });
     tableRows.forEach(function(el) {
       el.style.display = matchesTag(el) ? '' : 'none';
+    });
+    yearGroups.forEach(function(group) {
+      var groupItems = Array.from(group.querySelectorAll('.field-item'));
+      var groupVisible = groupItems.filter(function(el) { return el.style.display !== 'none'; });
+      group.style.display = groupVisible.length > 0 ? '' : 'none';
+      var countEl = group.querySelector('.yr-count');
+      if (countEl) {
+        var total = countEl.dataset.total;
+        countEl.textContent = activeTag
+          ? groupVisible.length + ' / ' + total + ' 篇'
+          : total + ' 篇';
+      }
     });
     emptyMsg.style.display = visible === 0 ? '' : 'none';
   }
