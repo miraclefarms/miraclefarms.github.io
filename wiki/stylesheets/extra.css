@@ -77,7 +77,7 @@ body {
 
 /* ── Typography — matches main-site .page / .post-body scale ──────────── */
 .md-typeset {
-  font-size: 17px;
+  font-size: 15.5px;
   line-height: 1.7;
   color: var(--mf-ink);
   font-family: var(--md-text-font);
@@ -93,28 +93,54 @@ body {
   color: var(--mf-ink);
 }
 
-/* Standard article H1 (inside-page) */
+/* Standard article H1 (inside-page) — px-explicit because Material's html is 125% */
 .md-typeset h1 {
-  font-size: 2rem;
+  font-family: var(--mf-font-serif);
+  font-size: clamp(28px, 3.8vw, 36px);
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.012em;
-  margin: 0.2em 0 0.5em;
+  margin: 0.05em 0 0.45em;
   padding-bottom: 0;
   border-bottom: 0;
+}
+/* Kicker label above the inner-page H1 — feels like main-site .post-kind-tag.
+   Only applies inside .md-content (NOT .wiki-hero which has its own kicker). */
+.md-content > .md-typeset > h1:first-of-type::before,
+.md-content > .md-typeset > h1:not(.wiki-hero h1):first-of-type::before {
+  content: "知识库 · Wiki";
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--md-text-font);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mf-accent-soft);
 }
 .md-typeset h2 {
-  font-size: 1.45rem;
+  font-family: var(--mf-font-serif);
+  font-size: 23px;
   line-height: 1.3;
-  margin: 2em 0 0.4em;
+  letter-spacing: -0.005em;
+  margin: 40px 0 12px;
   padding-bottom: 0;
   border-bottom: 0;
+  color: var(--mf-ink);
+  font-weight: 600;
 }
-.md-typeset h3 { font-size: 1.15rem; margin: 1.6em 0 0.35em; }
-.md-typeset h4 { font-size: 1rem; margin: 1.3em 0 0.3em; }
+.md-typeset h3 { font-size: 17.5px; margin: 26px 0 10px; }
+.md-typeset h4 { font-size: 15.5px; margin: 20px 0 8px; }
 
 .md-typeset p,
-.md-typeset li { color: var(--mf-ink); font-size: 17px; line-height: 1.75; }
-.md-typeset li { margin-bottom: .35em; }
+.md-typeset li { color: var(--mf-ink); font-size: 15.5px; line-height: 1.72; }
+.md-typeset p { margin: 0 0 0.95em; }
+/* override Material's .md-typeset ol li / ul li (which sets margin 0.5em) */
+.md-typeset ol li,
+.md-typeset ul li { margin-bottom: 0; }
+.md-typeset ol li + li,
+.md-typeset ul li + li { margin-top: 0.22em; }
+.md-typeset ul, .md-typeset ol { padding-left: 22px; margin: 0 0 0.95em; }
 
 .md-typeset a {
   color: var(--mf-accent);
@@ -147,7 +173,7 @@ body {
 
 /* ── Page shell — narrow column like main site .page ──────────────────── */
 .md-grid {
-  max-width: 1100px;
+  max-width: 1240px;
 }
 .md-main {
   background:
@@ -158,21 +184,18 @@ body {
   margin-top: 0;
 }
 .md-content {
-  /* article column constrained like main site .page */
-  max-width: 680px;
+  /* article column — a touch wider than .page for tables and code */
+  max-width: 720px;
   margin: 0 auto;
 }
 .md-content__inner {
-  padding: 1.3rem 0 5rem;
+  padding: 24px 0 80px;
   margin: 0;
 }
 .md-content__inner::before { height: 0; }
 
-/* When sidebars are present, give a little breathing room */
 @media (min-width: 76.25em) {
-  .md-content {
-    max-width: 680px;
-  }
+  .md-content { max-width: 720px; }
 }
 
 /* ── Wiki hero — mirrors main-site .pg-meta / .pg-icon / .pg-title ────── */
@@ -312,18 +335,7 @@ body {
   opacity: 0.85;
 }
 
-/* ── Section headings inside the home page — match main-site .h2 ─────── */
-.md-typeset h2 {
-  font-size: 26px;
-  line-height: 1.3;
-  letter-spacing: -0.005em;
-  margin: 48px 0 6px;
-  color: var(--mf-ink);
-  font-weight: 600;
-  font-family: var(--mf-font-serif);
-  border: 0;
-  padding: 0;
-}
+/* (Duplicate h2 rule removed — single rule above governs both home + article) */
 
 /* ── Topic cards — feel like main-site .pagelink rows ─────────────────── */
 .md-typeset .wiki-topic-grid {
@@ -568,9 +580,9 @@ body {
 .md-path {
   font-size: 12px;
   color: var(--mf-ink-faint);
-  border-bottom: 1px solid var(--mf-rule-soft);
-  padding: 0 0 .9em;
-  margin: 0.1em 0 1.6em;
+  border-bottom: 0;
+  padding: 0;
+  margin: 0 0 2px;
   letter-spacing: 0.01em;
 }
 .md-path__list { display: flex; flex-wrap: wrap; gap: .35em .5em; align-items: center; }
@@ -579,10 +591,13 @@ body {
   content: "›";
   margin-right: .55em;
   color: var(--mf-ink-faint);
+  opacity: 0.6;
 }
 .md-path__link {
   color: var(--mf-ink-soft);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--mf-rule);
+  text-underline-offset: 2px;
   font-size: 12px;
 }
 .md-path__link:hover { color: var(--mf-accent); }
@@ -743,24 +758,33 @@ body {
 
 /* ── Tables ───────────────────────────────────────────────────────────── */
 .md-typeset table:not([class]) {
-  background: var(--mf-bg);
-  border: 1px solid var(--mf-rule);
-  border-radius: 4px;
-  font-size: 14px;
-  overflow: hidden;
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-size: 13.5px;
+  margin: 18px 0 22px;
+  border-collapse: collapse;
 }
 .md-typeset table:not([class]) th {
   background: var(--mf-bg-soft);
   color: var(--mf-ink);
   font-weight: 600;
   border-bottom: 1px solid var(--mf-rule);
-  padding: 10px 12px;
+  padding: 8px 11px;
   font-size: 13px;
+  text-align: left;
+  vertical-align: top;
 }
 .md-typeset table:not([class]) td {
-  border-bottom: 1px solid var(--mf-rule-soft);
+  border-bottom: 1px solid var(--mf-rule);
   color: var(--mf-ink);
-  padding: 10px 12px;
+  padding: 8px 11px;
+  vertical-align: top;
+  line-height: 1.6;
+  font-size: 13.5px;
 }
 .md-typeset table:not([class]) tr:hover td { background: rgba(77,86,38,0.035); }
 
