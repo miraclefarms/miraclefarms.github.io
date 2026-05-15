@@ -9,6 +9,8 @@ intro: vLLM v0.21.0 正式发布，367 个 commit 划定 C++20 构建门槛并�
 tags: [vLLM, MoE, Attention, Disaggregation, Inference]
 ---
 
+![题图](/assets/2026-05-15-ai-infra-daily-brief/cover.png)
+
 vLLM v0.21.0 今天正式发布——367 个 commit、202 位贡献者，49 位是第一次出现在 release note 里。一个版本不足以让推理框架的世界发生质变，但 v0.21.0 做了两件事：把 C++20 写成硬门槛，同时正式告别 transformers v4。前者意味着下游部署环境的编译器矩阵需要整体升级；后者则是 CI/CD 流水线和自定义模型加载逻辑都需要适配的信号。同一天，DeepSeek V4 的 MegaMoE 路径在三个框架里各自迈进——如果说五月上旬是"DSV4 能跑了"，今天的故事是"DSV4 怎么跑得更快"。
 
 ## 一、vLLM v0.21.0：C++20 硬门槛，Model Runner V2 成为默认
