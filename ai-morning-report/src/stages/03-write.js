@@ -170,7 +170,7 @@ tags 必须是 2-5 个主题分类标签，格式为 YAML 行内列表，例如�
 所有 URL 必须来自素材包中的真实链接，不要编造。重点内容加粗。控制在 800-1500 字。`;
 
   console.log('[write] Calling AI...');
-  let raw = await runAI({ prompt, skillPath });
+  let raw = await runAI({ prompt, skillPath, timeoutMs: 300_000 });
 
   let result;
   try {

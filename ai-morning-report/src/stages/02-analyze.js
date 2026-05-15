@@ -74,7 +74,7 @@ ${recentSummaries || '（暂无）'}
 - URL 必须来自原始数据中出现的真实链接`;
 
   console.log('[analyze] Calling AI...');
-  const raw = await runAI({ prompt, skillPath });
+  const raw = await runAI({ prompt, skillPath, timeoutMs: 300_000 });
   // Normalize + strip code fences + preamble before first heading
   let text = raw.replace(/\r\n/g, '\n').replace(/^```[a-z]*\n/, '').replace(/\n```\s*$/, '\n');
   const headingStart = text.search(/(?:^|\n)# /);
