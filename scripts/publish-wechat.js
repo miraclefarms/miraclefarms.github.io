@@ -22,6 +22,8 @@ const {
   loadWechatConfig,
 } = require('./lib/wechat-config');
 
+dotenv.config();
+
 const PROJECT_ROOT = path.join(__dirname, '..');
 const CONFIG = loadWechatConfig(PROJECT_ROOT);
 const COVER_PROMPT_REGISTRY = loadWechatCoverPromptTemplates(PROJECT_ROOT);
@@ -651,7 +653,6 @@ function scanWechatDir(record, files) {
 }
 
 async function main() {
-  dotenv.config();
   const explicitWechatFiles = resolveExplicitWechatFiles(process.argv.slice(2));
   const explicitPublish = explicitWechatFiles.length > 0;
   const hookMode = !explicitPublish && process.argv.includes('--hook');
