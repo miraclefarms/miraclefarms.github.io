@@ -6,6 +6,8 @@ intro: vLLM v0.21.0 划定 C++20 硬门槛、弃用 transformers v4；DeepSeek V
 
 **📅 2026-05-15**
 
+![题图](assets/2026-05-15/ai-infra-daily-brief-cover.png)
+
 > 新模型上线窗口正在压缩——DSV4 跑通不到两周，SGLang、TRT-LLM、LMCache 已同步把 MegaMoE 推到就绪状态。vLLM v0.21.0 的 C++20 和 transformers v5 不是版本号升级，是所有下游部署必须面对的基础设施换代。
 
 ---

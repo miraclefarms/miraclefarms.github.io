@@ -136,8 +136,8 @@ function resolveCoverPromptDate({ date, frontMatter = {}, bodyMarkdown = '' } = 
   return '';
 }
 
-function buildCoverPromptText({ title, digest, mainBodySummary }) {
-  return sanitizeCoverPromptText([title, digest, mainBodySummary]
+function buildCoverPromptText({ title, digest }) {
+  return sanitizeCoverPromptText([title, digest]
     .filter(Boolean)
     .join('\n'));
 }
@@ -181,9 +181,8 @@ function buildWechatCoverPrompt({
   date,
 }) {
   const template = resolveWechatCoverPromptTemplate(frontMatter, registry);
-  const mainBodySummary = summarizeMainBodyForPrompt(bodyMarkdown);
   const legacyPrompts = extractLegacyTitleImagePrompts(bodyMarkdown);
-  const coverPromptText = buildCoverPromptText({ title, digest, mainBodySummary });
+  const coverPromptText = buildCoverPromptText({ title, digest });
   const promptDate = resolveCoverPromptDate({ date, frontMatter, bodyMarkdown });
 
   if (templateHasContentSlots(template.prompt)) {
@@ -204,10 +203,6 @@ function buildWechatCoverPrompt({
 
   if (digest) {
     parts.push(`文章摘要：${digest}`);
-  }
-
-  if (mainBodySummary) {
-    parts.push(`正文摘要：${mainBodySummary}`);
   }
 
   if (legacyPrompts?.english) {
