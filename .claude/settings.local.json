@@ -13,7 +13,9 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_take_screenshot",
       "Skill(commit-commands:commit-push-pr)",
-      "Skill(commit-commands:commit-push-pr:*)"
+      "Skill(commit-commands:commit-push-pr:*)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__playwright__browser_evaluate"
     ]
   }
 }
