@@ -9,5 +9,21 @@ wechat-publish.log
 node_modules/
 .claude/worktrees/
 .playwright-mcp/
-wiki-src/.venv/
-wiki-src/site/
+
+# Content dirs (live in miraclefarms/miraclefarms-content, injected at build time)
+_posts/*
+!_posts/.gitkeep
+assets/*
+!assets/css/
+!assets/icons/
+scripts/
+ai-morning-report/
+docs/
+wiki-src/
+wiki/
+.codex/
+.opencode/
+opencode.json
+package.json
+package-lock.json
+.env.example

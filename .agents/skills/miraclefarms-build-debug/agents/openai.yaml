@@ -1,0 +1,4 @@
+interface:
+  display_name: "MiracleFarms Build Debug"
+  short_description: "Set up local Jekyll env and triage MiracleFarms build issues."
+  default_prompt: "Use $miraclefarms-build-debug to set up the local Jekyll environment, run build or serve, and diagnose or fix MiracleFarms site build issues."
