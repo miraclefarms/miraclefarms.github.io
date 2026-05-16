@@ -32,11 +32,23 @@ jobs:
           token: ${{ secrets.CONTENT_REPO_PAT }}
           path: _private
 
-      - name: Inject content into build workspace
+      - name: Inject posts and assets
         run: |
           cp -r _private/_posts/. _posts/
           rsync -a --exclude='css' --exclude='icons' _private/assets/ assets/
-          rm -rf _private
+
+      - name: Setup Python for wiki build
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build wiki
+        run: |
+          pip install mkdocs-material --quiet
+          cd _private/wiki-src && mkdocs build --clean --site-dir ../../wiki
+
+      - name: Cleanup private checkout
+        run: rm -rf _private
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
