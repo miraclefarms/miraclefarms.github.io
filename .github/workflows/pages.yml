@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    # Triggered by miraclefarms-content when new content is published
+    types: [content-updated]
   workflow_dispatch:
 
 permissions:
@@ -19,22 +22,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: Checkout rendering layer
+        uses: actions/checkout@v4
 
-      - name: Configure Pages
-        id: pages
-        uses: actions/configure-pages@v5
+      - name: Checkout private content repo
+        uses: actions/checkout@v4
+        with:
+          repository: miraclefarms/miraclefarms-content
+          token: ${{ secrets.CONTENT_REPO_PAT }}
+          path: _private
+
+      - name: Inject content into build workspace
+        run: |
+          cp -r _private/_posts/. _posts/
+          rsync -a --exclude='css' --exclude='icons' _private/assets/ assets/
+          rm -rf _private
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-          future: true
+        run: bundle exec jekyll build --future
+        env:
+          JEKYLL_ENV: production
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
 
   deploy:
     environment:
