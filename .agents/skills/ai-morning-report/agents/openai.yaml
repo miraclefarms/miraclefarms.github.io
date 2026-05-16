@@ -1,4 +1,0 @@
-interface:
-  display_name: "AI Morning Report"
-  short_description: "Track recent repo changes and draft daily AI Infra briefs"
-  default_prompt: "Generate today's AI Infra morning report from the tracked repositories and write the GitHub.io brief."
