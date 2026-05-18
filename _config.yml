@@ -24,6 +24,8 @@ comments:
   theme: "noborder_light"
   lang: "zh-CN"
 
+wechat_qr: /assets/icons/wechat-qr.png
+
 reader_highlights:
   enabled: true
 

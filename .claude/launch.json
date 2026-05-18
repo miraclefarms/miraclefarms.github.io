@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "jekyll",
+      "runtimeExecutable": "/usr/local/Cellar/ruby/4.0.2/bin/bundle",
+      "runtimeArgs": ["exec", "jekyll", "serve", "--host", "127.0.0.1", "--port", "4000"],
+      "port": 4000
+    }
+  ]
+}
