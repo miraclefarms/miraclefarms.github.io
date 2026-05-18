@@ -7,6 +7,7 @@
   var tools = document.getElementById('post-reader-tools');
   var countEl = document.getElementById('reader-highlights-count');
   var clearBtn = document.getElementById('reader-highlights-clear');
+  var listEl = document.getElementById('reader-highlights-list');
   var activeRange = null;
   var hideTimer = 0;
 
@@ -174,6 +175,30 @@
       });
   }
 
+  function renderHighlightList(saved) {
+    if (!listEl) return;
+
+    listEl.textContent = '';
+    saved.forEach(function (item, index) {
+      var li = document.createElement('li');
+      li.className = 'reader-highlights-item';
+
+      var quote = document.createElement('span');
+      quote.className = 'reader-highlights-quote';
+      quote.textContent = item.exact.replace(/\s+/g, ' ').trim();
+
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = '删除';
+      button.setAttribute('data-reader-delete-highlight', item.id || String(index));
+      button.setAttribute('data-reader-delete-index', String(index));
+
+      li.appendChild(quote);
+      li.appendChild(button);
+      listEl.appendChild(li);
+    });
+  }
+
   function renderHighlights() {
     if (!('CSS' in window) || !CSS.highlights || !window.Highlight) clearDomMarks();
 
@@ -200,6 +225,7 @@
       tools.hidden = saved.length === 0;
       countEl.textContent = saved.length ? '本页 ' + saved.length + ' 处划线，仅保存在当前浏览器' : '本页暂无划线';
     }
+    renderHighlightList(saved);
   }
 
   function selectedRange() {
@@ -305,6 +331,19 @@
     });
   }
 
+  function deleteHighlight(identifier, fallbackIndex) {
+    var saved = getHighlights();
+    var next = saved.filter(function (item, index) {
+      if (item.id) return item.id !== identifier;
+      return index !== fallbackIndex;
+    });
+
+    setHighlights(next);
+    if ('CSS' in window && CSS.highlights) CSS.highlights.delete(HIGHLIGHT_NAME);
+    clearDomMarks();
+    renderHighlights();
+  }
+
   popover.addEventListener('mousedown', function (event) {
     event.preventDefault();
   });
@@ -336,6 +375,16 @@
       if ('CSS' in window && CSS.highlights) CSS.highlights.delete(HIGHLIGHT_NAME);
       clearDomMarks();
       renderHighlights();
+    });
+  }
+
+  if (tools) {
+    tools.addEventListener('click', function (event) {
+      var button = event.target.closest('button[data-reader-delete-highlight]');
+      if (!button) return;
+
+      var index = parseInt(button.getAttribute('data-reader-delete-index') || '-1', 10);
+      deleteHighlight(button.getAttribute('data-reader-delete-highlight'), index);
     });
   }
 

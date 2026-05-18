@@ -76,8 +76,11 @@ layout: default
 
     {% if reader_highlights_enabled %}
     <div class="post-reader-tools" id="post-reader-tools" hidden>
-      <span id="reader-highlights-count">本页暂无划线</span>
-      <button type="button" id="reader-highlights-clear">清除划线</button>
+      <div class="post-reader-tools-bar">
+        <span id="reader-highlights-count">本页暂无划线</span>
+        <button type="button" id="reader-highlights-clear">清除划线</button>
+      </div>
+      <ol class="reader-highlights-list" id="reader-highlights-list"></ol>
     </div>
     {% endif %}
 

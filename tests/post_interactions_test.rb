@@ -49,6 +49,7 @@ class PostInteractionsTest < Minitest::Test
 
     assert_includes html, 'data-reader-highlights="true"'
     assert_includes html, "/assets/js/reader-highlights.js"
+    assert_includes html, 'id="reader-highlights-list"'
   end
 
   def test_briefs_skip_comments_but_keep_private_highlights
@@ -69,6 +70,14 @@ class PostInteractionsTest < Minitest::Test
     refute_match(/fetch\s*\(/, source)
     refute_match(/XMLHttpRequest/, source)
     refute_match(/sendBeacon/, source)
+  end
+
+  def test_private_highlights_can_delete_individual_saved_marks
+    source = File.read(File.join(ROOT, "assets/js/reader-highlights.js"))
+
+    assert_includes source, "data-reader-delete-highlight"
+    assert_includes source, "deleteHighlight"
+    assert_includes source, "删除"
   end
 
   private
