@@ -9,6 +9,7 @@
   var clearBtn = document.getElementById('reader-highlights-clear');
   var listEl = document.getElementById('reader-highlights-list');
   var activeRange = null;
+  var activeHighlight = null;
   var hideTimer = 0;
 
   var popover = document.createElement('div');
@@ -17,11 +18,13 @@
   popover.innerHTML = [
     '<button type="button" data-reader-action="highlight">划线</button>',
     '<button type="button" data-reader-action="copy">复制引用</button>',
+    '<button type="button" data-reader-action="delete" hidden>删除划线</button>',
     '<span class="reader-highlight-status" aria-live="polite"></span>'
   ].join('');
   document.body.appendChild(popover);
 
   var statusEl = popover.querySelector('.reader-highlight-status');
+  var deleteSelectionBtn = popover.querySelector('[data-reader-action="delete"]');
 
   function getHighlights() {
     try {
@@ -242,6 +245,32 @@
     return range.cloneRange();
   }
 
+  function findHighlightForRange(range) {
+    var nodes = textNodes();
+    var offsets = offsetsForRange(range, nodes);
+    if (!offsets) return null;
+
+    var text = bodyText(nodes);
+    var saved = getHighlights();
+
+    for (var i = 0; i < saved.length; i += 1) {
+      var item = saved[i];
+      var located = locateSelector(item, nodes, text);
+      var itemOffsets = located ? offsetsForRange(located, nodes) : null;
+      if (!itemOffsets) continue;
+
+      var overlaps = offsets.start < itemOffsets.end && offsets.end > itemOffsets.start;
+      if (overlaps) {
+        return {
+          id: item.id || String(i),
+          index: i
+        };
+      }
+    }
+
+    return null;
+  }
+
   function placePopover(range) {
     var rect = range.getBoundingClientRect();
     if ((!rect || !rect.width) && range.getClientRects().length) {
@@ -250,6 +279,8 @@
     if (!rect) return;
 
     activeRange = range;
+    activeHighlight = findHighlightForRange(range);
+    if (deleteSelectionBtn) deleteSelectionBtn.hidden = !activeHighlight;
     popover.hidden = false;
     statusEl.textContent = '';
 
@@ -275,6 +306,7 @@
     hideTimer = window.setTimeout(function () {
       popover.hidden = true;
       activeRange = null;
+      activeHighlight = null;
     }, 120);
   }
 
@@ -331,6 +363,15 @@
     });
   }
 
+  function deleteActiveHighlight() {
+    if (!activeHighlight) return;
+
+    deleteHighlight(activeHighlight.id, activeHighlight.index);
+    statusEl.textContent = '已删除';
+    window.getSelection().removeAllRanges();
+    hidePopoverSoon();
+  }
+
   function deleteHighlight(identifier, fallbackIndex) {
     var saved = getHighlights();
     var next = saved.filter(function (item, index) {
@@ -353,6 +394,7 @@
     if (!button) return;
     if (button.getAttribute('data-reader-action') === 'highlight') addHighlight();
     if (button.getAttribute('data-reader-action') === 'copy') copyReference();
+    if (button.getAttribute('data-reader-action') === 'delete') deleteActiveHighlight();
   });
 
   body.addEventListener('mouseup', function () { showPopoverSoon(0); });

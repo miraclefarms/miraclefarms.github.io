@@ -76,6 +76,8 @@ class PostInteractionsTest < Minitest::Test
     source = File.read(File.join(ROOT, "assets/js/reader-highlights.js"))
 
     assert_includes source, "data-reader-delete-highlight"
+    assert_includes source, 'data-reader-action="delete"'
+    assert_includes source, "findHighlightForRange"
     assert_includes source, "deleteHighlight"
     assert_includes source, "删除"
   end
