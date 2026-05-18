@@ -1,0 +1,25 @@
+{% assign giscus = site.comments %}
+<section
+  class="post-comments"
+  id="post-comments"
+  aria-labelledby="post-comments-title"
+  data-giscus-repo="{{ giscus.repo | escape }}"
+  data-giscus-repo-id="{{ giscus.repo_id | escape }}"
+  data-giscus-category="{{ giscus.category | escape }}"
+  data-giscus-category-id="{{ giscus.category_id | escape }}"
+  data-giscus-mapping="{{ giscus.mapping | default: 'pathname' | escape }}"
+  data-giscus-strict="{{ giscus.strict | default: '0' | escape }}"
+  data-giscus-reactions-enabled="{{ giscus.reactions_enabled | default: '1' | escape }}"
+  data-giscus-emit-metadata="{{ giscus.emit_metadata | default: '0' | escape }}"
+  data-giscus-input-position="{{ giscus.input_position | default: 'bottom' | escape }}"
+  data-giscus-theme="{{ giscus.theme | default: 'noborder_light' | escape }}"
+  data-giscus-lang="{{ giscus.lang | default: site.lang | default: 'zh-CN' | escape }}">
+  <div class="post-comments-header">
+    <p class="post-comments-label">Discussion</p>
+    <h2 id="post-comments-title">留言</h2>
+  </div>
+  <p class="post-comments-note">评论由 GitHub Discussions 承载，需要 GitHub 账号登录后发布。</p>
+  <div class="post-comments-frame" data-giscus-mount>
+    <p class="post-comments-loading">滚动到这里时加载评论。</p>
+  </div>
+</section>

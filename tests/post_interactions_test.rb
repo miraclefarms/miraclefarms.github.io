@@ -1,0 +1,107 @@
+require "fileutils"
+require "minitest/autorun"
+require "tmpdir"
+require "yaml"
+require "jekyll"
+
+class PostInteractionsTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+
+  def setup
+    @site_dir = Dir.mktmpdir("miraclefarms-site-")
+    @dest_dir = Dir.mktmpdir("miraclefarms-dest-")
+
+    FileUtils.cp(File.join(ROOT, "_config.yml"), @site_dir)
+    FileUtils.cp_r(File.join(ROOT, "_layouts"), @site_dir)
+    FileUtils.cp_r(File.join(ROOT, "_includes"), @site_dir) if Dir.exist?(File.join(ROOT, "_includes"))
+    FileUtils.cp_r(File.join(ROOT, "assets"), @site_dir)
+    FileUtils.mkdir_p(File.join(@site_dir, "_posts"))
+
+    write_post(
+      "2026-05-18-interaction-essay.md",
+      kind: "essay",
+      category: "Essay",
+      body: "开篇提出一个问题。\n\n## 一、第一节\n\n这是一段可被读者划线的长文内容。"
+    )
+    write_post(
+      "2026-05-18-interaction-brief.md",
+      kind: "brief",
+      category: "Brief",
+      body: "简报开头。\n\n## 一、今日要点\n\n这是一段简报内容。"
+    )
+  end
+
+  def teardown
+    FileUtils.remove_entry(@site_dir) if @site_dir && Dir.exist?(@site_dir)
+    FileUtils.remove_entry(@dest_dir) if @dest_dir && Dir.exist?(@dest_dir)
+  end
+
+  def test_long_form_posts_render_lazy_comments_and_reader_highlights
+    build_site
+
+    html = rendered_post("interaction-essay")
+
+    assert_includes html, 'id="post-comments"'
+    assert_includes html, 'data-giscus-repo="miraclefarms/miraclefarms.github.io"'
+    assert_includes html, 'data-giscus-category="General"'
+    assert_includes html, "/assets/js/comments-loader.js"
+    refute_includes html, "https://giscus.app/client.js"
+
+    assert_includes html, 'data-reader-highlights="true"'
+    assert_includes html, "/assets/js/reader-highlights.js"
+  end
+
+  def test_briefs_skip_comments_but_keep_private_highlights
+    build_site
+
+    html = rendered_post("interaction-brief")
+
+    refute_includes html, 'id="post-comments"'
+    refute_includes html, "/assets/js/comments-loader.js"
+    assert_includes html, 'data-reader-highlights="true"'
+    assert_includes html, "/assets/js/reader-highlights.js"
+  end
+
+  def test_private_highlights_stay_browser_local
+    source = File.read(File.join(ROOT, "assets/js/reader-highlights.js"))
+
+    assert_includes source, "localStorage"
+    refute_match(/fetch\s*\(/, source)
+    refute_match(/XMLHttpRequest/, source)
+    refute_match(/sendBeacon/, source)
+  end
+
+  private
+
+  def write_post(filename, kind:, category:, body:)
+    File.write(
+      File.join(@site_dir, "_posts", filename),
+      <<~MARKDOWN
+        ---
+        title: Interaction #{kind}
+        date: 2026-05-18 12:00:00 +0800
+        author: Test
+        kind: #{kind}
+        category: #{category}
+        intro: Interaction fixture.
+        ---
+
+        #{body}
+      MARKDOWN
+    )
+  end
+
+  def build_site
+    config = YAML.load_file(File.join(@site_dir, "_config.yml")).merge(
+      "source" => @site_dir,
+      "destination" => @dest_dir,
+      "quiet" => true,
+      "future" => true
+    )
+    Jekyll::Site.new(Jekyll.configuration(config)).process
+  end
+
+  def rendered_post(slug)
+    File.read(File.join(@dest_dir, "notes", "2026", "05", "18", slug, "index.html"))
+  end
+end

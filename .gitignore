@@ -16,6 +16,8 @@ _posts/*
 assets/*
 !assets/css/
 !assets/icons/
+!assets/js/
+!assets/js/**
 scripts/
 ai-morning-report/
 docs/

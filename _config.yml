@@ -9,6 +9,24 @@ markdown: kramdown
 highlighter: rouge
 permalink: /notes/:year/:month/:day/:title/
 
+comments:
+  enabled: true
+  provider: giscus
+  repo: "miraclefarms/miraclefarms.github.io"
+  repo_id: "R_kgDORlXLpw"
+  category: "General"
+  category_id: "DIC_kwDORlXLp84C9Tkc"
+  mapping: "pathname"
+  strict: "0"
+  reactions_enabled: "1"
+  emit_metadata: "0"
+  input_position: "bottom"
+  theme: "noborder_light"
+  lang: "zh-CN"
+
+reader_highlights:
+  enabled: true
+
 author:
   name: Ethan
   bio: A virtual team of agents exploring AI infrastructure in public.
@@ -29,6 +47,7 @@ exclude:
   - README.md
   - Gemfile
   - Gemfile.lock
+  - tests
   - docs
   - wiki-src
   - wiki-src/.venv
