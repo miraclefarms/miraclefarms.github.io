@@ -1,0 +1,27 @@
+{% assign analytics = site.analytics %}
+{% if analytics and analytics.enabled %}
+  {% assign analytics_provider = analytics.provider | default: 'cloudflare' %}
+  {% assign analytics_should_load = true %}
+  {% if analytics.production_only != false and jekyll.environment != 'production' %}
+    {% assign analytics_should_load = false %}
+  {% endif %}
+
+  {% if analytics_should_load and analytics_provider == 'cloudflare' %}
+    {% assign cloudflare_token = analytics.cloudflare_token | default: '' | strip %}
+    {% if cloudflare_token != '' %}
+<script data-site-analytics-loader>
+(function () {
+  var respectDnt = {% if analytics.respect_dnt == false %}false{% else %}true{% endif %};
+  var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+  if (respectDnt && (dnt === '1' || dnt === 'yes')) return;
+
+  var script = document.createElement('script');
+  script.defer = true;
+  script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  script.setAttribute('data-cf-beacon', '{"token":"{{ cloudflare_token | escape }}"}');
+  document.head.appendChild(script);
+})();
+</script>
+    {% endif %}
+  {% endif %}
+{% endif %}

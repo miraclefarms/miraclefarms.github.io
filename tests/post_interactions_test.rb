@@ -82,6 +82,53 @@ class PostInteractionsTest < Minitest::Test
     assert_includes source, "删除"
   end
 
+  def test_analytics_is_disabled_by_default
+    build_site(env: "production")
+
+    html = rendered_post("interaction-essay")
+
+    refute_includes html, "static.cloudflareinsights.com/beacon.min.js"
+    refute_includes html, "data-site-analytics-loader"
+  end
+
+  def test_cloudflare_analytics_loads_only_in_production_with_token
+    build_site(
+      env: "production",
+      analytics: {
+        "enabled" => true,
+        "provider" => "cloudflare",
+        "production_only" => true,
+        "respect_dnt" => true,
+        "cloudflare_token" => "test-token"
+      }
+    )
+
+    html = rendered_post("interaction-essay")
+
+    assert_includes html, "data-site-analytics-loader"
+    assert_includes html, "static.cloudflareinsights.com/beacon.min.js"
+    assert_includes html, "navigator.doNotTrack"
+    assert_includes html, "test-token"
+  end
+
+  def test_cloudflare_analytics_skips_development_builds
+    build_site(
+      env: "development",
+      analytics: {
+        "enabled" => true,
+        "provider" => "cloudflare",
+        "production_only" => true,
+        "respect_dnt" => true,
+        "cloudflare_token" => "test-token"
+      }
+    )
+
+    html = rendered_post("interaction-essay")
+
+    refute_includes html, "static.cloudflareinsights.com/beacon.min.js"
+    refute_includes html, "data-site-analytics-loader"
+  end
+
   private
 
   def write_post(filename, kind:, category:, body:)
@@ -102,14 +149,22 @@ class PostInteractionsTest < Minitest::Test
     )
   end
 
-  def build_site
-    config = YAML.load_file(File.join(@site_dir, "_config.yml")).merge(
+  def build_site(env: "development", analytics: nil)
+    previous_env = ENV["JEKYLL_ENV"]
+    ENV["JEKYLL_ENV"] = env
+
+    config_overrides = {
       "source" => @site_dir,
       "destination" => @dest_dir,
       "quiet" => true,
       "future" => true
-    )
+    }
+    config_overrides["analytics"] = analytics if analytics
+
+    config = YAML.load_file(File.join(@site_dir, "_config.yml")).merge(config_overrides)
     Jekyll::Site.new(Jekyll.configuration(config)).process
+  ensure
+    ENV["JEKYLL_ENV"] = previous_env
   end
 
   def rendered_post(slug)

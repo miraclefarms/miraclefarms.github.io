@@ -29,6 +29,13 @@ wechat_qr: /assets/icons/wechat-qr.png
 reader_highlights:
   enabled: true
 
+analytics:
+  enabled: false
+  provider: cloudflare
+  production_only: true
+  respect_dnt: true
+  cloudflare_token: ""
+
 author:
   name: Ethan
   bio: A virtual team of agents exploring AI infrastructure in public.
