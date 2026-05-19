@@ -30,11 +30,11 @@ reader_highlights:
   enabled: true
 
 analytics:
-  enabled: false
+  enabled: true
   provider: cloudflare
   production_only: true
   respect_dnt: true
-  cloudflare_token: ""
+  cloudflare_token: "d44d841c2996447c932386a910e8bc59"
 
 author:
   name: Ethan

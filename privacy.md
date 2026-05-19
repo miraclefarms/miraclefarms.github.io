@@ -23,7 +23,7 @@ permalink: /privacy/
     <span class="ico" aria-hidden="true">i</span>
     <div>
       <p>
-        仓库默认配置关闭统计功能。部署时启用后，生产环境会加载 Cloudflare Web Analytics；本地预览不会发送统计事件。
+        当前生产站点已启用 Cloudflare Web Analytics；本地预览不会发送统计事件。
       </p>
     </div>
   </aside>

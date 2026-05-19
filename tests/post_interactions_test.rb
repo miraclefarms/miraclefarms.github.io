@@ -82,8 +82,31 @@ class PostInteractionsTest < Minitest::Test
     assert_includes source, "删除"
   end
 
-  def test_analytics_is_disabled_by_default
+  def test_configured_cloudflare_analytics_loads_in_production
+    config = YAML.load_file(File.join(@site_dir, "_config.yml"))
+    token = config.fetch("analytics").fetch("cloudflare_token")
+
     build_site(env: "production")
+
+    html = rendered_post("interaction-essay")
+
+    assert_includes html, "data-site-analytics-loader"
+    assert_includes html, "static.cloudflareinsights.com/beacon.min.js"
+    assert_includes html, "navigator.doNotTrack"
+    assert_includes html, token
+  end
+
+  def test_analytics_can_be_disabled_by_config
+    build_site(
+      env: "production",
+      analytics: {
+        "enabled" => false,
+        "provider" => "cloudflare",
+        "production_only" => true,
+        "respect_dnt" => true,
+        "cloudflare_token" => "test-token"
+      }
+    )
 
     html = rendered_post("interaction-essay")
 
