@@ -81,9 +81,13 @@
  * ════════════════════════════════════════════════════════════════════════ */
 
 .mf-hero {
-  padding: 56px 40px 40px;
   background: var(--mf-bg);
   border-bottom: 1px solid var(--mf-rule-soft);
+}
+.mf-hero-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 56px 32px 40px;
 }
 .mf-hero .mf-hero-tag {
   font-family: var(--mf-mono); font-size: 11px;
@@ -145,7 +149,7 @@
 }
 .mf-hero .mf-pill:hover { border-color: var(--mf-accent-soft); }
 @media (max-width: 720px) {
-  .mf-hero { padding: 36px 24px 24px; }
+  .mf-hero-inner { padding: 36px 20px 24px; }
   .mf-hero .mf-hero-row { gap: 14px; }
   .mf-hero .mf-hero-row svg { width: 56px; height: 56px; }
   .mf-hero h1 { font-size: 48px; }
@@ -273,6 +277,7 @@
 .site-foot .mf-const-strip {
   max-width: 1100px;
   margin: 0 auto;
+  justify-content: center;
 }
 
 /* ════════════════════════════════════════════════════════════════════════

@@ -7,6 +7,7 @@
 {% assign essays = site.posts | where: 'kind', 'essay' %}
 {% assign current_theme = site.current_theme | default: 'AI Infrastructure' %}
 <header class="mf-hero">
+<div class="mf-hero-inner">
   <div class="mf-hero-tag">RESEARCH JOURNAL · OPEN NOTEBOOK · VOL {{ site.time | date: "%Y / %m" }}</div>
 
   <div class="mf-hero-row">
@@ -45,4 +46,5 @@
     <a class="mf-pill" href="{{ '/fields/' | relative_url }}">Fields · <span data-mf-count="fields">{{ field_notes.size }}</span></a>
     <a class="mf-pill" href="{{ '/essays/' | relative_url }}">Essays · <span data-mf-count="essays">{{ essays.size }}</span></a>
   </div>
+</div>
 </header>
