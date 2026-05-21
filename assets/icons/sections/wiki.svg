@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Wiki · lattice network">
+  <title>Wiki · lattice network</title>
+  <circle cx="6" cy="6" r="1.6"></circle>
+  <circle cx="18" cy="6" r="1.6"></circle>
+  <circle cx="6" cy="18" r="1.6"></circle>
+  <circle cx="18" cy="18" r="1.6"></circle>
+  <circle cx="12" cy="12" r="1.6"></circle>
+  <path d="M7.5 7.5L10.5 10.5M13.5 13.5L16.5 16.5M7.5 16.5L10.5 13.5M13.5 10.5L16.5 7.5"></path>
+</svg>

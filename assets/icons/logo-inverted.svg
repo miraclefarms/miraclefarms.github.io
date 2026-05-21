@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" stroke-linecap="square" role="img" aria-label="MiracleFarms">
+  <title>MiracleFarms — inverted (use on dark green or photo)</title>
+  <line x1="25" y1="178" x2="25" y2="58" stroke="#faf7f0" stroke-width="20"></line>
+  <line x1="62" y1="178" x2="62" y2="128" stroke="#faf7f0" stroke-width="14" opacity="0.45"></line>
+  <line x1="100" y1="178" x2="100" y2="93" stroke="#faf7f0" stroke-width="20"></line>
+  <line x1="138" y1="178" x2="138" y2="108" stroke="#faf7f0" stroke-width="14" opacity="0.45"></line>
+  <line x1="175" y1="178" x2="175" y2="33" stroke="#faf7f0" stroke-width="20"></line>
+</svg>

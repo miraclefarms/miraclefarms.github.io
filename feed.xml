@@ -1,0 +1,27 @@
+---
+layout: null
+permalink: /feed.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.title | xml_escape }}</title>
+    <link>{{ '/' | absolute_url }}</link>
+    <atom:link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/rss+xml" />
+    <description>{{ site.description | xml_escape }}</description>
+    <language>{{ site.lang | default: 'zh-CN' }}</language>
+    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+    {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
+    {% for post in sorted_posts limit: 30 %}
+    <item>
+      <title>{{ post.title | xml_escape }}</title>
+      <link>{{ post.url | absolute_url }}</link>
+      <guid isPermaLink="true">{{ post.url | absolute_url }}</guid>
+      <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
+      {% if post.author %}<author>{{ post.author | xml_escape }}</author>{% endif %}
+      <category>{{ post.category | default: post.kind | xml_escape }}</category>
+      <description>{{ post.intro | default: post.excerpt | strip_html | normalize_whitespace | xml_escape }}</description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

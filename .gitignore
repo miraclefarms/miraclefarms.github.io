@@ -10,6 +10,7 @@ node_modules/
 .claude/settings.local.json
 .claude/worktrees/
 .playwright-mcp/
+.mf-backup/
 
 # Content dirs (live in miraclefarms/miraclefarms-content, injected at build time)
 _posts/*
