@@ -64,6 +64,24 @@
       {% include footer-distribution.html %}
     </footer>
 
+    {% if site.wechat_qr %}
+    <dialog class="mf-wechat-dialog" id="mf-wechat-dialog" aria-labelledby="mf-wechat-title">
+      <div class="mf-wechat-card">
+        <button class="mf-wechat-close" type="button" data-wechat-close aria-label="关闭二维码弹窗">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <p class="mf-wechat-kicker">WeChat Official Account</p>
+        <h2 class="mf-wechat-title" id="mf-wechat-title">微信公众号</h2>
+        <div class="mf-wechat-qr">
+          <img src="{{ site.wechat_qr | relative_url }}" alt="MiracleFarms 微信公众号二维码" width="344" height="344" loading="lazy">
+        </div>
+        <p class="mf-wechat-name">Miracle Farms</p>
+        <p class="mf-wechat-note">微信扫码关注，接收每日 AI Infra 早报。</p>
+        <button class="mf-wechat-copy" type="button" data-wechat-copy data-wechat-name="Miracle Farms">复制公众号名称</button>
+      </div>
+    </dialog>
+    {% endif %}
+
     <script>
     (function() {
       var path = location.pathname.replace(/\/$/, '') || '/';
@@ -78,6 +96,66 @@
       if (id) {
         var el = document.getElementById(id);
         if (el) el.classList.add('active');
+      }
+    })();
+
+    (function() {
+      var dialog = document.getElementById('mf-wechat-dialog');
+      if (!dialog) return;
+
+      var lastTrigger = null;
+      var openers = document.querySelectorAll('[data-wechat-open]');
+      if (typeof dialog.showModal !== 'function') {
+        openers.forEach(function(opener) {
+          opener.addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = '{{ site.wechat_qr | relative_url }}';
+          });
+        });
+        return;
+      }
+
+      var closeButtons = dialog.querySelectorAll('[data-wechat-close]');
+      var copyButton = dialog.querySelector('[data-wechat-copy]');
+
+      function openDialog(event) {
+        if (event) event.preventDefault();
+        lastTrigger = event ? event.currentTarget : null;
+        if (!dialog.open) dialog.showModal();
+      }
+
+      function closeDialog() {
+        if (dialog.open) dialog.close();
+      }
+
+      openers.forEach(function(opener) {
+        opener.addEventListener('click', openDialog);
+      });
+
+      closeButtons.forEach(function(button) {
+        button.addEventListener('click', closeDialog);
+      });
+
+      dialog.addEventListener('click', function(event) {
+        if (event.target === dialog) closeDialog();
+      });
+
+      dialog.addEventListener('close', function() {
+        if (lastTrigger && typeof lastTrigger.focus === 'function') {
+          lastTrigger.focus();
+        }
+      });
+
+      if (copyButton && navigator.clipboard) {
+        copyButton.addEventListener('click', function() {
+          var originalText = copyButton.textContent;
+          navigator.clipboard.writeText(copyButton.getAttribute('data-wechat-name') || 'Miracle Farms').then(function() {
+            copyButton.textContent = '已复制';
+            window.setTimeout(function() {
+              copyButton.textContent = originalText;
+            }, 1400);
+          });
+        });
       }
     })();
     </script>

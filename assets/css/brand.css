@@ -185,12 +185,22 @@
 @media (max-width: 720px) { .mf-const-grid { grid-template-columns: repeat(2, 1fr); } }
 
 .mf-ch-node {
+  appearance: none;
   border: 1px solid var(--mf-rule); border-radius: 4px;
   padding: 14px 14px 12px;
   background: var(--mf-bg);
   display: flex; flex-direction: column; gap: 6px;
   font-family: var(--mf-sans);
   text-decoration: none; color: inherit;
+  text-align: left;
+}
+.mf-ch-node:is(button) { cursor: pointer; }
+.mf-ch-node:is(button):hover { background: var(--mf-bg-soft); }
+.mf-ch-node:is(button):focus-visible,
+.mf-ch-chip:is(button):focus-visible,
+.mf-inline-link:focus-visible {
+  outline: 2px solid var(--mf-accent-soft);
+  outline-offset: 3px;
 }
 .mf-ch-node .mf-ch-top {
   display: flex; align-items: center; justify-content: space-between;
@@ -254,6 +264,7 @@
   font-family: var(--mf-sans);
 }
 .mf-ch-chip {
+  appearance: none;
   display: inline-flex; align-items: center; gap: 6px;
   padding: 5px 10px; border-radius: 4px;
   border: 1px solid var(--mf-rule);
@@ -262,9 +273,14 @@
   color: var(--mf-ink-soft); background: var(--mf-bg-card);
   text-decoration: none;
 }
+.mf-ch-chip:is(button) { cursor: pointer; }
 .mf-ch-chip svg { width: 13px; height: 13px; flex: 0 0 auto; }
 .mf-ch-chip[data-status="live"] {
   background: var(--mf-accent); color: var(--mf-bg); border-color: var(--mf-accent);
+}
+.mf-ch-chip[data-status="live"]:hover {
+  background: #2d4732;
+  border-color: #2d4732;
 }
 .mf-ch-chip[data-status="pending"] {
   color: var(--mf-ink-faint); border-style: dashed;
@@ -278,6 +294,139 @@
   max-width: 1100px;
   margin: 0 auto;
   justify-content: center;
+}
+
+.mf-inline-link {
+  appearance: none;
+  border: 0;
+  border-radius: 3px;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+}
+.mf-inline-link:hover {
+  background: var(--rule-soft);
+  text-decoration-color: var(--ink-faint);
+}
+
+/* WeChat QR dialog */
+.mf-wechat-dialog {
+  width: min(92vw, 380px);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mf-ink);
+}
+.mf-wechat-dialog::backdrop {
+  background: rgba(44,42,38,0.38);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.mf-wechat-card {
+  position: relative;
+  padding: 26px 26px 24px;
+  border: 1px solid var(--mf-rule);
+  border-radius: 8px;
+  background: var(--mf-bg-card);
+  box-shadow: 0 24px 80px rgba(44,42,38,0.22);
+  font-family: var(--mf-sans);
+  text-align: center;
+}
+.mf-wechat-close {
+  appearance: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--mf-ink-faint);
+  cursor: pointer;
+}
+.mf-wechat-close:hover {
+  background: var(--mf-bg-soft);
+  color: var(--mf-ink);
+}
+.mf-wechat-close:focus-visible,
+.mf-wechat-copy:focus-visible {
+  outline: 2px solid var(--mf-accent-soft);
+  outline-offset: 2px;
+}
+.mf-wechat-close svg {
+  width: 18px;
+  height: 18px;
+}
+.mf-wechat-kicker {
+  margin: 0 0 4px;
+  font-family: var(--mf-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mf-accent-soft);
+}
+.mf-wechat-title {
+  margin: 0 0 18px;
+  font-family: var(--mf-serif);
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--mf-ink);
+}
+.mf-wechat-qr {
+  display: flex;
+  justify-content: center;
+}
+.mf-wechat-qr img {
+  width: min(100%, 264px);
+  height: auto;
+  border: 1px solid var(--mf-rule);
+  border-radius: 6px;
+  background: #fff;
+}
+.mf-wechat-name {
+  margin: 16px 0 2px;
+  font-family: var(--mf-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mf-ink);
+}
+.mf-wechat-note {
+  margin: 0;
+  color: var(--mf-ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.mf-wechat-copy {
+  appearance: none;
+  margin-top: 16px;
+  padding: 7px 12px;
+  border: 1px solid var(--mf-rule);
+  border-radius: 4px;
+  background: var(--mf-bg);
+  color: var(--mf-ink-soft);
+  cursor: pointer;
+  font: 12px/1.2 var(--mf-sans);
+}
+.mf-wechat-copy:hover {
+  background: var(--mf-bg-soft);
+  color: var(--mf-ink);
+}
+
+@media (max-width: 420px) {
+  .mf-wechat-card {
+    padding: 24px 18px 20px;
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════════════
