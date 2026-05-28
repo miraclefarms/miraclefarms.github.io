@@ -62,3 +62,5 @@ exclude:
   - wiki-src/.venv
   - wiki-src/mkdocs.yml
   - wiki-src/requirements.txt
+
+github_oauth_client_id: "Ov23liP5L0VKofR1WxFv"  # GitHub OAuth App Client ID for score-widget

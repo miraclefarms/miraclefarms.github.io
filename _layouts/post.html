@@ -74,6 +74,18 @@ layout: default
       {{ content }}
     </div>
 
+    {% assign post_slug = page.path | remove: '_posts/' | remove: '.md' %}
+    {% assign obj_score = site.data.objective_scores.articles[post_slug].score | default: 0 %}
+    {% assign obj_date = site.data.objective_scores.refreshed_at | slice: 0, 10 %}
+    <div id="score-widget"
+         data-slug="{{ post_slug }}"
+         data-objective="{{ obj_score }}"
+         data-objective-date="{{ obj_date }}"
+         data-worker-url="https://miraclefarms-scoring.lycheenice.workers.dev"
+         data-github-client-id="{{ site.github_oauth_client_id }}">
+    </div>
+    <script src="{{ '/assets/js/score-widget.js' | relative_url }}" defer></script>
+
     {% if reader_highlights_enabled %}
     <div class="post-reader-tools" id="post-reader-tools" hidden>
       <div class="post-reader-tools-bar">

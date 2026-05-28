@@ -36,6 +36,7 @@ jobs:
         run: |
           cp -r _private/_posts/. _posts/
           rsync -a --exclude='css' --exclude='icons' _private/assets/ assets/
+          mkdir -p _data && cp -r _private/_data/. _data/
 
       - name: Setup Python for wiki build
         uses: actions/setup-python@v5
