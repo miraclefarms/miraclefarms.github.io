@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="zh-CN" data-section="briefs" data-intensity="medium">
 <head>
@@ -23,6 +25,16 @@
 <script type="text/babel">
 /* global React, ReactDOM, TweaksPanel, useTweaks, TweakSection, TweakRadio, TweakToggle,
           Icon, MFMark, HandleDots, Topbar, PageHead, PageFooter, ALL_BRIEFS, useApplyTweaks, useSection */
+
+/* ── Jekyll live data (overrides shared.jsx defaults) ── */
+{% assign _posts = site.posts | where: 'kind', 'brief' %}
+window.ALL_BRIEFS = [
+{% for post in _posts %}
+  {"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}"}{% unless forloop.last %},{% endunless %}
+{% endfor %}
+];
+{% raw %}
+
 const { useState, useMemo } = React;
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -207,6 +219,7 @@ function App() {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
 </script>
 
 <style id="__om-edit-overrides"></style>
