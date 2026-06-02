@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MiracleFarms — 设计配色系统 / Design Color System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#faf7f0; --bg-card:#fffcf4; --bg-soft:#f1ead7;
+    --ink:#2c2a26; --ink-soft:rgba(44,42,38,0.70); --ink-faint:rgba(44,42,38,0.45);
+    --rule:rgba(44,42,38,0.14); --rule-soft:rgba(44,42,38,0.08);
+    --serif:"Source Serif 4","Noto Serif SC",Georgia,serif;
+    --sans:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+
+  .doc { max-width:1040px; margin:0 auto; padding:60px 40px 140px; }
+  @media (max-width:720px){ .doc{ padding:40px 20px 90px; } }
+
+  .stamp { font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:0.08em; text-transform:uppercase; display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:26px; }
+  .stamp .dot { width:5px; height:5px; background:#688f4e; border-radius:50%; }
+  .doc-title { font-family:var(--serif); font-weight:600; font-size:clamp(34px,5vw,50px); line-height:1.12; letter-spacing:-0.015em; margin:0 0 16px; }
+  .doc-sub { font-family:var(--serif); font-style:italic; font-size:19px; color:var(--ink-soft); margin:0 0 8px; max-width:720px; }
+  .doc-sub-mini { font-size:14px; color:var(--ink-faint); margin:0; max-width:740px; line-height:1.6; }
+
+  .sec { margin-top:78px; }
+  .sec-eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:0.14em; color:#688f4e; text-transform:uppercase; display:flex; align-items:center; gap:10px; }
+  .sec-eyebrow .num { color:#3a5a40; font-weight:500; }
+  .sec-eyebrow .rule { flex:1; height:1px; background:var(--rule); }
+  .sec-title { font-family:var(--serif); font-weight:600; font-size:28px; line-height:1.2; margin:12px 0 6px; }
+  .sec-lead { font-family:var(--serif); font-style:italic; color:var(--ink-soft); font-size:17px; margin:0 0 24px; max-width:760px; }
+  p { max-width:760px; }
+  code { font-family:var(--mono); font-size:0.86em; background:var(--bg-soft); padding:1px 5px; border-radius:3px; border:1px solid var(--rule); }
+  strong { font-weight:600; }
+
+  .paper-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:8px; }
+  @media (max-width:720px){ .paper-row{ grid-template-columns:repeat(2,1fr); } }
+  .pw { border:1px solid var(--rule); border-radius:6px; overflow:hidden; background:var(--bg-card); }
+  .pw .chip { height:60px; }
+  .pw .meta { padding:9px 11px; font-family:var(--mono); font-size:11px; color:var(--ink-soft); }
+  .pw .meta b { display:block; color:var(--ink); font-size:12px; margin-bottom:2px; letter-spacing:0.02em; }
+
+  .palette { display:flex; flex-direction:column; gap:16px; margin-top:8px; }
+  .pcard { border:1px solid var(--rule); border-left:4px solid var(--sec); border-radius:8px; background:var(--bg-card); overflow:hidden; }
+  .pcard-head { display:flex; align-items:center; gap:14px; padding:18px 22px; border-bottom:1px solid var(--rule-soft); }
+  .pcard-stamp { width:46px; height:46px; border-radius:10px; background:var(--sec); display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; box-shadow:0 2px 6px rgba(44,42,38,0.10); }
+  .pcard-id { flex:1; min-width:0; }
+  .pcard-id .name { font-family:var(--serif); font-weight:600; font-size:21px; line-height:1.15; }
+  .pcard-id .kicker { font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--sec); margin-top:3px; }
+  .pcard-id .cjk { color:var(--ink-faint); margin-left:8px; letter-spacing:0.04em; }
+  .pcard-q { font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-soft); text-align:right; max-width:230px; }
+  @media (max-width:560px){ .pcard-q{ display:none; } }
+  .pcard-body { display:grid; grid-template-columns:1.25fr 1fr; }
+  @media (max-width:720px){ .pcard-body{ grid-template-columns:1fr; } }
+  .swatches { display:flex; }
+  .sw { flex:1; padding:14px 14px 16px; display:flex; flex-direction:column; gap:6px; min-height:116px; justify-content:flex-end; }
+  .sw .tok { font-family:var(--mono); font-size:10px; letter-spacing:0.04em; opacity:0.85; }
+  .sw .hex { font-family:var(--mono); font-size:12px; font-weight:500; }
+  .sw.accent { background:var(--sec); color:#faf7f0; }
+  .sw.soft { background:var(--soft); color:#faf7f0; }
+  .sw.tint { background:var(--tint); color:var(--ink); }
+  .pcard-demo { padding:16px 18px; border-left:1px solid var(--rule-soft); display:flex; flex-direction:column; gap:10px; justify-content:center; }
+  @media (max-width:720px){ .pcard-demo{ border-left:0; border-top:1px solid var(--rule-soft); } }
+  .demo-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .d-kicker { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--sec); }
+  .d-rule { height:2px; width:38px; background:var(--sec); border-radius:1px; }
+  .d-pill { font-family:var(--sans); font-size:12px; padding:4px 10px; border-radius:4px; background:var(--sec); color:#faf7f0; }
+  .d-tag { font-family:var(--sans); font-size:11px; padding:2px 8px; border-radius:3px; background:var(--tint); color:var(--ink-soft); }
+  .d-quote { font-family:var(--serif); font-style:italic; font-size:13px; color:var(--qt); border-left:3px solid var(--sec); background:var(--tint); padding:8px 12px; border-radius:0 3px 3px 0; margin:0; }
+
+  .marks { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:8px; }
+  .markcell { border:1px solid var(--rule); border-radius:8px; background:var(--bg-card); padding:18px 8px 12px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .markcell .tile { width:52px; height:52px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; }
+  .markcell .lbl { font-family:var(--mono); font-size:9px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint); }
+
+  .intens { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:8px; }
+  @media (max-width:720px){ .intens{ grid-template-columns:1fr; } }
+  .icard { border:1px solid var(--rule); border-radius:8px; background:var(--bg-card); padding:18px 20px; }
+  .icard h4 { font-family:var(--serif); font-weight:600; font-size:17px; margin:0; }
+  .icard .tagline { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#688f4e; margin-top:4px; }
+  .icard p { font-size:13px; color:var(--ink-soft); margin:8px 0 14px; line-height:1.55; }
+  .mini-head { display:flex; align-items:center; gap:10px; padding-top:12px; border-top:1px solid var(--rule-soft); }
+  .mini-stamp { width:34px; height:34px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+  .mini-title { font-family:var(--serif); font-weight:600; font-size:16px; }
+  .mini-kicker { font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#3d5168; }
+
+  .tokens { margin-top:8px; background:#2c2a26; color:#f1ead7; border-radius:8px; overflow:hidden; }
+  .tokens-bar { font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#b9b09c; padding:11px 16px; border-bottom:1px solid rgba(241,234,215,0.12); display:flex; justify-content:space-between; }
+  .tokens pre { margin:0; padding:16px; overflow-x:auto; font-family:var(--mono); font-size:12px; line-height:1.7; }
+  .tokens .c { color:#9b9387; }
+  .tokens .v { color:#cba961; }
+
+  .map { width:100%; border-collapse:collapse; margin-top:8px; font-size:13.5px; }
+  .map th { text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:500; padding:9px 12px; border-bottom:1px solid var(--rule); }
+  .map td { padding:11px 12px; border-bottom:1px solid var(--rule-soft); vertical-align:middle; }
+  .map td .swatch { display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px; margin-right:7px; }
+  .map td.mono { font-family:var(--mono); font-size:12px; color:var(--ink-soft); }
+  .map td.name { font-family:var(--serif); font-weight:600; }
+
+  .closing { margin-top:84px; padding-top:22px; border-top:1px solid var(--rule); font-family:var(--mono); font-size:11px; letter-spacing:0.04em; color:var(--ink-faint); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .closing .right { color:#688f4e; }
+</style>
+</head>
+<body>
+<main class="doc">
+
+  <div class="stamp">
+    <span>MiracleFarms</span><span class="dot"></span>
+    <span>Design Color System</span><span class="dot"></span>
+    <span>v1 · 2026.06</span>
+  </div>
+
+  <h1 class="doc-title">一套底色，五种板块色。<br>主站与公众号同源。</h1>
+  <p class="doc-sub">米色纸面恒定不变，每个板块换一种 accent —— 与微信公众号推文的主题配色严格对齐，供后续统一优化与迭代。</p>
+  <p class="doc-sub-mini">本文是配色的唯一参照。Tokens 见 <code>assets/design-tokens.css</code> / <code>assets/design-tokens.json</code>；公众号端配色见 <code>miraclefarms-content/scripts/lib/wechat-render.js</code> 的 <code>THEMES</code>。</p>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§1</span><span>原则</span><span class="rule"></span></div>
+    <h2 class="sec-title">底色守恒，accent 随板块换。</h2>
+    <p class="sec-lead">任何一页都该认得这是 MiracleFarms（同一张纸、同一套字、同一个五秆标志），又能一眼分辨在哪个板块（accent 不同）。</p>
+    <p>三条约束：<strong>① 纸面底色五板块共用</strong>，只换 accent / soft / tint；<strong>② 主站 <code>data-section</code> 与公众号 <code>wechat_variant</code> 一一对应、共用同一组 hex</strong>；<strong>③ 主标志只有一个（五秆），换色不换形。</strong></p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§2</span><span>纸面底色 · 五板块共用</span><span class="rule"></span></div>
+    <h2 class="sec-title">Paper base</h2>
+    <p class="sec-lead">暖米纸 + 墨黑字 + 发丝分隔线。这一层永不随板块变化。</p>
+    <div class="paper-row">
+      <div class="pw"><div class="chip" style="background:#faf7f0;border-bottom:1px solid var(--rule);"></div><div class="meta"><b>bg · 纸面</b>#faf7f0</div></div>
+      <div class="pw"><div class="chip" style="background:#fffcf4;border-bottom:1px solid var(--rule);"></div><div class="meta"><b>bg-card · 卡片</b>#fffcf4</div></div>
+      <div class="pw"><div class="chip" style="background:#f1ead7;"></div><div class="meta"><b>bg-soft · 浅块</b>#f1ead7</div></div>
+      <div class="pw"><div class="chip" style="background:#2c2a26;"></div><div class="meta"><b>ink · 正文</b>#2c2a26</div></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§3</span><span>板块色板</span><span class="rule"></span></div>
+    <h2 class="sec-title">五个板块，五种 accent。</h2>
+    <p class="sec-lead">左侧三色 = accent / soft / tint；右侧 = 该色落在真实组件上的样子。</p>
+    <div class="palette" id="palette"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§4</span><span>主标志 · 五秆</span><span class="rule"></span></div>
+    <h2 class="sec-title">一个标志，五种板块色。</h2>
+    <p class="sec-lead">五根高度不一的秆 = MiracleFarms 的五个板块。换色不换形：放进哪个板块的色块里，就染那个板块的 accent。</p>
+    <div class="marks" id="marks"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§5</span><span>强度档位</span><span class="rule"></span></div>
+    <h2 class="sec-title">同一组色，三档强度。</h2>
+    <p class="sec-lead">由 <code>html[data-intensity]</code> 控制，用户可在 Tweaks 面板切换。默认 medium。</p>
+    <div class="intens" id="intens"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§6</span><span>映射表</span><span class="rule"></span></div>
+    <h2 class="sec-title">主站 ↔ 公众号 一一对应</h2>
+    <p class="sec-lead">这张表是同源的保证：改色时两端一起改，永远对齐。</p>
+    <table class="map">
+      <thead><tr><th>板块 Section</th><th>data-section</th><th>公众号 theme</th><th>accent</th><th>soft</th><th>tint</th></tr></thead>
+      <tbody id="maprows"></tbody>
+    </table>
+  </section>
+
+  <section class="sec">
+    <div class="sec-eyebrow"><span class="num">§7</span><span>Tokens</span><span class="rule"></span></div>
+    <h2 class="sec-title">工程直接引用</h2>
+    <p class="sec-lead">页面在 <code>&lt;html&gt;</code> 上声明 <code>data-section</code>，即自动拿到该板块的 <code>--sec-*</code>。</p>
+    <div class="tokens">
+      <div class="tokens-bar"><span>assets/design-tokens.css</span><span>CSS variables</span></div>
+      <pre><span class="c">/* 共用底色（恒定） */</span>
+:root {
+  --bg: <span class="v">#faf7f0</span>;  --bg-card: <span class="v">#fffcf4</span>;
+  --ink:<span class="v">#2c2a26</span>;  --rule: <span class="v">rgba(44,42,38,.14)</span>;
+}
+<span class="c">/* 板块 accent —— 只换这三档 + 引文色 */</span>
+html[data-section=<span class="v">"readings"</span>] {
+  --sec-accent:      <span class="v">#3d5168</span>;
+  --sec-accent-soft: <span class="v">#6b7e98</span>;
+  --sec-tint:        <span class="v">#e3e8ef</span>;
+}
+<span class="c">/* 用法 */</span>
+.pill.primary { background: <span class="v">var(--sec-accent)</span>; }
+.tag          { background: <span class="v">var(--sec-tint)</span>; }</pre>
+    </div>
+  </section>
+
+  <div class="closing">
+    <span>MiracleFarms · Design Color System v1</span>
+    <span class="right">Less hype, more systems.</span>
+  </div>
+
+</main>
+
+<script>
+  const MARK = (h, s) => `<svg width="${h}" height="${h}" viewBox="0 0 200 200" fill="none" stroke-linecap="square">
+    <line x1="25" y1="178" x2="25" y2="58" stroke="${s}" stroke-width="22"/>
+    <line x1="62" y1="178" x2="62" y2="128" stroke="${s}" stroke-width="16" opacity="0.55"/>
+    <line x1="100" y1="178" x2="100" y2="93" stroke="${s}" stroke-width="22"/>
+    <line x1="138" y1="178" x2="138" y2="108" stroke="${s}" stroke-width="16" opacity="0.55"/>
+    <line x1="175" y1="178" x2="175" y2="33" stroke="${s}" stroke-width="22"/></svg>`;
+
+  const SECTIONS = [
+    { key:"briefs",      name:"Briefs",      kicker:"BRIEF · DAILY",   cjk:"日报 · emerald-green",   q:"今天发生了什么值得记录的事？", accent:"#3a5a40", soft:"#688f4e", tint:"#eaf0e3", qt:"#4a5a48", theme:"emerald-green", ds:"briefs",      tags:["Inference","vLLM"],  quote:"推理框架的竞争重心，正在从“首发支持”转向“通用路径上跑稳”。", pill:"阅读最新" },
+    { key:"readings",    name:"Readings",    kicker:"READING · NOTE",  cjk:"阅读笔记 · slate-reading", q:"这篇论文是怎么工作的？",      accent:"#3d5168", soft:"#6b7e98", tint:"#e3e8ef", qt:"#3a4a5e", theme:"slate-reading", ds:"readings",   tags:["Agents","Harness"],  quote:"Reading 的输入是别人的文字，输出是自己的判断。", pill:"精读" },
+    { key:"fields",      name:"Field Notes", kicker:"FIELD NOTE",      cjk:"田间笔记 · warm-ochre",   q:"我自己跑出来的结果是什么？",   accent:"#b08d3a", soft:"#cba961", tint:"#f4ead0", qt:"#7a5c2e", theme:"warm-ochre",   ds:"fields",      tags:["KV Cache","AMD"],    quote:"写进来的东西必须亲手验证过——不是“据论文称”，而是“我跑出来的结果”。", pill:"动手" },
+    { key:"essays",      name:"Essays",      kicker:"ESSAY · LONGFORM", cjk:"长文 · ink-violet",       q:"从更长的视角看意味着什么？",   accent:"#322a50", soft:"#5e5478", tint:"#e6e3f0", qt:"#26203e", theme:"ink-violet",   ds:"essays",      tags:["Memory","Runtime"],  quote:"把多条线索拼回到一个工程问题上——结构化、可引用、长期维护。", pill:"长读" },
+    { key:"foundations", name:"Foundations", kicker:"FOUNDING NOTE",   cjk:"缘起 · earth-clay",       q:"这个站点为什么存在？",        accent:"#9c5a3c", soft:"#c0845f", tint:"#f1e4d8", qt:"#7a4226", theme:"earth-clay（新增）", ds:"foundations", tags:["Founding"],          quote:"留下的不是热点摘要，而是可验证、可落地、可复盘的工程判断。", pill:"缘起" },
+  ];
+
+  document.getElementById("palette").innerHTML = SECTIONS.map(s => `
+    <div class="pcard" style="--sec:${s.accent};--soft:${s.soft};--tint:${s.tint};--qt:${s.qt};">
+      <div class="pcard-head">
+        <span class="pcard-stamp">${MARK(26,"#faf7f0")}</span>
+        <div class="pcard-id"><div class="name">${s.name}</div><div class="kicker">${s.kicker} <span class="cjk">${s.cjk}</span></div></div>
+        <div class="pcard-q">${s.q}</div>
+      </div>
+      <div class="pcard-body">
+        <div class="swatches">
+          <div class="sw accent"><span class="tok">accent</span><span class="hex">${s.accent}</span></div>
+          <div class="sw soft"><span class="tok">soft</span><span class="hex">${s.soft}</span></div>
+          <div class="sw tint"><span class="tok">tint</span><span class="hex">${s.tint}</span></div>
+        </div>
+        <div class="pcard-demo">
+          <div class="demo-row"><span class="d-kicker">${s.kicker}</span><span class="d-rule"></span></div>
+          <div class="demo-row"><span class="d-pill">${s.pill}</span>${s.tags.map(t=>`<span class="d-tag">${t}</span>`).join("")}</div>
+          <p class="d-quote">${s.quote}</p>
+        </div>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("marks").innerHTML = SECTIONS.map(s => `
+    <div class="markcell">
+      <span class="tile" style="background:${s.tint};">${MARK(30,s.accent)}</span>
+      <span class="lbl">${s.key}</span>
+    </div>`).join("");
+
+  const I = [
+    { key:"clean", title:"克制 clean", tag:"paper-quiet", desc:"纸面安静，只有标志和细节着色；标题线退回发丝灰。适合长文阅读页。", stampBg:"transparent", stampBorder:"1px solid rgba(44,42,38,0.14)", stampFg:"#3d5168", rule:"rgba(44,42,38,0.14)" },
+    { key:"medium", title:"中度 medium", tag:"default", desc:"彩色 stamp 色块 + accent 标题线 + 染色 eyebrow / 标签。默认档。", stampBg:"#3d5168", stampBorder:"none", stampFg:"#faf7f0", rule:"#3d5168" },
+    { key:"expressive", title:"明显 expressive", tag:"tinted band", desc:"在 medium 之上，页眉加一条 tint 底色横幅，板块感最强。", stampBg:"#3d5168", stampBorder:"none", stampFg:"#faf7f0", rule:"#3d5168", band:"#e3e8ef" },
+  ];
+  document.getElementById("intens").innerHTML = I.map(i => `
+    <div class="icard">
+      <h4>${i.title}</h4>
+      <div class="tagline">${i.tag}</div>
+      <p>${i.desc}</p>
+      <div class="mini-head" style="${i.band?`background:${i.band};margin:0 -20px;padding:12px 20px;`:""}">
+        <span class="mini-stamp" style="background:${i.stampBg};border:${i.stampBorder};">${MARK(20,i.stampFg)}</span>
+        <div>
+          <div class="mini-kicker">READING · NOTE</div>
+          <div class="mini-title">Readings</div>
+          <div style="height:2px;width:34px;background:${i.rule};border-radius:1px;margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("maprows").innerHTML = SECTIONS.map(s => `
+    <tr>
+      <td class="name">${s.name}</td>
+      <td class="mono">${s.ds}</td>
+      <td class="mono">${s.theme}</td>
+      <td class="mono"><span class="swatch" style="background:${s.accent};"></span>${s.accent}</td>
+      <td class="mono"><span class="swatch" style="background:${s.soft};"></span>${s.soft}</td>
+      <td class="mono"><span class="swatch" style="background:${s.tint};"></span>${s.tint}</td>
+    </tr>`).join("");
+</script>
+</body>
+</html>

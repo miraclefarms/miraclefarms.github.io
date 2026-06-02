@@ -1,0 +1,72 @@
+{
+  "$meta": {
+    "name": "MiracleFarms Design Tokens",
+    "version": "1.0.0",
+    "updated": "2026-06",
+    "note": "Per-section accent palette. Source of truth mirrors the WeChat render themes in miraclefarms-content/scripts/lib/wechat-render.js. Paper base is shared across all sections; only the accent/soft/tint/label change per section."
+  },
+  "paper": {
+    "bg":        "#faf7f0",
+    "bg-card":   "#fffcf4",
+    "bg-soft":   "#f1ead7",
+    "bg-hover":  "#ece3cd",
+    "ink":       "#2c2a26",
+    "ink-soft":  "rgba(44,42,38,0.70)",
+    "ink-faint": "rgba(44,42,38,0.45)",
+    "rule":      "rgba(44,42,38,0.14)",
+    "rule-soft": "rgba(44,42,38,0.08)",
+    "on-accent": "#faf7f0"
+  },
+  "sections": {
+    "briefs": {
+      "label": "BRIEF · DAILY",
+      "label-cjk": "日报",
+      "wechat-theme": "emerald-green",
+      "kind": "brief",
+      "accent":      "#3a5a40",
+      "accent-soft": "#688f4e",
+      "tint":        "#eaf0e3",
+      "quote-text":  "#4a5a48"
+    },
+    "readings": {
+      "label": "READING · NOTE",
+      "label-cjk": "阅读笔记",
+      "wechat-theme": "slate-reading",
+      "kind": "reading",
+      "accent":      "#3d5168",
+      "accent-soft": "#6b7e98",
+      "tint":        "#e3e8ef",
+      "quote-text":  "#3a4a5e"
+    },
+    "fields": {
+      "label": "FIELD NOTE",
+      "label-cjk": "田间笔记",
+      "wechat-theme": "warm-ochre",
+      "kind": "field-note",
+      "accent":      "#b08d3a",
+      "accent-soft": "#cba961",
+      "tint":        "#f4ead0",
+      "quote-text":  "#7a5c2e"
+    },
+    "essays": {
+      "label": "ESSAY · LONGFORM",
+      "label-cjk": "长文",
+      "wechat-theme": "ink-violet",
+      "kind": "essay",
+      "accent":      "#322a50",
+      "accent-soft": "#5e5478",
+      "tint":        "#e6e3f0",
+      "quote-text":  "#26203e"
+    },
+    "foundations": {
+      "label": "FOUNDING NOTE",
+      "label-cjk": "缘起",
+      "wechat-theme": "earth-clay",
+      "kind": "founding-note",
+      "accent":      "#9c5a3c",
+      "accent-soft": "#c0845f",
+      "tint":        "#f1e4d8",
+      "quote-text":  "#7a4226"
+    }
+  }
+}
