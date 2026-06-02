@@ -59,7 +59,7 @@ layout: default
         <span class="series-chip">{{ page.series }}</span>
         {% endif %}
         {% if page.kind == 'essay' or page.kind == 'reading' or page.kind == 'field-note' %}
-        <span id="post-word-count" class="post-word-count-chip"></span>
+        <span id="post-word-count" class="post-word-count-chip"{% if page.locked %} hidden{% endif %}></span>
         {% endif %}
       </div>
     </header>
@@ -116,7 +116,7 @@ layout: default
     {% endif %}
   </article>
 
-  <aside class="post-toc" aria-label="文章目录">
+  <aside class="post-toc" aria-label="文章目录"{% if page.locked %} style="display:none"{% endif %}>
     <div class="post-toc-card">
       <p class="post-toc-label">On this page</p>
       <nav id="post-toc-nav" class="post-toc-nav"></nav>
@@ -131,6 +131,11 @@ layout: default
 <script defer src="{{ '/assets/js/comments-loader.js' | relative_url }}"></script>
 {% endif %}
 
+{% if page.locked %}
+<script defer src="{{ '/assets/js/password-gate.js' | relative_url }}"></script>
+{% endif %}
+
+{% unless page.locked %}
 <script>
 (function () {
   var wcEl = document.getElementById('post-word-count');
@@ -192,3 +197,4 @@ layout: default
   if (headings[0]) setActive(headings[0].id);
 })();
 </script>
+{% endunless %}

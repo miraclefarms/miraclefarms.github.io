@@ -62,6 +62,12 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Install Python deps for post encryption
+        run: pip install pyyaml beautifulsoup4 cryptography --quiet
+
+      - name: Encrypt locked posts
+        run: python3 _ci/encrypt-locked-posts.py
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

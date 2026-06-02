@@ -64,6 +64,20 @@ intro: 一句话摘要，不超过 100 字。
 
 **Required fields:** `title`, `date`, `author`, `kind`, `category`, `intro`
 
+**Optional field — `locked` (all kinds):**
+
+```yaml
+locked: true                        # encrypt post body; requires password to read
+password_hint: "联系荔枝获取密码"    # optional hint shown in the password gate UI
+```
+
+- Set `locked: true` to encrypt the post body content at CI build time (AES-256-GCM).
+- The post title, intro, author and date remain visible in the list and on the post page; only the body is encrypted.
+- A lock icon 🔒 appears after the title on all index pages.
+- Password is stored in `_data/site_secrets.json` (private content repo, `lock_password` key).
+- Omitting `password_hint` shows the default: "本文已加密，请输入密码继续阅读。"
+- Do **not** combine with `updated` — locked drafts are not public revisions.
+
 **Optional field — `updated` (essay / reading only):**
 
 ```yaml

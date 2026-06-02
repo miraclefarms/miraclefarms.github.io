@@ -30,7 +30,7 @@
 {% assign _posts = site.posts | where: 'kind', 'reading' %}
 window.ALL_READINGS = [
 {% for post in _posts %}
-  {"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}"}{% unless forloop.last %},{% endunless %}
+  {"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ];
 {% raw %}
@@ -125,7 +125,7 @@ function App() {
                     <HandleDots />
                     <span className="pl-ico" aria-hidden="true"><Icon name="book" size={16} /></span>
                     <div className="pl-body">
-                      <div className="pl-title">{r.title}</div>
+                      <div className="pl-title">{r.title}{r.locked && <span className="pl-lock" aria-label="需要密码">🔒</span>}</div>
                       <div className="pl-excerpt">{r.excerpt}</div>
                       <div className="pl-meta">
                         {r.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
