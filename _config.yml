@@ -58,6 +58,7 @@ exclude:
   - Gemfile.lock
   - tests
   - docs
+  - design-system
   - wiki-src
   - wiki-src/.venv
   - wiki-src/mkdocs.yml
