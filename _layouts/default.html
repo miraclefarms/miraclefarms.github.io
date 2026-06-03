@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ site.lang | default: 'zh-CN' }}" data-style="serif">
+<html lang="{{ site.lang | default: 'zh-CN' }}" data-style="serif" data-section="{% case page.kind %}{% when 'brief' %}briefs{% when 'reading' %}readings{% when 'field-note' %}fields{% when 'essay' %}essays{% when 'founding-note' %}foundations{% else %}home{% endcase %}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

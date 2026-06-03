@@ -120,12 +120,80 @@ const Topbar = ({ active }) => (
   </header>
 );
 
-const PageFooter = () => (
-  <footer className="pg-footer">
-    <span>Less hype, more systems. · 公开生长，而不是一次性完成。</span>
-    <span>© {new Date().getFullYear()} MiracleFarms</span>
-  </footer>
-);
+const PageFooter = () => {
+  const [wechatOpen, setWechatOpen] = React.useState(false);
+
+  const closeDialog = () => setWechatOpen(false);
+
+  // SVGs not in Icon (zhihu, xiaohongshu, x, rss)
+  const SvgZhihu = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 6h11M8 6v14M4 20l4-4M14 9h6M14 9v10l3-3 3 3V9"/>
+    </svg>
+  );
+  const SvgXhs = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 9v6M8 9l4 3-4 3M16 9v6M13 12h6"/>
+    </svg>
+  );
+  const SvgX = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4l16 16M20 4L4 20"/>
+    </svg>
+  );
+
+  return (
+    <>
+      <div className="mf-const-strip" aria-label="Channels">
+        <button className="mf-ch-chip" data-status="live" type="button"
+          onClick={() => setWechatOpen(true)}
+          aria-haspopup="dialog">
+          <Icon name="wechat" size={13} /><span>微信公众号</span>
+        </button>
+        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+          <SvgZhihu /><span>知乎 · soon</span>
+        </span>
+        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+          <SvgXhs /><span>小红书 · soon</span>
+        </span>
+        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+          <SvgX /><span>X · soon</span>
+        </span>
+        <a className="mf-ch-chip" href="https://github.com/lycheenice" target="_blank" rel="noopener noreferrer me">
+          <Icon name="github" size={13} /><span>GitHub</span>
+        </a>
+        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+          <Icon name="feed" size={13} /><span>RSS · soon</span>
+        </span>
+      </div>
+
+      <footer className="pg-footer">
+        <span>Less hype, more systems. · 公开生长，而不是一次性完成。</span>
+        <span>© {new Date().getFullYear()} MiracleFarms</span>
+      </footer>
+
+      {wechatOpen && (
+        <dialog open className="mf-wechat-dialog" aria-labelledby="mf-wechat-title-r"
+          onClick={(e) => { if (e.target === e.currentTarget) closeDialog(); }}>
+          <div className="mf-wechat-card">
+            <button className="mf-wechat-close" type="button" onClick={closeDialog} aria-label="关闭二维码弹窗">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+            <p className="mf-wechat-kicker">WeChat Official Account</p>
+            <h2 className="mf-wechat-title" id="mf-wechat-title-r">微信公众号</h2>
+            <div className="mf-wechat-qr">
+              <img src="/assets/icons/wechat-qr.png" alt="MiracleFarms 微信公众号二维码" width="344" height="344" loading="lazy" />
+            </div>
+            <p className="mf-wechat-name">Miracle Farms</p>
+            <p className="mf-wechat-note">微信扫码关注，接收每日 AI Infra 早报。</p>
+          </div>
+        </dialog>
+      )}
+    </>
+  );
+};
 
 const BASE = "https://miraclefarms.github.io";
 
