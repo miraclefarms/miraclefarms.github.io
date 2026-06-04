@@ -527,7 +527,13 @@ details.toggle > .toggle-body p { color: var(--ink-soft); margin: 6px 0; }
   text-decoration-color: var(--sec-accent);
   background: transparent;
 }
-.post-body strong { font-weight: 650; color: var(--sec-qt); }
+.post-body strong {
+  font-weight: 650; color: var(--ink);
+  /* Highlighter underline — ported from the WeChat render's bold style.
+     A section-tinted band sits behind the lower third of the glyphs. */
+  background: linear-gradient(180deg, transparent 62%, var(--sec-tint) 62%, var(--sec-tint) 92%, transparent 92%);
+  padding: 0 2px;
+}
 .post-body em { color: var(--ink-soft); }
 .post-body :not(pre) > code {
   display: inline; padding: 0.12em 0.36em;
