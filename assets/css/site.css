@@ -566,6 +566,12 @@ details.toggle > .toggle-body p { color: var(--ink-soft); margin: 6px 0; }
 .post-body th, .post-body td {
   padding: 10px 12px; border-bottom: 1px solid var(--rule);
   text-align: left; vertical-align: top;
+  /* Floor so a column can't collapse to ~1 char: CJK (and links with
+     overflow-wrap:anywhere) have a 1-char min-content, so when other columns
+     hold unbreakable Latin tokens, table-layout:auto would otherwise crush the
+     CJK/link column. With a floor, wide tables scroll via the table's
+     overflow-x:auto instead of squeezing. */
+  min-width: 6.5em;
 }
 .post-body th {
   color: var(--ink); font-weight: 600;
