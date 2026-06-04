@@ -122,10 +122,8 @@ const Topbar = ({ active }) => (
 
 const PageFooter = () => {
   const [wechatOpen, setWechatOpen] = React.useState(false);
-
   const closeDialog = () => setWechatOpen(false);
 
-  // SVGs not in Icon (zhihu, xiaohongshu, x, rss)
   const SvgZhihu = () => (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 6h11M8 6v14M4 20l4-4M14 9h6M14 9v10l3-3 3 3V9"/>
@@ -144,34 +142,50 @@ const PageFooter = () => {
 
   return (
     <>
-      <div className="mf-const-strip" aria-label="Channels">
-        <button className="mf-ch-chip" data-status="live" type="button"
-          onClick={() => setWechatOpen(true)}
-          aria-haspopup="dialog">
-          <Icon name="wechat" size={13} /><span>微信公众号</span>
-        </button>
-        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
-          <SvgZhihu /><span>知乎 · soon</span>
-        </span>
-        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
-          <SvgXhs /><span>小红书 · soon</span>
-        </span>
-        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
-          <SvgX /><span>X · soon</span>
-        </span>
-        <a className="mf-ch-chip" href="https://github.com/lycheenice" target="_blank" rel="noopener noreferrer me">
-          <Icon name="github" size={13} /><span>GitHub</span>
-        </a>
-        <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
-          <Icon name="feed" size={13} /><span>RSS · soon</span>
-        </span>
-      </div>
+      <footer style={{ marginTop: 72, paddingTop: 0 }}>
+        {/* ── Channel chip row ── */}
+        <div style={{
+          paddingTop: 22, paddingBottom: 18,
+          borderTop: '1px solid var(--rule-soft)',
+          display: 'flex', flexWrap: 'wrap', gap: 8,
+        }}>
+          <button className="mf-ch-chip" data-status="live" type="button"
+            onClick={() => setWechatOpen(true)} aria-haspopup="dialog">
+            <Icon name="wechat" size={13} /><span>微信公众号</span>
+          </button>
+          <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+            <SvgZhihu /><span>知乎 · soon</span>
+          </span>
+          <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+            <SvgXhs /><span>小红书 · soon</span>
+          </span>
+          <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+            <SvgX /><span>X · soon</span>
+          </span>
+          <a className="mf-ch-chip" href="https://github.com/lycheenice"
+            target="_blank" rel="noopener noreferrer me">
+            <Icon name="github" size={13} /><span>GitHub</span>
+          </a>
+          <span className="mf-ch-chip" data-status="pending" aria-disabled="true">
+            <Icon name="feed" size={13} /><span>RSS · soon</span>
+          </span>
+        </div>
 
-      <footer className="pg-footer">
-        <span>Less hype, more systems. · 公开生长，而不是一次性完成。</span>
-        <span>© {new Date().getFullYear()} MiracleFarms</span>
+        {/* ── Meta / tagline ── */}
+        <div style={{
+          paddingTop: 12, paddingBottom: 40,
+          borderTop: '1px solid var(--rule-soft)',
+          display: 'flex', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: '4px 14px',
+          fontFamily: 'var(--font-default)', fontSize: 12,
+          color: 'var(--ink-faint)',
+        }}>
+          <span>Less hype, more systems. · 公开生长，而不是一次性完成。</span>
+          <span>© {new Date().getFullYear()} MiracleFarms</span>
+        </div>
       </footer>
 
+      {/* ── WeChat QR dialog ── */}
       {wechatOpen && (
         <dialog open className="mf-wechat-dialog" aria-labelledby="mf-wechat-title-r"
           onClick={(e) => { if (e.target === e.currentTarget) closeDialog(); }}>
