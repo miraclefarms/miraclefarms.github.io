@@ -1,0 +1,55 @@
+---
+layout: default
+title: Search
+description: Search MiracleFarms articles with Pagefind or Google.
+permalink: /search/
+section: search
+---
+
+<main class="search-page" data-search-page>
+  <section class="search-console" aria-labelledby="search-title">
+    <div class="search-console-head">
+      <p class="search-kicker">MiracleFarms Index</p>
+      <h1 id="search-title">Search</h1>
+    </div>
+
+    <form class="search-form" data-search-form role="search">
+      <div class="search-mode-tabs" role="tablist" aria-label="搜索来源">
+        <button type="button" class="is-active" data-search-mode="pagefind" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+          <span>Pagefind</span>
+        </button>
+        <button type="button" data-search-mode="google" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+          <span>Google</span>
+        </button>
+      </div>
+
+      <label class="search-input-shell">
+        <span class="sr-only">Search query</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+        <input type="search" name="q" data-search-input placeholder="KV cache, MoE, SGLang..." autocomplete="off" spellcheck="false">
+      </label>
+
+      <button class="search-submit" type="submit">
+        <span>Search</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+
+    <div class="search-kind-filter" data-search-filters aria-label="文章类型">
+      <button type="button" class="is-active" data-kind="all">All</button>
+      <button type="button" data-kind="brief">Briefs</button>
+      <button type="button" data-kind="reading">Readings</button>
+      <button type="button" data-kind="field-note">Fields</button>
+      <button type="button" data-kind="essay">Essays</button>
+    </div>
+  </section>
+
+  <section class="search-results-zone" aria-live="polite" aria-atomic="false">
+    <div class="search-status" data-search-status>输入关键词开始搜索。</div>
+    <ol class="search-results" data-search-results></ol>
+  </section>
+</main>
+
+<script defer src="{{ '/assets/js/search.js' | relative_url }}"></script>

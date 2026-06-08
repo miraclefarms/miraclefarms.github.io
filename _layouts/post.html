@@ -16,7 +16,7 @@ layout: default
 
 <div class="post-shell">
   <article class="post-article">
-    <header class="post-header">
+    <header class="post-header" data-pagefind-body>
       <div class="post-breadcrumb">
         <a href="{{ '/' | relative_url }}">MiracleFarms</a>
         <span class="dot">›</span>
@@ -43,10 +43,10 @@ layout: default
         {% endcase %}
       </p>
 
-      <h1 class="post-title">{{ page.title }}</h1>
+      <h1 class="post-title" data-pagefind-meta="title">{{ page.title }}</h1>
 
       {% if page.intro %}
-      <p class="post-intro-block">{{ page.intro }}</p>
+      <p class="post-intro-block" data-pagefind-meta="intro">{{ page.intro }}</p>
       {% endif %}
 
       <div class="post-meta-row">
@@ -67,11 +67,33 @@ layout: default
     <div
       class="post-body"
       id="post-body-content"
+      {% unless page.locked %}
+      data-pagefind-body
+      {% endunless %}
       {% if reader_highlights_enabled %}
       data-reader-highlights="true"
       data-reader-highlights-key="{{ page.url | escape }}"
       {% endif %}>
       {{ content }}
+    </div>
+
+    <div
+      class="pagefind-post-meta"
+      data-pagefind-ignore>
+      <span data-pagefind-filter="kind:{{ page.kind | default: 'note' }}" data-pagefind-meta="kind:{{ page.kind | default: 'note' }}"></span>
+      <span data-pagefind-filter="category:{{ page.category | default: page.kind | default: 'Note' }}" data-pagefind-meta="category:{{ page.category | default: page.kind | default: 'Note' }}"></span>
+      <span data-pagefind-filter="author:{{ page.author | default: site.author.name }}" data-pagefind-meta="author:{{ page.author | default: site.author.name }}"></span>
+      <span data-pagefind-meta="date:{{ page.date | date: '%Y-%m-%d' }}"></span>
+      {% if page.locked %}
+      <span data-pagefind-meta="locked:true"></span>
+      {% endif %}
+      {% if page.tags %}
+        {% assign tags_joined = page.tags | join: ' ' %}
+        <span data-pagefind-meta="tags:{{ tags_joined }}"></span>
+        {% for tag in page.tags %}
+        <span data-pagefind-filter="tag:{{ tag }}"></span>
+        {% endfor %}
+      {% endif %}
     </div>
 
     {% assign post_slug = page.path | remove: '_posts/' | remove: '.md' %}

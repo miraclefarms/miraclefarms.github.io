@@ -68,6 +68,14 @@ jobs:
       - name: Encrypt locked posts
         run: python3 _ci/encrypt-locked-posts.py
 
+      - name: Setup Node for search indexing
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build Pagefind search index
+        run: npx --yes pagefind@1.5.2 --site _site
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
