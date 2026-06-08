@@ -71,7 +71,7 @@ locked: true                        # encrypt post body; requires password to re
 password_hint: "联系荔枝获取密码"    # optional hint shown in the password gate UI
 ```
 
-- Set `locked: true` to encrypt the post body content at CI build time (AES-256-GCM).
+- Set `locked: true` to encrypt the post body content at CI build time (AES-256-GCM). **Never use `encrypted: true`** — that field is unrecognized and the body will render in plain text.
 - The post title, intro, author and date remain visible in the list and on the post page; only the body is encrypted.
 - A lock icon 🔒 appears after the title on all index pages.
 - Password is stored in `_data/site_secrets.json` (private content repo, `lock_password` key).
