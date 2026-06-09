@@ -494,3 +494,45 @@ html[data-intensity="clean"] .pg-stamp {
 .stalkstrip i:nth-child(3) { height: 45%;  background: #b08d3a; }
 .stalkstrip i:nth-child(4) { height: 100%; background: #322a50; }
 .stalkstrip i:nth-child(5) { height: 72%;  background: #9c5a3c; }
+
+/* ──────────────────────────────────────────────────────────────
+   Footer channel-chip strip — mirrors assets/css/brand.css so the
+   React <PageFooter> on section/index pages matches the Jekyll
+   article-page footer (centered chip row, no copyright/meta line).
+   ────────────────────────────────────────────────────────────── */
+.site-foot {
+  margin-top: 72px;
+  border-top: 1px solid var(--rule-soft);
+  background: var(--bg);
+}
+.mf-const-strip {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  padding: 18px 22px;
+  font-family: var(--font-default);
+}
+.site-foot .mf-const-strip {
+  max-width: 1100px;
+  margin: 0 auto;
+  justify-content: center;
+}
+.mf-ch-chip {
+  appearance: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 4px;
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft); background: #fffcf4;
+  text-decoration: none;
+}
+.mf-ch-chip:is(button) { cursor: pointer; }
+.mf-ch-chip svg { width: 13px; height: 13px; flex: 0 0 auto; }
+.mf-ch-chip[data-status="live"] {
+  background: var(--accent); color: var(--bg); border-color: var(--accent);
+}
+.mf-ch-chip[data-status="live"]:hover {
+  background: #2d4732; border-color: #2d4732;
+}
+.mf-ch-chip[data-status="pending"] {
+  color: var(--ink-faint); border-style: dashed;
+}
