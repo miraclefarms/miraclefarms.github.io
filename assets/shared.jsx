@@ -28,6 +28,7 @@ const Icon = ({ name, size = 16 }) => {
     case "sprout":   return <svg {...common}><path d="M12 20v-7"/><path d="M12 13c0-3.5-2.7-5.5-6.5-5.5C5.5 11 8.2 13 12 13z"/><path d="M12 11.5c0-3 2.4-4.8 5.8-4.8C17.8 9.7 15.4 11.5 12 11.5z"/></svg>;
     case "github":   return <svg {...common}><path d="M9 19c-4 1.5-4-2-6-2m12 4v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 00-1.3-3.2 4.3 4.3 0 00-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 00-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.3 4.3 0 00-.1 3.2A4.6 4.6 0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>;
     case "search":   return <svg {...common}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>;
+    case "wiki":     return <svg {...common}><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="8" cy="18" r="2.5"/><circle cx="17" cy="17" r="2.5"/><path d="M8.3 7.1l7.4 8.8M15.7 7.9L10.1 16M10.5 18h4"/></svg>;
     case "feed":     return <svg {...common}><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg>;
     case "wechat":   return <svg {...common}><path d="M9 4C5.1 4 2 6.7 2 10c0 1.7.8 3.2 2.2 4.3L3.5 17l3-1.6c.7.2 1.5.3 2.3.3"/><path d="M22 14.5c0-2.7-2.6-4.9-5.8-4.9S10.4 11.8 10.4 14.5s2.6 4.9 5.8 4.9c.7 0 1.3-.1 1.9-.3l2.4 1.3-.6-2.1c1.2-.9 2.1-2.2 2.1-3.8z"/></svg>;
     case "spark":    return <svg {...common}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>;
@@ -111,6 +112,8 @@ const Topbar = ({ active }) => (
         <a href="/fields/"      className={active === "fields" ? "active" : ""}><Icon name="flask" size={14} /> <span>Fields</span></a>
         <a href="/essays/"      className={active === "essays" ? "active" : ""}><Icon name="pen" size={14} /> <span>Essays</span></a>
         <a href="/foundations/" className={active === "foundations" ? "active" : ""}><Icon name="sprout" size={14} /> <span>Foundations</span></a>
+        <a href="/wiki/"        className={active === "wiki" ? "active" : ""}><Icon name="wiki" size={14} /> <span>Wiki</span></a>
+        <a href="/search/"      className={active === "search" ? "active" : ""}><Icon name="search" size={14} /> <span>Search</span></a>
         <span className="nav-sep" aria-hidden="true" />
         <a href="https://github.com/lycheenice" target="_blank" rel="noopener">
           <Icon name="github" size={14} /> <span>GitHub</span>
