@@ -125,7 +125,23 @@ const Topbar = ({ active }) => (
 
 const PageFooter = () => {
   const [wechatOpen, setWechatOpen] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+  const dialogRef = React.useRef(null);
   const closeDialog = () => setWechatOpen(false);
+  // Match the article page: open as a centered modal (showModal) with backdrop.
+  React.useEffect(() => {
+    const d = dialogRef.current;
+    if (!d) return;
+    if (wechatOpen) { if (!d.open) d.showModal(); }
+    else if (d.open) d.close();
+  }, [wechatOpen]);
+  const copyName = () => {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText("Miracle Farms").then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1400);
+    });
+  };
 
   const SvgZhihu = () => (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -171,11 +187,11 @@ const PageFooter = () => {
         </div>
       </footer>
 
-      {/* ── WeChat QR dialog ── */}
-      {wechatOpen && (
-        <dialog open className="mf-wechat-dialog" aria-labelledby="mf-wechat-title-r"
-          onClick={(e) => { if (e.target === e.currentTarget) closeDialog(); }}>
-          <div className="mf-wechat-card">
+      {/* ── WeChat QR dialog (modal, matches article page) ── */}
+      <dialog ref={dialogRef} className="mf-wechat-dialog" aria-labelledby="mf-wechat-title-r"
+        onClose={closeDialog}
+        onClick={(e) => { if (e.target === e.currentTarget) closeDialog(); }}>
+        <div className="mf-wechat-card">
             <button className="mf-wechat-close" type="button" onClick={closeDialog} aria-label="关闭二维码弹窗">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 6L6 18M6 6l12 12"/>
@@ -188,9 +204,11 @@ const PageFooter = () => {
             </div>
             <p className="mf-wechat-name">Miracle Farms</p>
             <p className="mf-wechat-note">微信扫码关注，接收每日 AI Infra 早报。</p>
+            <button className="mf-wechat-copy" type="button" onClick={copyName}>
+              {copied ? "已复制" : "复制公众号名称"}
+            </button>
           </div>
-        </dialog>
-      )}
+      </dialog>
     </>
   );
 };

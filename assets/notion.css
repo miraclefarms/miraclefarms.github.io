@@ -536,3 +536,122 @@ html[data-intensity="clean"] .pg-stamp {
 .mf-ch-chip[data-status="pending"] {
   color: var(--ink-faint); border-style: dashed;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   WeChat QR dialog — mirrors assets/css/brand.css so the React
+   <PageFooter> dialog on section/index pages matches the Jekyll
+   article-page dialog.
+   ────────────────────────────────────────────────────────────── */
+.mf-wechat-dialog {
+  width: min(92vw, 380px);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+}
+.mf-wechat-dialog::backdrop {
+  background: rgba(44,42,38,0.38);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.mf-wechat-card {
+  position: relative;
+  padding: 26px 26px 24px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fffcf4;
+  box-shadow: 0 24px 80px rgba(44,42,38,0.22);
+  font-family: var(--font-default);
+  text-align: center;
+}
+.mf-wechat-close {
+  appearance: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.mf-wechat-close:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+.mf-wechat-close:focus-visible,
+.mf-wechat-copy:focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+.mf-wechat-close svg {
+  width: 18px;
+  height: 18px;
+}
+.mf-wechat-kicker {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+.mf-wechat-title {
+  margin: 0 0 18px;
+  font-family: var(--font-serif);
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--ink);
+}
+.mf-wechat-qr {
+  display: flex;
+  justify-content: center;
+}
+.mf-wechat-qr img {
+  width: min(100%, 264px);
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #fff;
+}
+.mf-wechat-name {
+  margin: 16px 0 2px;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.mf-wechat-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.mf-wechat-copy {
+  appearance: none;
+  margin-top: 16px;
+  padding: 7px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font: 12px/1.2 var(--font-default);
+}
+.mf-wechat-copy:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+@media (max-width: 420px) {
+  .mf-wechat-card {
+    padding: 24px 18px 20px;
+  }
+}
