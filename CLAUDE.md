@@ -2,6 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ 仓库架构（必读，先看这段再动手）
+
+**本仓库 `miraclefarms.github.io` 只是渲染层（Jekyll 模板、样式、布局、部署配置）。文章本身不在这里。**
+
+- 本仓库的 `_posts/` **故意是空的**（只有 `.gitkeep`）。真正的文章、Wiki 源码、文章配图都在**私有仓库 `miraclefarms/miraclefarms-content`**，由 `.github/workflows/pages.yml` 在 CI 构建时通过 `actions/checkout` + `cp -r _private/_posts/. _posts/` 现场注入（见 commit 14baeab）。
+- **因此本地直接 `jekyll build` / `serve` 看到的板块页是 0 篇文章——这是正常的，不是 bug。** 要带内容预览，先从 content 仓库把 `_posts/` 和 `assets/` 复制过来（见 `README.md` 的「本地开发」）。
+- 板块页/首页是独立的 React 单页（`assets/shared.jsx` + 各 `*/index.html`），文章列表由 Jekyll 在构建时用 Liquid 把 `site.posts` 注入成 `window.ALL_BRIEFS` 等全局数组。所以板块页的内容同样依赖私有 `_posts` 注入。
+- `_private/assets/` 只含每篇文章的图片目录，**不含** `shared.jsx`/`notion.css`；workflow 的 `rsync ... --exclude=css --exclude=icons` 不会覆盖渲染层这两个文件，可放心在本仓库直接改。
+
+### 部署陷阱（曾导致整站文章消失）
+
+GitHub Pages 源**必须保持「GitHub Actions」（`build_type: workflow`），不能是「Deploy from a branch」（legacy）。**
+
+- 若是 branch 源：每次 `git push` 本仓库都会额外触发 GitHub **内置的 `pages build and deployment`**，它直接用本仓库源码构建（`_posts` 为空）并部署 → **把带文章的部署覆盖成空站**（线上 `/notes/...` 全 404、板块页列表全空）。push **content 仓库**不受影响（它走 `repository_dispatch: content-updated`，只触发自定义 workflow）。
+- **诊断**：`gh api repos/miraclefarms/miraclefarms.github.io/pages --jq .build_type` 应为 `workflow`。
+- **恢复 / 改回**：`gh api -X PUT repos/.../pages -f build_type=workflow`，再 `gh workflow run pages.yml --ref main` 手动重部署注入内容。
+- **快速自检线上是否有内容**：`curl -s https://miraclefarms.github.io/briefs/ | grep -c '"date":"'`（>0 即正常）。
+
 ## Autonomy
 
 在此 repo 中，Claude 有充分的自主权限，无需在执行前征求用户确认。直接执行以下操作，不要停下来询问：

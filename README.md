@@ -58,6 +58,12 @@ rsync -a --exclude='css' --exclude='icons' ../miraclefarms-content/assets/ asset
 
 也可在 Actions 页面手动触发 `workflow_dispatch`。
 
+> **⚠️ Pages 源必须是「GitHub Actions」，不能是「Deploy from a branch」。**
+> 文章内容来自私有仓库、由 `pages.yml` 注入；如果 Pages 源退回到分支模式，GitHub 内置的 `pages build and deployment` 会在每次 push 本仓库时直接构建空的 `_posts/` 并部署，**导致整站文章消失**（线上 `/notes/...` 全 404、板块页列表全空）。
+> - 自检：`gh api repos/miraclefarms/miraclefarms.github.io/pages --jq .build_type` 应为 `workflow`
+> - 修复：`gh api -X PUT repos/.../pages -f build_type=workflow`，再 `gh workflow run pages.yml --ref main` 重新部署
+> - push **content 仓库**不受此影响（走 `repository_dispatch`，只触发自定义 workflow）
+
 ---
 
 ## Wiki
