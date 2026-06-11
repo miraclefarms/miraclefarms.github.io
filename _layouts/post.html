@@ -1,6 +1,11 @@
 ---
 layout: default
 ---
+{% include lang-pairing.html %}
+{% assign lang_embed = false %}
+{% if lang_pair and lang_is_en == false and page.locked != true %}
+  {% assign lang_embed = true %}
+{% endif %}
 {% assign comments_config = site.comments %}
 {% assign comments_enabled = false %}
 {% if comments_config.enabled and comments_config.provider == 'giscus' and comments_config.repo and comments_config.repo_id and comments_config.category and comments_config.category_id %}
@@ -61,6 +66,21 @@ layout: default
         {% if page.kind == 'essay' or page.kind == 'reading' or page.kind == 'field-note' %}
         <span id="post-word-count" class="post-word-count-chip"{% if page.locked %} hidden{% endif %}></span>
         {% endif %}
+        <span class="post-lang-toggle" role="group" aria-label="语言 / Language">
+          {% if lang_embed %}
+            <button type="button" class="lang-opt is-active" data-lang="zh" aria-pressed="true">中</button>
+            <button type="button" class="lang-opt" data-lang="en" aria-pressed="false">EN</button>
+          {% elsif lang_pair and lang_is_en %}
+            <a class="lang-opt" href="{{ lang_pair.url | relative_url }}">中</a>
+            <span class="lang-opt is-active" aria-current="true">EN</span>
+          {% elsif lang_pair %}
+            <span class="lang-opt is-active" aria-current="true">中</span>
+            <a class="lang-opt" href="{{ lang_pair.url | relative_url }}">EN</a>
+          {% else %}
+            <span class="lang-opt is-active" aria-current="true">中</span>
+            <button type="button" class="lang-opt" data-lang="en" disabled title="暂无英文版">EN</button>
+          {% endif %}
+        </span>
       </div>
     </header>
 
@@ -76,6 +96,26 @@ layout: default
       {% endif %}>
       {{ content }}
     </div>
+
+    {% if lang_embed %}
+    <div class="post-body" id="post-body-en" lang="en" hidden data-pagefind-ignore>
+      {{ lang_pair.content }}
+    </div>
+    <script>
+    /* 同步应用语言偏好，避免英文偏好时的中文闪烁；在 ToC/字数脚本之前执行 */
+    (function () {
+      try {
+        var pref = new URLSearchParams(location.search).get('lang')
+                 || localStorage.getItem('mf-lang');
+        if (pref === 'en') {
+          var zh = document.getElementById('post-body-content');
+          var en = document.getElementById('post-body-en');
+          if (zh && en) { zh.hidden = true; en.hidden = false; document.documentElement.lang = 'en'; }
+        }
+      } catch (e) {}
+    })();
+    </script>
+    {% endif %}
 
     <div
       class="pagefind-post-meta"
@@ -161,62 +201,116 @@ layout: default
 <script>
 (function () {
   var wcEl = document.getElementById('post-word-count');
-  if (wcEl) {
-    var wcBody = document.getElementById('post-body-content');
+  if (!wcEl) return;
+  function visibleBody() {
+    return document.querySelector('.post-body:not([hidden])')
+        || document.getElementById('post-body-content');
+  }
+  function recount() {
+    var wcBody = visibleBody();
     var text = wcBody ? wcBody.innerText : '';
     var cjk  = (text.match(/[一-鿿㐀-䶿]/g) || []).length;
     var eng  = (text.replace(/[一-鿿㐀-䶿]/g, ' ')
                      .match(/\b[a-zA-Z0-9]+\b/g) || []).length;
     var mins = Math.max(1, Math.round(cjk / 400 + eng / 150));
     var total = cjk + eng;
-    if (total > 0) wcEl.textContent = '约 ' + total.toLocaleString('zh-CN') + ' 字 · ' + mins + ' 分钟';
+    wcEl.textContent = total > 0
+      ? '约 ' + total.toLocaleString('zh-CN') + ' 字 · ' + mins + ' 分钟'
+      : '';
   }
+  recount();
+  document.addEventListener('mf:langchange', recount);
 })();
 
 (function () {
-  var body = document.getElementById('post-body-content');
-  var nav  = document.getElementById('post-toc-nav');
-  if (!body || !nav) return;
-
+  var nav = document.getElementById('post-toc-nav');
+  if (!nav) return;
   var forceHide = {% if page.kind == 'brief' or page.kind == 'founding-note' %}true{% else %}false{% endif %};
-  var headings  = Array.from(body.querySelectorAll('h2'));
-  if (forceHide || !headings.length) {
-    var toc = document.querySelector('.post-toc');
-    if (toc) toc.style.display = 'none';
-    return;
-  }
+  var tocAside = document.querySelector('.post-toc');
+  var observer = null;
 
-  var slugify = function(text) {
+  function visibleBody() {
+    return document.querySelector('.post-body:not([hidden])')
+        || document.getElementById('post-body-content');
+  }
+  var slugify = function (text) {
     return text.toLowerCase().trim()
       .replace(/[\s　]+/g, '-')
       .replace(/[^\w\-一-龥]/g, '')
       .replace(/-+/g, '-');
   };
 
-  headings.forEach(function(h, i) {
-    if (!h.id) h.id = slugify(h.textContent) || ('section-' + (i + 1));
-    var link = document.createElement('a');
-    link.href = '#' + h.id;
-    link.textContent = h.textContent;
-    link.className = 'toc-link toc-h2';
-    nav.appendChild(link);
-  });
-
-  var links = Array.from(nav.querySelectorAll('a'));
-  var setActive = function(id) {
-    links.forEach(function(l) {
-      l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+  function build() {
+    if (observer) { observer.disconnect(); observer = null; }
+    nav.innerHTML = '';
+    var body = visibleBody();
+    var headings = body ? Array.from(body.querySelectorAll('h2')) : [];
+    if (forceHide || !headings.length) {
+      if (tocAside) tocAside.style.display = 'none';
+      return;
+    }
+    if (tocAside) tocAside.style.display = '';
+    headings.forEach(function (h, i) {
+      if (!h.id) h.id = slugify(h.textContent) || ('section-' + (i + 1));
+      var link = document.createElement('a');
+      link.href = '#' + h.id;
+      link.textContent = h.textContent;
+      link.className = 'toc-link toc-h2';
+      nav.appendChild(link);
     });
-  };
+    var links = Array.from(nav.querySelectorAll('a'));
+    var setActive = function (id) {
+      links.forEach(function (l) {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    };
+    observer = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length) setActive(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 1] });
+    headings.forEach(function (h) { observer.observe(h); });
+    if (headings[0]) setActive(headings[0].id);
+  }
 
-  var observer = new IntersectionObserver(function(entries) {
-    var visible = entries.filter(function(e) { return e.isIntersecting; })
-      .sort(function(a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-    if (visible.length) setActive(visible[0].target.id);
-  }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 1] });
-
-  headings.forEach(function(h) { observer.observe(h); });
-  if (headings[0]) setActive(headings[0].id);
+  build();
+  document.addEventListener('mf:langchange', build);
 })();
 </script>
 {% endunless %}
+
+{% if lang_embed %}
+<script>
+(function () {
+  var zh = document.getElementById('post-body-content');
+  var en = document.getElementById('post-body-en');
+  var toggle = document.querySelector('.post-lang-toggle');
+  if (!zh || !en || !toggle) return;
+
+  function apply(lang, persist) {
+    var en_on = lang === 'en';
+    zh.hidden = en_on;
+    en.hidden = !en_on;
+    document.documentElement.lang = en_on ? 'en' : 'zh-CN';
+    toggle.querySelectorAll('.lang-opt[data-lang]').forEach(function (b) {
+      var on = b.getAttribute('data-lang') === lang;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (persist) { try { localStorage.setItem('mf-lang', lang); } catch (e) {} }
+    document.dispatchEvent(new CustomEvent('mf:langchange', {
+      detail: { lang: lang, body: en_on ? en : zh }
+    }));
+  }
+
+  toggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('.lang-opt[data-lang]');
+    if (!btn || btn.disabled) return;
+    apply(btn.getAttribute('data-lang'), true);
+  });
+
+  // 与防闪预置脚本对齐当前状态，并广播一次让 ToC/字数按当前 body 重建
+  apply(en.hidden ? 'zh' : 'en', false);
+})();
+</script>
+{% endif %}

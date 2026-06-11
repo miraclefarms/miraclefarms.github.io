@@ -13,6 +13,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/brand.css' | relative_url }}">
+    {% if page.kind %}
+      {% include lang-pairing.html %}
+      {% if lang_pair %}
+        {% if lang_is_en %}
+    <link rel="canonical" href="{{ lang_pair.url | absolute_url }}">
+    <link rel="alternate" hreflang="zh-CN" href="{{ lang_pair.url | absolute_url }}">
+    <link rel="alternate" hreflang="en" href="{{ page.url | absolute_url }}">
+        {% else %}
+    <link rel="alternate" hreflang="zh-CN" href="{{ page.url | absolute_url }}">
+    <link rel="alternate" hreflang="en" href="{{ lang_pair.url | absolute_url }}">
+        {% endif %}
+      {% endif %}
+    {% endif %}
     {% include site-analytics.html %}
   </head>
   <body>

@@ -30,7 +30,7 @@
 {% assign _posts = site.posts | where: 'kind', 'essay' %}
 window.ALL_ESSAYS = [
 {% for post in _posts %}
-  {"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}
+  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% raw %}

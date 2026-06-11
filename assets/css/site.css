@@ -753,6 +753,28 @@ details.toggle > .toggle-body p { color: var(--ink-soft); margin: 6px 0; }
   color: var(--ink-faint);
   font-size: 13px; font-family: var(--font-default);
 }
+.post-lang-toggle {
+  display: inline-flex; align-items: center;
+  margin-left: auto;                 /* 推到 meta 行末尾，不挤压已有项 */
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px; overflow: hidden;
+  font-family: var(--font-default); font-size: 12px;
+}
+.post-lang-toggle .lang-opt {
+  appearance: none; -webkit-appearance: none;
+  background: transparent; border: 0; cursor: pointer;
+  padding: 2px 9px; color: var(--ink-faint);
+  text-decoration: none; line-height: 1.6;
+  font: inherit;
+}
+.post-lang-toggle .lang-opt + .lang-opt { border-left: 1px solid var(--rule-soft); }
+.post-lang-toggle .lang-opt:hover { color: var(--ink); }
+.post-lang-toggle .lang-opt.is-active {
+  background: var(--tag-bg); color: var(--ink-soft); cursor: default;
+}
+.post-lang-toggle .lang-opt[disabled] {
+  color: var(--ink-faint); opacity: 0.45; cursor: not-allowed;
+}
 .pl-date-updated { color: var(--ink-soft); }
 .pl-date-pip { font-size: 9px; margin-left: 3px; opacity: 0.6; }
 

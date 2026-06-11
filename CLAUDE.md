@@ -123,6 +123,14 @@ updated: 2026-05-09   # date only (YYYY-MM-DD), no time/timezone needed
 - `Ethan` — Paper readings and tech overviews (reading)
 - `MiracleFarms` — Site notes / founding notes
 
+### 双语文章（中英）
+
+- 英文版 = 中文文件名前加 `.en` 后缀：`YYYY-MM-DD-slug.en.md`（与中文同目录、同 `date`/`kind`/`category`，正文为英文）。
+- 中文页为规范 URL，构建时由 `_layouts/post.html` 经路径推断（`_includes/lang-pairing.html`）自动内嵌英文正文；读者用文章头部 `中｜EN` 控件即时切换，偏好记忆于 `localStorage`（key `mf-lang`），`?lang=en` 可直达英文。
+- 列表/首页/搜索只展示中文条目；英文经文章内切换或其独立页（`/notes/.../slug.en/`，自带 `canonical` 指回中文）访问，由 Pagefind 索引一次。
+- `locked: true` 的文章**不内嵌英文**，其 `EN` 退化为指向英文独立页的链接（两页各自加密）；不要依赖即时切换。
+- 划线高亮目前仅作用于中文正文（英文划线后续支持）。
+
 ### Timezone
 
 All dates must use `+0800` (Asia/Shanghai). Never use `-0400` or other offsets.

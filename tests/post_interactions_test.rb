@@ -16,6 +16,8 @@ class PostInteractionsTest < Minitest::Test
     FileUtils.cp_r(File.join(ROOT, "_includes"), @site_dir) if Dir.exist?(File.join(ROOT, "_includes"))
     FileUtils.cp_r(File.join(ROOT, "assets"), @site_dir)
     FileUtils.mkdir_p(File.join(@site_dir, "_posts"))
+    FileUtils.mkdir_p(File.join(@site_dir, "briefs"))
+    FileUtils.cp(File.join(ROOT, "briefs", "index.html"), File.join(@site_dir, "briefs"))
 
     write_post(
       "2026-05-18-interaction-essay.md",
@@ -24,10 +26,28 @@ class PostInteractionsTest < Minitest::Test
       body: "开篇提出一个问题。\n\n## 一、第一节\n\n这是一段可被读者划线的长文内容。"
     )
     write_post(
+      "2026-05-18-interaction-essay.en.md",
+      kind: "essay",
+      category: "Essay",
+      body: "Opening question in English.\n\n## 1. First section\n\nEnglish body paragraph."
+    )
+    write_post(
       "2026-05-18-interaction-brief.md",
       kind: "brief",
       category: "Brief",
       body: "简报开头。\n\n## 一、今日要点\n\n这是一段简报内容。"
+    )
+    write_post(
+      "2026-05-18-interaction-brief.en.md",
+      kind: "brief",
+      category: "Brief",
+      body: "English brief.\n\n## 1. Point\n\nEnglish content."
+    )
+    write_post(
+      "2026-05-18-interaction-solo.md",
+      kind: "essay",
+      category: "Essay",
+      body: "只有中文，没有英文版。\n\n## 一、唯一一节\n\n正文内容。"
     )
   end
 
@@ -150,6 +170,56 @@ class PostInteractionsTest < Minitest::Test
 
     refute_includes html, "static.cloudflareinsights.com/beacon.min.js"
     refute_includes html, "data-site-analytics-loader"
+  end
+
+  def test_paired_post_embeds_english_body_and_enables_toggle
+    build_site
+    html = rendered_post("interaction-essay")
+
+    assert_includes html, 'id="post-body-content"'
+    assert_includes html, 'id="post-body-en"'
+    assert_includes html, "data-pagefind-ignore"
+    assert_includes html, "English body paragraph."
+    assert_includes html, 'class="post-lang-toggle"'
+    assert_includes html, 'data-lang="en"'
+    refute_includes html, 'data-lang="en" disabled'
+  end
+
+  def test_unpaired_post_shows_disabled_english_toggle
+    build_site
+    html = rendered_post("interaction-solo") # unpaired zh-only essay
+
+    assert_includes html, 'class="post-lang-toggle"'
+    assert_includes html, 'title="暂无英文版"'
+    refute_includes html, 'id="post-body-en"'
+  end
+
+  def test_paired_post_includes_toggle_runtime
+    build_site
+    html = rendered_post("interaction-essay")
+    assert_includes html, "mf-lang"
+    assert_includes html, "mf:langchange"
+  end
+
+  def test_toc_and_wordcount_target_visible_body
+    build_site
+    html = rendered_post("interaction-essay")
+    assert_includes html, ".post-body:not([hidden])"
+    assert_includes html, "mf:langchange"
+  end
+
+  def test_paired_post_emits_hreflang_alternates
+    build_site
+    html = rendered_post("interaction-essay")
+    assert_includes html, 'hreflang="en"'
+    assert_includes html, 'hreflang="zh-CN"'
+  end
+
+  def test_brief_index_excludes_english_variant
+    build_site
+    html = File.read(File.join(@dest_dir, "briefs", "index.html"))
+    assert_equal 1, html.scan('"href":').length
+    refute_includes html, ".en/"
   end
 
   private

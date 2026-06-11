@@ -1,0 +1,17 @@
+{%- comment -%}
+  Sets two variables in the caller scope (Jekyll include assigns leak to caller):
+    lang_is_en  -> true if current post is the .en variant
+    lang_pair   -> the counterpart post object (en for a zh page, zh for an en page), or empty
+  Pairing rule: same filename, English adds a `.en` suffix before `.md`.
+{%- endcomment -%}
+{%- assign lang_is_en = false -%}
+{%- assign lang_pair = nil -%}
+{%- if page.path contains '.en.md' -%}
+  {%- assign lang_is_en = true -%}
+  {%- assign _counterpart_path = page.path | replace_first: '.en.md', '.md' -%}
+{%- else -%}
+  {%- assign _counterpart_path = page.path | replace_first: '.md', '.en.md' -%}
+{%- endif -%}
+{%- for p in site.posts -%}
+  {%- if p.path == _counterpart_path -%}{%- assign lang_pair = p -%}{%- break -%}{%- endif -%}
+{%- endfor -%}

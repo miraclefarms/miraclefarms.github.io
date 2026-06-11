@@ -1,10 +1,15 @@
 <!-- MiracleFarms · Hero C (Editorial cover) -->
 {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
-{% assign latest_post = sorted_posts | first %}
+{% assign latest_post = nil %}
+{% for p in sorted_posts %}{% unless p.path contains '.en.md' %}{% assign latest_post = p %}{% break %}{% endunless %}{% endfor %}
 {% assign briefs = site.posts | where: 'kind', 'brief' %}
 {% assign readings = site.posts | where: 'kind', 'reading' %}
 {% assign field_notes = site.posts | where: 'kind', 'field-note' %}
 {% assign essays = site.posts | where: 'kind', 'essay' %}
+{% assign briefs_n = 0 %}{% for p in briefs %}{% unless p.path contains '.en.md' %}{% assign briefs_n = briefs_n | plus: 1 %}{% endunless %}{% endfor %}
+{% assign readings_n = 0 %}{% for p in readings %}{% unless p.path contains '.en.md' %}{% assign readings_n = readings_n | plus: 1 %}{% endunless %}{% endfor %}
+{% assign fields_n = 0 %}{% for p in field_notes %}{% unless p.path contains '.en.md' %}{% assign fields_n = fields_n | plus: 1 %}{% endunless %}{% endfor %}
+{% assign essays_n = 0 %}{% for p in essays %}{% unless p.path contains '.en.md' %}{% assign essays_n = essays_n | plus: 1 %}{% endunless %}{% endfor %}
 {% assign current_theme = site.current_theme | default: 'AI Infrastructure' %}
 <header class="mf-hero">
 <div class="mf-hero-inner">
@@ -41,10 +46,10 @@
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       阅读最新
     </a>
-    <a class="mf-pill" href="{{ '/briefs/' | relative_url }}">Briefs · <span data-mf-count="briefs">{{ briefs.size }}</span></a>
-    <a class="mf-pill" href="{{ '/readings/' | relative_url }}">Readings · <span data-mf-count="readings">{{ readings.size }}</span></a>
-    <a class="mf-pill" href="{{ '/fields/' | relative_url }}">Fields · <span data-mf-count="fields">{{ field_notes.size }}</span></a>
-    <a class="mf-pill" href="{{ '/essays/' | relative_url }}">Essays · <span data-mf-count="essays">{{ essays.size }}</span></a>
+    <a class="mf-pill" href="{{ '/briefs/' | relative_url }}">Briefs · <span data-mf-count="briefs">{{ briefs_n }}</span></a>
+    <a class="mf-pill" href="{{ '/readings/' | relative_url }}">Readings · <span data-mf-count="readings">{{ readings_n }}</span></a>
+    <a class="mf-pill" href="{{ '/fields/' | relative_url }}">Fields · <span data-mf-count="fields">{{ fields_n }}</span></a>
+    <a class="mf-pill" href="{{ '/essays/' | relative_url }}">Essays · <span data-mf-count="essays">{{ essays_n }}</span></a>
   </div>
 </div>
 </header>
