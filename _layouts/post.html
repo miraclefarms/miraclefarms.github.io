@@ -48,10 +48,10 @@ layout: default
         {% endcase %}
       </p>
 
-      <h1 class="post-title" data-pagefind-meta="title">{{ page.title }}</h1>
+      <h1 class="post-title" data-pagefind-meta="title"{% if lang_embed %} data-title-en="{{ lang_pair.title | escape }}"{% endif %}>{{ page.title }}</h1>
 
       {% if page.intro %}
-      <p class="post-intro-block" data-pagefind-meta="intro">{{ page.intro }}</p>
+      <p class="post-intro-block" data-pagefind-meta="intro"{% if lang_embed and lang_pair.intro %} data-intro-en="{{ lang_pair.intro | escape }}"{% endif %}>{{ page.intro }}</p>
       {% endif %}
 
       <div class="post-meta-row">
@@ -287,11 +287,27 @@ layout: default
   var toggle = document.querySelector('.post-lang-toggle');
   if (!zh || !en || !toggle) return;
 
+  // 标题/摘要在头部单独渲染（默认中文），随语言切换替换文本
+  var titleEl = document.querySelector('.post-title');
+  var introEl = document.querySelector('.post-intro-block');
+  var zhTitle = titleEl ? titleEl.textContent : '';
+  var zhIntro = introEl ? introEl.textContent : '';
+
   function apply(lang, persist) {
     var en_on = lang === 'en';
     zh.hidden = en_on;
     en.hidden = !en_on;
     document.documentElement.lang = en_on ? 'en' : 'zh-CN';
+    if (titleEl) {
+      titleEl.textContent = en_on
+        ? (titleEl.getAttribute('data-title-en') || zhTitle)
+        : zhTitle;
+    }
+    if (introEl) {
+      introEl.textContent = en_on
+        ? (introEl.getAttribute('data-intro-en') || zhIntro)
+        : zhIntro;
+    }
     toggle.querySelectorAll('.lang-opt[data-lang]').forEach(function (b) {
       var on = b.getAttribute('data-lang') === lang;
       b.classList.toggle('is-active', on);

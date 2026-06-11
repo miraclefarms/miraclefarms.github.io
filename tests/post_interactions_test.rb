@@ -183,6 +183,8 @@ class PostInteractionsTest < Minitest::Test
     assert_includes html, 'class="post-lang-toggle"'
     assert_includes html, 'data-lang="en"'
     refute_includes html, 'data-lang="en" disabled'
+    assert_includes html, 'data-title-en="Interaction essay"'
+    assert_includes html, 'data-intro-en="Interaction fixture."'
   end
 
   def test_unpaired_post_shows_disabled_english_toggle
