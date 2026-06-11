@@ -160,15 +160,15 @@ layout: default
 
     <footer class="post-endcap">
       <div class="endcap-text">
-        <p class="endcap-thanks">感谢阅读</p>
+        <p class="endcap-thanks" data-i18n-en="Thanks for reading">感谢阅读</p>
         <p class="endcap-links">
-          <a href="{{ '/' | relative_url }}#journal">浏览更多文章 →</a>
+          <a href="{{ '/' | relative_url }}#journal" data-i18n-en="Browse more articles →">浏览更多文章 →</a>
         </p>
       </div>
       {% if site.wechat_qr %}
       <div class="endcap-qr">
         <img src="{{ site.wechat_qr | relative_url }}" alt="微信公众号二维码" width="110" height="110" loading="lazy">
-        <span class="endcap-qr-label">微信公众号 | MiracleFarms</span>
+        <span class="endcap-qr-label" data-i18n-en="WeChat Official Account | MiracleFarms">微信公众号 | MiracleFarms</span>
       </div>
       {% endif %}
     </footer>
@@ -202,6 +202,10 @@ layout: default
 (function () {
   var wcEl = document.getElementById('post-word-count');
   if (!wcEl) return;
+  var pageIsEn = {% if lang_is_en %}true{% else %}false{% endif %};
+  function isEn() {
+    return pageIsEn || document.documentElement.lang === 'en';
+  }
   function visibleBody() {
     return document.querySelector('.post-body:not([hidden])')
         || document.getElementById('post-body-content');
@@ -214,9 +218,10 @@ layout: default
                      .match(/\b[a-zA-Z0-9]+\b/g) || []).length;
     var mins = Math.max(1, Math.round(cjk / 400 + eng / 150));
     var total = cjk + eng;
-    wcEl.textContent = total > 0
-      ? '约 ' + total.toLocaleString('zh-CN') + ' 字 · ' + mins + ' 分钟'
-      : '';
+    if (total <= 0) { wcEl.textContent = ''; return; }
+    wcEl.textContent = isEn()
+      ? total.toLocaleString('en-US') + ' words · ' + mins + ' min read'
+      : '约 ' + total.toLocaleString('zh-CN') + ' 字 · ' + mins + ' 分钟';
   }
   recount();
   document.addEventListener('mf:langchange', recount);
@@ -278,6 +283,28 @@ layout: default
 })();
 </script>
 {% endunless %}
+
+<script>
+/* 静态 UI 文案（感谢阅读 / 微信公众号 / 留言板块 等）随语言切换；中文为 DOM 默认值 */
+(function () {
+  var pageIsEn = {% if lang_is_en %}true{% else %}false{% endif %};
+  function curLang() {
+    return (pageIsEn || document.documentElement.lang === 'en') ? 'en' : 'zh';
+  }
+  function applyI18n(lang) {
+    document.querySelectorAll('[data-i18n-en]').forEach(function (el) {
+      if (el.dataset.i18nZh == null) el.dataset.i18nZh = el.textContent;
+      el.textContent = lang === 'en'
+        ? el.getAttribute('data-i18n-en')
+        : el.dataset.i18nZh;
+    });
+  }
+  applyI18n(curLang());
+  document.addEventListener('mf:langchange', function (e) {
+    applyI18n(e.detail && e.detail.lang === 'en' ? 'en' : 'zh');
+  });
+})();
+</script>
 
 {% if lang_embed %}
 <script>
