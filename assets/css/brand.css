@@ -259,13 +259,20 @@
 
 /* Footer chip strip */
 .mf-const-strip {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
   padding: 18px 22px;
   font-family: var(--mf-sans);
+}
+/* Tight widths: keep one line, drop chip labels to icons. */
+@media (max-width: 760px) {
+  .mf-const-strip { gap: 6px; padding: 16px 14px; }
+  .mf-ch-chip span { display: none; }
+  .mf-ch-chip { padding: 6px 8px; }
 }
 .mf-ch-chip {
   appearance: none;
   display: inline-flex; align-items: center; gap: 6px;
+  flex: 0 0 auto;
   padding: 5px 10px; border-radius: 4px;
   border: 1px solid var(--mf-rule);
   font-family: var(--mf-mono); font-size: 11px;

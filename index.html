@@ -78,7 +78,13 @@ function App() {
   useSection("home");
   useApplyTweaks(t);
 
-  const recent = ALL_BRIEFS.slice(0, 5);
+  const recent = [
+    ...ALL_BRIEFS.map(x => ({ ...x, kindLabel: "Brief" })),
+    ...ALL_READINGS.map(x => ({ ...x, kindLabel: "Reading" })),
+    ...ALL_FIELDS.map(x => ({ ...x, kindLabel: "Field" })),
+    ...ALL_ESSAYS.map(x => ({ ...x, kindLabel: "Essay" })),
+    ...ALL_FOUNDATIONS.map(x => ({ ...x, kindLabel: "Founding" })),
+  ].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
 
   return (
     <>
@@ -166,7 +172,7 @@ function App() {
                   {b.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
                 </div>
               </div>
-              <div className="pl-date">Brief · {b.date}</div>
+              <div className="pl-date">{b.kindLabel} · {b.date}</div>
             </a>
           ))}
         </div>
@@ -207,8 +213,8 @@ function App() {
           </dd>
         </dl>
 
-        <PageFooter />
       </main>
+      <PageFooter />
 
       <TweaksPanel title="Tweaks">
         <TweakSection label="板块色强度 Section colour">

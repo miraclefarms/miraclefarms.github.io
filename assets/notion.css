@@ -125,17 +125,24 @@ a:hover { background: var(--rule-soft); }
 .brand-mark { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; flex: 0 0 auto; }
 .brand-name { letter-spacing: -0.005em; white-space: nowrap; }
 .brand-tag { color: var(--ink-faint); font-weight: 400; margin-left: 2px; white-space: nowrap; }
-@media (max-width: 1040px) { .brand-tag { display: none; } }
+@media (max-width: 1100px) { .brand-tag { display: none; } }
 .nav-spacer { flex: 1; }
-.nav-links { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
+.nav-links { display: flex; align-items: center; gap: 1px; flex-wrap: nowrap; justify-content: flex-end; }
 .nav-links a span { white-space: nowrap; }
 .nav-links a {
-  padding: 6px 10px; border-radius: 4px; color: var(--ink-soft);
+  padding: 6px 5px; border-radius: 4px; color: var(--ink-soft);
   display: inline-flex; align-items: center; gap: 4px;
 }
 .nav-links a:hover { background: var(--bg-hover); color: var(--ink); }
 .nav-links a.active { color: var(--ink); background: var(--bg-hover); }
-.nav-sep { width: 1px; height: 14px; background: var(--rule); margin: 0 8px; }
+.nav-sep { width: 1px; height: 14px; background: var(--rule); margin: 0 6px; }
+/* When labels no longer fit, keep one line and fall back to icons. */
+@media (max-width: 960px) {
+  .nav-links a span { display: none; }
+  .nav-links a { padding: 6px; gap: 0; }
+  .nav-links svg { width: 16px; height: 16px; }
+  .nav-sep { display: none; }
+}
 
 /* Page shell */
 .page {
@@ -146,9 +153,12 @@ a:hover { background: var(--rule-soft); }
 }
 @media (max-width: 720px) {
   .page { padding: 0 20px 80px; }
-  .topbar-inner { padding: 10px 20px; flex-wrap: wrap; }
-  .nav-spacer { display: none; }
+  .topbar-inner { padding: 10px 16px; gap: 8px; }
   .brand-tag { display: none; }
+}
+@media (max-width: 460px) {
+  .topbar-inner { padding: 10px 12px; }
+  .brand-name { display: none; }
 }
 
 .pg-meta {
@@ -506,7 +516,7 @@ html[data-intensity="clean"] .pg-stamp {
   background: var(--bg);
 }
 .mf-const-strip {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
   padding: 18px 22px;
   font-family: var(--font-default);
 }
@@ -515,9 +525,16 @@ html[data-intensity="clean"] .pg-stamp {
   margin: 0 auto;
   justify-content: center;
 }
+/* Tight widths: keep one line, drop chip labels to icons. */
+@media (max-width: 760px) {
+  .mf-const-strip { gap: 6px; padding: 16px 14px; }
+  .mf-ch-chip span { display: none; }
+  .mf-ch-chip { padding: 6px 8px; }
+}
 .mf-ch-chip {
   appearance: none;
   display: inline-flex; align-items: center; gap: 6px;
+  flex: 0 0 auto;
   padding: 5px 10px; border-radius: 4px;
   border: 1px solid var(--rule);
   font-family: var(--font-mono); font-size: 11px;
