@@ -29,34 +29,35 @@
           useApplyTweaks, useSection */
 
 /* ── Jekyll live data (overrides shared.jsx defaults) ── */
+{% assign en_paths = '' %}{% for p in site.posts %}{% if p.path contains '.en.md' %}{% assign en_paths = en_paths | append: '||' | append: p.path %}{% endif %}{% endfor %}
 {% assign _briefs = site.posts | where: 'kind', 'brief' %}
 window.ALL_BRIEFS = [
 {% for post in _briefs %}
-  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% unless post.path contains '.en.md' %}{% include post-card-json.html post=post en_paths=en_paths %}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% assign _readings = site.posts | where: 'kind', 'reading' %}
 window.ALL_READINGS = [
 {% for post in _readings %}
-  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% unless post.path contains '.en.md' %}{% include post-card-json.html post=post en_paths=en_paths %}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% assign _fields = site.posts | where: 'kind', 'field-note' %}
 window.ALL_FIELDS = [
 {% for post in _fields %}
-  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% unless post.path contains '.en.md' %}{% include post-card-json.html post=post en_paths=en_paths %}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% assign _essays = site.posts | where: 'kind', 'essay' %}
 window.ALL_ESSAYS = [
 {% for post in _essays %}
-  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% unless post.path contains '.en.md' %}{% include post-card-json.html post=post en_paths=en_paths %}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% assign _found = site.posts | where: 'kind', 'founding-note' %}
 window.ALL_FOUNDATIONS = [
 {% for post in _found %}
-  {% unless post.path contains '.en.md' %}{"date":"{{ post.date | date: '%Y.%m.%d' }}","title":{{ post.title | jsonify }},"excerpt":{{ post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ post.tags | jsonify }},"href":"{{ post.url | absolute_url }}","locked":{{ post.locked | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% unless post.path contains '.en.md' %}{% include post-card-json.html post=post en_paths=en_paths %}{% unless forloop.last %},{% endunless %}{% endunless %}
 {% endfor %}
 ];
 {% raw %}
@@ -166,7 +167,7 @@ function App() {
               <HandleDots />
               <span className="pl-ico" aria-hidden="true"><Icon name="doc" size={16} /></span>
               <div className="pl-body">
-                <div className="pl-title">{b.title}{b.locked && <span className="pl-lock" aria-label="需要密码">🔒</span>}</div>
+                <div className="pl-title">{b.title}{b.locked && <span className="pl-lock" aria-label="需要密码">🔒</span>}{b.hasEn && <span className="pl-lang" title="中英双语" aria-label="提供中英双语版本"><i>中</i><i>EN</i></span>}</div>
                 <div className="pl-excerpt">{b.excerpt}</div>
                 <div className="pl-meta">
                   {b.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}

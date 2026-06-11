@@ -268,6 +268,20 @@ p.muted { color: var(--ink-soft); }
   text-underline-offset: 3px; text-decoration-thickness: 1px;
 }
 .pagelink:hover .pl-title { text-decoration-color: var(--ink-faint); }
+.pl-lang {
+  display: inline-flex; align-items: stretch; vertical-align: middle;
+  margin-left: 8px; transform: translateY(-1.5px);
+  font-family: var(--font-default); font-size: 9px; font-weight: 600;
+  line-height: 1; letter-spacing: 0.04em; text-decoration: none;
+  border-radius: 4px; overflow: hidden; white-space: nowrap; user-select: none;
+}
+.pl-lang i {
+  font-style: normal; padding: 3px 4.5px;
+  display: inline-flex; align-items: center;
+}
+.pl-lang i:first-child { background: var(--sec-tint); color: var(--sec-accent); }
+.pl-lang i:last-child { background: var(--sec-accent); color: var(--on-accent); }
+.col-title .pl-lang { transform: translateY(-1px); }
 .pagelink .pl-meta {
   font-family: var(--font-default); font-size: 12px; color: var(--ink-faint);
   margin-top: 4px; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: center;

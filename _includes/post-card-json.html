@@ -1,0 +1,11 @@
+{%- comment -%}
+  Emits one post as a JSON object for the React section/index lists.
+  Params:
+    include.post      -> the (zh) post object
+    include.en_paths  -> caller-built string of all '.en.md' post paths (delimited)
+  Adds "hasEn": true when an English counterpart (same name + .en.md) exists.
+{%- endcomment -%}
+{%- assign _en_path = include.post.path | replace_first: '.md', '.en.md' -%}
+{%- assign _has_en = false -%}
+{%- if include.en_paths contains _en_path -%}{%- assign _has_en = true -%}{%- endif -%}
+{"date":"{{ include.post.date | date: '%Y.%m.%d' }}","title":{{ include.post.title | jsonify }},"excerpt":{{ include.post.intro | default: "" | truncate: 140 | jsonify }},"tags":{{ include.post.tags | jsonify }},"href":"{{ include.post.url | absolute_url }}","locked":{{ include.post.locked | default: false | jsonify }},"hasEn":{{ _has_en | jsonify }}}
