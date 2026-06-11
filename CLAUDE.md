@@ -91,7 +91,7 @@ password_hint: "联系荔枝获取密码"    # optional hint shown in the passwo
 
 - Set `locked: true` to encrypt the post body content at CI build time (AES-256-GCM). **Never use `encrypted: true`** — that field is unrecognized and the body will render in plain text.
 - The post title, intro, author and date remain visible in the list and on the post page; only the body is encrypted.
-- A lock icon 🔒 appears after the title on all index pages.
+- A lock badge (line-style padlock chip, `Icon name="lock"` + `.pl-lock`) appears after the title on all index pages.
 - Password is stored in `_data/site_secrets.json` (private content repo, `lock_password` key).
 - Omitting `password_hint` shows the default: "本文已加密，请输入密码继续阅读。"
 - Do **not** combine with `updated` — locked drafts are not public revisions.

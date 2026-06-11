@@ -37,6 +37,7 @@ const Icon = ({ name, size = 16 }) => {
     case "tag":      return <svg {...common}><path d="M20 12L12 20l-8-8V4h8z"/><circle cx="8" cy="8" r="1.5"/></svg>;
     case "calendar": return <svg {...common}><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>;
     case "arrow":    return <svg {...common}><path d="M5 12h14M13 6l6 6-6 6"/></svg>;
+    case "lock":     return <svg {...common}><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>;
     default: return null;
   }
 };

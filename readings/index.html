@@ -126,7 +126,7 @@ function App() {
                     <HandleDots />
                     <span className="pl-ico" aria-hidden="true"><Icon name="book" size={16} /></span>
                     <div className="pl-body">
-                      <div className="pl-title">{r.title}{r.locked && <span className="pl-lock" aria-label="需要密码">🔒</span>}{r.hasEn && <span className="pl-lang" title="中英双语" aria-label="提供中英双语版本"><i>中</i><i>EN</i></span>}</div>
+                      <div className="pl-title">{r.title}{r.locked && <span className="pl-lock" aria-label="需要密码" title="需要密码阅读"><Icon name="lock" size={11} /></span>}{r.hasEn && <span className="pl-lang" title="中英双语" aria-label="提供中英双语版本"><i>中</i><i>EN</i></span>}</div>
                       <div className="pl-excerpt">{r.excerpt}</div>
                       <div className="pl-meta">
                         {r.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
