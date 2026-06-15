@@ -189,7 +189,7 @@ const PageFooter = () => {
         {typeof window !== "undefined" && window.MF_INVESTMENT_URL
           ? <a className="mf-foot-quiet" href={window.MF_INVESTMENT_URL}
               rel="nofollow noopener" aria-label="Private notes"
-              style={{ display: "block", marginTop: "1rem", opacity: .25, color: "inherit", fontSize: ".8rem", lineHeight: 1, textDecoration: "none", textAlign: "center" }}>·</a>
+              style={{ display: "block", marginTop: "1rem", opacity: .4, color: "inherit", fontSize: ".95rem", lineHeight: 1, textDecoration: "none", textAlign: "center", transition: "opacity .2s" }}>·</a>
           : null}
       </footer>
 

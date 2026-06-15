@@ -302,6 +302,11 @@
   margin: 0 auto;
   justify-content: center;
 }
+/* Discreet private-notes entry: quiet by default, clearer on hover/focus. */
+.mf-foot-quiet:hover,
+.mf-foot-quiet:focus-visible {
+  opacity: .85 !important;
+}
 
 .mf-inline-link {
   appearance: none;
