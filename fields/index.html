@@ -27,6 +27,7 @@
           Icon, MFMark, HandleDots, Topbar, PageHead, PageFooter, ALL_FIELDS, useApplyTweaks, useSection */
 
 /* ── Jekyll live data (overrides shared.jsx defaults) ── */
+window.MF_INVESTMENT_URL = {{ site.investment_url | default: '' | jsonify }};
 {% assign _posts = site.posts | where: 'kind', 'field-note' %}
 {% assign en_paths = '' %}{% for p in site.posts %}{% if p.path contains '.en.md' %}{% assign en_paths = en_paths | append: '||' | append: p.path %}{% endif %}{% endfor %}
 window.ALL_FIELDS = [

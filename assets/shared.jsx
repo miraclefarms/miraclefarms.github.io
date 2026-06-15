@@ -186,6 +186,11 @@ const PageFooter = () => {
             <Icon name="feed" size={13} /><span>RSS · soon</span>
           </span>
         </div>
+        {typeof window !== "undefined" && window.MF_INVESTMENT_URL
+          ? <a className="mf-foot-quiet" href={window.MF_INVESTMENT_URL}
+              rel="nofollow noopener" aria-label="Private notes"
+              style={{ display: "block", marginTop: "1rem", opacity: .25, color: "inherit", fontSize: ".8rem", lineHeight: 1, textDecoration: "none", textAlign: "center" }}>·</a>
+          : null}
       </footer>
 
       {/* ── WeChat QR dialog (modal, matches article page) ── */}
