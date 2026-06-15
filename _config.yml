@@ -29,7 +29,7 @@ wechat_qr: /assets/icons/wechat-qr.png
 # 私密投资笔记站点入口（鉴权在目标站的 Cloudflare Access，不在此链接）。
 # 留空 = footer 不渲染该入口（默认）。部署到 Cloudflare Pages 并配好 Access 后，
 # 把 Pages 域名填进来即可启用，例如 https://miraclefarms-investment.pages.dev
-investment_url: ""
+investment_url: "https://miraclefarms-investment.pages.dev"
 
 reader_highlights:
   enabled: true
