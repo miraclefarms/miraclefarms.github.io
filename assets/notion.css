@@ -547,6 +547,12 @@ html[data-intensity="clean"] .pg-stamp {
   margin: 0 auto;
   justify-content: center;
 }
+/* Discreet private-notes entry: quiet by default, clearer on hover/focus.
+   (Mirrors the rule in brand.css; SPA pages load notion.css, not brand.css.) */
+.mf-foot-quiet:hover,
+.mf-foot-quiet:focus-visible {
+  opacity: .85 !important;
+}
 /* Tight widths: keep one line, drop chip labels to icons. */
 @media (max-width: 760px) {
   .mf-const-strip { gap: 6px; padding: 16px 14px; }
