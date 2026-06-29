@@ -51,6 +51,14 @@ jobs:
       - name: Cleanup private checkout
         run: rm -rf _private
 
+      - name: Setup Node (JSX precompile)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Precompile JSX to JS
+        run: bash _ci/build-jsx.sh
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:

@@ -63,6 +63,8 @@ exclude:
   - Gemfile.lock
   - tests
   - docs
+  - tweaks-panel.jsx
+  - assets/shared.jsx
   - design-system
   - wiki-src
   - wiki-src/.venv

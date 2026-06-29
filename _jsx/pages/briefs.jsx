@@ -1,0 +1,189 @@
+/* MiracleFarms — Briefs index App (source). Compiled to /assets/js/pages/briefs.js
+   by _ci/build-jsx.sh. Reads live data from window.ALL_BRIEFS (injected per page). */
+/* global React, ReactDOM, TweaksPanel, useTweaks, TweakSection, TweakRadio, TweakToggle,
+          Icon, MFMark, HandleDots, Topbar, PageHead, PageFooter, ALL_BRIEFS, useApplyTweaks, useSection */
+
+const { useState, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "fontStyle": "serif",
+  "smallText": false,
+  "fullWidth": false,
+  "intensity": "medium"
+}/*EDITMODE-END*/;
+
+function yearOf(dateStr) { return dateStr.slice(0, 4); }
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  useSection("briefs");
+  useApplyTweaks(t);
+
+  const [view, setView] = useState("list"); // "list" | "table"
+  const [activeTag, setActiveTag] = useState(null);
+
+  // Tag counts
+  const tagCounts = useMemo(() => {
+    const m = new Map();
+    for (const b of ALL_BRIEFS) for (const tag of b.tags) m.set(tag, (m.get(tag) || 0) + 1);
+    return [...m.entries()].sort((a, b) => b[1] - a[1]);
+  }, []);
+
+  const filtered = useMemo(
+    () => activeTag ? ALL_BRIEFS.filter(b => b.tags.includes(activeTag)) : ALL_BRIEFS,
+    [activeTag]
+  );
+
+  // Group by year for list view
+  const byYear = useMemo(() => {
+    const groups = {};
+    for (const b of filtered) {
+      const y = yearOf(b.date);
+      (groups[y] = groups[y] || []).push(b);
+    }
+    return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
+  }, [filtered]);
+
+  return (
+    <>
+      <Topbar active="briefs" />
+      <main className="page">
+        <div className="pg-meta">
+          <a href="/">MiracleFarms</a>
+          <span className="dot">›</span>
+          <span>Briefs</span>
+        </div>
+
+        <PageHead section="briefs" />
+
+        <aside className="callout">
+          <span className="ico" aria-hidden="true">🗒️</span>
+          <div>
+            <p>
+              共 <strong>{ALL_BRIEFS.length}</strong> 条{ALL_BRIEFS.length > 0 ? <> · 最新 <strong>{ALL_BRIEFS[0].date}</strong></> : null} · 按日期倒序排列。可按标签筛选，或切换 Table 视图。
+            </p>
+          </div>
+        </aside>
+
+        {/* Filter bar */}
+        <div className="filterbar" role="toolbar" aria-label="筛选与视图">
+          <span className="lbl">Filter:</span>
+          <button
+            className={"fchip" + (activeTag === null ? " on" : "")}
+            onClick={() => setActiveTag(null)}
+            type="button"
+          >全部 <span className="count">{ALL_BRIEFS.length}</span></button>
+          {tagCounts.map(([tag, n]) => (
+            <button
+              key={tag}
+              className={"fchip" + (activeTag === tag ? " on" : "")}
+              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              type="button"
+            >{tag} <span className="count">{n}</span></button>
+          ))}
+          <span style={{ flex: 1 }} />
+          <span className="viewtabs" role="tablist" aria-label="视图切换">
+            <button className={view === "list" ? "on" : ""} onClick={() => setView("list")} type="button">
+              <Icon name="list" size={12} /> List
+            </button>
+            <button className={view === "table" ? "on" : ""} onClick={() => setView("table")} type="button">
+              <Icon name="table" size={12} /> Table
+            </button>
+          </span>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="empty">没有匹配的 brief。试试清除筛选。</div>
+        ) : view === "list" ? (
+          byYear.map(([yr, items]) => (
+            <section key={yr}>
+              <div className="year-row">
+                <span className="yr">{yr}</span>
+                <span className="ln" />
+                <span>{items.length} 条</span>
+              </div>
+              <div className="pagelist" role="list">
+                {items.map((b, i) => (
+                  <a key={i} className="pagelink" href={b.href} role="listitem">
+                    <HandleDots />
+                    <span className="pl-ico" aria-hidden="true"><Icon name="doc" size={16} /></span>
+                    <div className="pl-body">
+                      <div className="pl-title">{b.title}{b.locked && <span className="pl-lock" aria-label="需要密码" title="需要密码阅读"><Icon name="lock" size={11} /></span>}{b.hasEn && <span className="pl-lang" title="中英双语" aria-label="提供中英双语版本"><i>中</i><i>EN</i></span>}</div>
+                      <div className="pl-excerpt">{b.excerpt}</div>
+                      <div className="pl-meta">
+                        {b.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
+                      </div>
+                    </div>
+                    <div className="pl-date">{b.date}</div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))
+        ) : (
+          <table className="ntable" role="table">
+            <thead>
+              <tr>
+                <th className="col-date" style={{ width: "120px" }}>
+                  <span className="col-ico"><Icon name="calendar" size={12} /></span>Date
+                </th>
+                <th className="col-title">
+                  <span className="col-ico"><Icon name="doc" size={12} /></span>Title
+                </th>
+                <th className="col-tags" style={{ width: "240px" }}>
+                  <span className="col-ico"><Icon name="tag" size={12} /></span>Tags
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((b, i) => (
+                <tr key={i}>
+                  <td className="col-date">{b.date}</td>
+                  <td className="col-title">
+                    <a href={b.href}>{b.title}{b.hasEn && <span className="pl-lang" title="中英双语" aria-label="提供中英双语版本"><i>中</i><i>EN</i></span>}</a>
+                  </td>
+                  <td className="col-tags">
+                    {b.tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+      </main>
+      <PageFooter />
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="板块色强度 Section colour">
+          <TweakRadio
+            value={t.intensity}
+            onChange={(v) => setTweak("intensity", v)}
+            options={[
+              { value: "clean",      label: "克制" },
+              { value: "medium",     label: "中度" },
+              { value: "expressive", label: "明显" },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="字体 Font style">
+          <TweakRadio
+            value={t.fontStyle}
+            onChange={(v) => setTweak("fontStyle", v)}
+            options={[
+              { value: "default", label: "Default" },
+              { value: "serif",   label: "Serif" },
+              { value: "mono",    label: "Mono" },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="排版 Layout">
+          <TweakToggle label="Small text 小字号" value={t.smallText} onChange={(v) => setTweak("smallText", v)} />
+          <TweakToggle label="Full width 全宽页面" value={t.fullWidth} onChange={(v) => setTweak("fullWidth", v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
