@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "jekyll",
-      "runtimeExecutable": "/opt/homebrew/Cellar/ruby/4.0.3/bin/bundle",
+      "runtimeExecutable": "/usr/local/opt/ruby/bin/bundle",
       "runtimeArgs": ["exec", "jekyll", "serve", "--host", "127.0.0.1", "--port", "4000"],
       "port": 4000
     }
